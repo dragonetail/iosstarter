@@ -14,6 +14,7 @@
 		D938A7DF215C931F00EEB89F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D938A7DD215C931F00EEB89F /* LaunchScreen.storyboard */; };
 		D938A7EA215C931F00EEB89F /* iosstarterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D938A7E9215C931F00EEB89F /* iosstarterTests.swift */; };
 		D938A7F5215C931F00EEB89F /* iosstarterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D938A7F4215C931F00EEB89F /* iosstarterUITests.swift */; };
+		D938A805215CA66E00EEB89F /* LocalPhotoGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D938A804215CA66E00EEB89F /* LocalPhotoGalleryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		D938A7F0215C931F00EEB89F /* iosstarterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosstarterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D938A7F4215C931F00EEB89F /* iosstarterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosstarterUITests.swift; sourceTree = "<group>"; };
 		D938A7F6215C931F00EEB89F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D938A804215CA66E00EEB89F /* LocalPhotoGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPhotoGalleryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,11 +99,9 @@
 		D938A7D3215C931F00EEB89F /* iosstarter */ = {
 			isa = PBXGroup;
 			children = (
-				D938A7D4215C931F00EEB89F /* AppDelegate.swift */,
-				D938A7D6215C931F00EEB89F /* ViewController.swift */,
-				D938A7D8215C931F00EEB89F /* Main.storyboard */,
+				D938A803215C95CD00EEB89F /* localphotogallery */,
+				D938A802215C954C00EEB89F /* home */,
 				D938A7DB215C931F00EEB89F /* Assets.xcassets */,
-				D938A7DD215C931F00EEB89F /* LaunchScreen.storyboard */,
 				D938A7E0215C931F00EEB89F /* Info.plist */,
 			);
 			path = iosstarter;
@@ -123,6 +123,25 @@
 				D938A7F6215C931F00EEB89F /* Info.plist */,
 			);
 			path = iosstarterUITests;
+			sourceTree = "<group>";
+		};
+		D938A802215C954C00EEB89F /* home */ = {
+			isa = PBXGroup;
+			children = (
+				D938A7D6215C931F00EEB89F /* ViewController.swift */,
+				D938A7D4215C931F00EEB89F /* AppDelegate.swift */,
+				D938A7D8215C931F00EEB89F /* Main.storyboard */,
+				D938A7DD215C931F00EEB89F /* LaunchScreen.storyboard */,
+			);
+			path = home;
+			sourceTree = "<group>";
+		};
+		D938A803215C95CD00EEB89F /* localphotogallery */ = {
+			isa = PBXGroup;
+			children = (
+				D938A804215CA66E00EEB89F /* LocalPhotoGalleryViewController.swift */,
+			);
+			path = localphotogallery;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +277,7 @@
 			files = (
 				D938A7D7215C931F00EEB89F /* ViewController.swift in Sources */,
 				D938A7D5215C931F00EEB89F /* AppDelegate.swift in Sources */,
+				D938A805215CA66E00EEB89F /* LocalPhotoGalleryViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
