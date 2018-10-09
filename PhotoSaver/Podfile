@@ -1,0 +1,18 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+platform :ios, '9.0'
+
+target 'PhotoSaver' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for PhotoSaver
+  pod 'Gallery', path: './LocalPods/Gallery'
+  pod 'Lightbox', path: './LocalPods/Lightbox'
+  pod 'Cache', path: './LocalPods/Cache'
+  pod 'Imaginary', path: './LocalPods/Imaginary'
+  pod 'Hue', path: './LocalPods/Hue'
+  pod 'SVProgressHUD', path: './LocalPods/SVProgressHUD'
+
+
+end

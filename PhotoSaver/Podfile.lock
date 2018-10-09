@@ -1,0 +1,43 @@
+PODS:
+  - Cache (5.2.0)
+  - Gallery (2.2.0)
+  - Hue (3.0.1)
+  - Imaginary (4.2.0):
+    - Cache (~> 5.0)
+  - Lightbox (2.3.0):
+    - Imaginary (~> 4.0)
+  - SVProgressHUD (2.2.5)
+
+DEPENDENCIES:
+  - Cache (from `./LocalPods/Cache`)
+  - Gallery (from `./LocalPods/Gallery`)
+  - Hue (from `./LocalPods/Hue`)
+  - Imaginary (from `./LocalPods/Imaginary`)
+  - Lightbox (from `./LocalPods/Lightbox`)
+  - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
+
+EXTERNAL SOURCES:
+  Cache:
+    :path: "./LocalPods/Cache"
+  Gallery:
+    :path: "./LocalPods/Gallery"
+  Hue:
+    :path: "./LocalPods/Hue"
+  Imaginary:
+    :path: "./LocalPods/Imaginary"
+  Lightbox:
+    :path: "./LocalPods/Lightbox"
+  SVProgressHUD:
+    :path: "./LocalPods/SVProgressHUD"
+
+SPEC CHECKSUMS:
+  Cache: 9d4617a0dc37d72fb80030a70ef56072b1237b46
+  Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
+  Hue: 8c03f7aca9b9ef3a15052296bea5d60a3be56350
+  Imaginary: deadb35fdfc6cfbe25d1baf3f1e421929f577142
+  Lightbox: 63b567b8aa7be5a786aa6a60f17b51efa5091b45
+  SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
+
+PODFILE CHECKSUM: 6a49752c44f76b5c80aa38c8379f04b1fadb9694
+
+COCOAPODS: 1.5.3
