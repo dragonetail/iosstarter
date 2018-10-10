@@ -9,9 +9,10 @@
 /* Begin PBXBuildFile section */
 		3DA3A31DD7DDBFFF0B5F90D9 /* Pods_PhotoSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A65C4A5B366CC035D7EAE227 /* Pods_PhotoSaver.framework */; };
 		D941746B216AF4F800864119 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D941746A216AF4F800864119 /* AppDelegate.swift */; };
-		D941746D216AF4F800864119 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D941746C216AF4F800864119 /* ViewController.swift */; };
 		D9417472216AF4FA00864119 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9417471216AF4FA00864119 /* Assets.xcassets */; };
 		D9417475216AF4FA00864119 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9417473216AF4FA00864119 /* LaunchScreen.storyboard */; };
+		D9FC118C216CDC50008E466E /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118B216CDC50008E466E /* TabBarController.swift */; };
+		D9FC118E216CDF15008E466E /* LocalPhotoGalleryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118D216CDF15008E466E /* LocalPhotoGalleryController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,12 +38,13 @@
 		D4338ABDFDB6686B96883FC8 /* Pods-PhotoSaver.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoSaver.release.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoSaver/Pods-PhotoSaver.release.xcconfig"; sourceTree = "<group>"; };
 		D9417467216AF4F800864119 /* PhotoSaver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoSaver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D941746A216AF4F800864119 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D941746C216AF4F800864119 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		D9417471216AF4FA00864119 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D9417474216AF4FA00864119 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D9417476216AF4FA00864119 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D941747B216AF4FA00864119 /* PhotoSaverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSaverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D9417486216AF4FA00864119 /* PhotoSaverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSaverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D9FC118B216CDC50008E466E /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		D9FC118D216CDF15008E466E /* LocalPhotoGalleryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalPhotoGalleryController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +114,8 @@
 			isa = PBXGroup;
 			children = (
 				D941746A216AF4F800864119 /* AppDelegate.swift */,
-				D941746C216AF4F800864119 /* ViewController.swift */,
+				D9FC118B216CDC50008E466E /* TabBarController.swift */,
+				D9FC118D216CDF15008E466E /* LocalPhotoGalleryController.swift */,
 				D9417471216AF4FA00864119 /* Assets.xcassets */,
 				D9417473216AF4FA00864119 /* LaunchScreen.storyboard */,
 				D9417476216AF4FA00864119 /* Info.plist */,
@@ -309,7 +312,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D941746D216AF4F800864119 /* ViewController.swift in Sources */,
+				D9FC118C216CDC50008E466E /* TabBarController.swift in Sources */,
+				D9FC118E216CDF15008E466E /* LocalPhotoGalleryController.swift in Sources */,
 				D941746B216AF4F800864119 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
