@@ -13,24 +13,38 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let localPhotoGalleryController = LocalPhotoGalleryController()
-        localPhotoGalleryController.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
-        
-        
-        let cloudPhotoViewController = LocalPhotoGalleryController()
-        cloudPhotoViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 1)
-        
-        
-        let transferViewController = LocalPhotoGalleryController()
-        transferViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
-        
-        let configViewController = LocalPhotoGalleryController()
-        configViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
-        
-        
-        let tabBarList = [localPhotoGalleryController, cloudPhotoViewController, transferViewController, configViewController]
-        
-
-        viewControllers = tabBarList
+        if Permission.Photos.status == .notDetermined {
+            Permission.Photos.request { //[weak self] in
+                //self?.check()
+            }
+        }
+        if Permission.Photos.status == .authorized {
+            let localPhotoGalleryController = PhotoGalleryController()
+            localPhotoGalleryController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            localPhotoGalleryController.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
+            
+            
+            let cloudPhotoViewController = PhotoGalleryController()
+            cloudPhotoViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            cloudPhotoViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 1)
+            
+            
+            let transferViewController = PhotoGalleryController()
+            transferViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            transferViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
+            
+            let configViewController = PhotoGalleryController()
+            configViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            configViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
+            
+            
+            let tabBarList = [localPhotoGalleryController, cloudPhotoViewController, transferViewController, configViewController]
+            
+            
+            viewControllers = tabBarList
+        }else{
+            print("没有获取用户访问相册的授权")
+        }
     }
 }
+

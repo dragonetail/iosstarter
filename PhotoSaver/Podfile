@@ -2,6 +2,8 @@
 # platform :ios, '9.0'
 platform :ios, '9.0'
 
+workspace 'PhotoSaver.xcworkspace'
+
 target 'PhotoSaver' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
   use_frameworks!
@@ -13,6 +15,19 @@ target 'PhotoSaver' do
   pod 'Imaginary', path: './LocalPods/Imaginary'
   pod 'Hue', path: './LocalPods/Hue'
   pod 'SVProgressHUD', path: './LocalPods/SVProgressHUD'
+  pod 'PureLayout', '~> 3.1.2'
+  pod 'SwiftEventBus', :tag => '3.0.1', :git => 'https://github.com/cesarferreira/SwiftEventBus.git'
+  pod 'FSPagerView'
+  pod 'ATGMediaBrowser', '~> 1.0'
+end
 
-
+target 'UIViewsSample' do
+    project 'UIViewsSample/UIViewsSample.xcodeproj'
+    
+    # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+    use_frameworks!
+    
+    # Pods for UIViewSample
+    pod 'PureLayout', '~> 3.1.2'
+    
 end

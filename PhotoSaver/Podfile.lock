@@ -1,20 +1,34 @@
 PODS:
+  - ATGMediaBrowser (1.0.1)
   - Cache (5.2.0)
+  - FSPagerView (0.8.1)
   - Gallery (2.2.0)
   - Hue (3.0.1)
   - Imaginary (4.2.0):
     - Cache (~> 5.0)
   - Lightbox (2.3.0):
     - Imaginary (~> 4.0)
+  - PureLayout (3.1.2)
   - SVProgressHUD (2.2.5)
+  - SwiftEventBus (3.0.1)
 
 DEPENDENCIES:
+  - ATGMediaBrowser (~> 1.0)
   - Cache (from `./LocalPods/Cache`)
+  - FSPagerView
   - Gallery (from `./LocalPods/Gallery`)
   - Hue (from `./LocalPods/Hue`)
   - Imaginary (from `./LocalPods/Imaginary`)
   - Lightbox (from `./LocalPods/Lightbox`)
+  - PureLayout (~> 3.1.2)
   - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
+  - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `3.0.1`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ATGMediaBrowser
+    - FSPagerView
+    - PureLayout
 
 EXTERNAL SOURCES:
   Cache:
@@ -29,15 +43,27 @@ EXTERNAL SOURCES:
     :path: "./LocalPods/Lightbox"
   SVProgressHUD:
     :path: "./LocalPods/SVProgressHUD"
+  SwiftEventBus:
+    :git: https://github.com/cesarferreira/SwiftEventBus.git
+    :tag: 3.0.1
+
+CHECKOUT OPTIONS:
+  SwiftEventBus:
+    :git: https://github.com/cesarferreira/SwiftEventBus.git
+    :tag: 3.0.1
 
 SPEC CHECKSUMS:
+  ATGMediaBrowser: aade73960db4fc9e5c923ec133ee220a1bc9c4d1
   Cache: 9d4617a0dc37d72fb80030a70ef56072b1237b46
+  FSPagerView: 4e865526acc0b0e3077e2abb29b8d10a9f395476
   Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
   Hue: 8c03f7aca9b9ef3a15052296bea5d60a3be56350
   Imaginary: deadb35fdfc6cfbe25d1baf3f1e421929f577142
   Lightbox: 63b567b8aa7be5a786aa6a60f17b51efa5091b45
+  PureLayout: 4634d0b61e3b5021166e8ec7c18e9e0ca0720c8b
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
+  SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
 
-PODFILE CHECKSUM: 6a49752c44f76b5c80aa38c8379f04b1fadb9694
+PODFILE CHECKSUM: 79d003276fc703de5a855b26c5f8e47e10a464ae
 
 COCOAPODS: 1.5.3
