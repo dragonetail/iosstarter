@@ -30,15 +30,15 @@ class EventBus {
         SwiftEventBus.postToMainThread("selectAlbum", sender: album)
     }
     
-    func bindPageShowImages(_ pageShowImages: @escaping ([Image], Image)->()){
+    func bindPageShowImages(_ pageShowImages: @escaping (Album, IndexPath)->()){
         SwiftEventBus.onMainThread(self, name: "pageShowImages") { result in
-            let data = result!.object as! (images: [Image], startImage: Image)
-            pageShowImages(data.images, data.startImage)
+            let data = result!.object as! (album: Album, indexPath: IndexPath)
+            pageShowImages(data.album, data.indexPath)
         }
     }
     
-    func triggerPageShowImages(images: [Image], startImage: Image){
-        SwiftEventBus.postToMainThread("pageShowImages", sender: (images: images, startImage: startImage))
+    func triggerPageShowImages(album: Album, indexPath: IndexPath){
+        SwiftEventBus.postToMainThread("pageShowImages", sender: (album: album, indexPath: indexPath))
     }
     
     func unbindAll(){

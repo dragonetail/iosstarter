@@ -23,9 +23,9 @@ class AlbumCell: UITableViewCell {
 
     func configure(_ album: Album) {
         albumTitleLabel.text = album.collection.localizedTitle
-        itemCountLabel.text = "\(album.items.count)"
+        itemCountLabel.text = "\(album.count)"
 
-        if let item = album.items.first {
+        if let item = album.sections.first?.images.first {
             albumImageView.layoutIfNeeded()
             albumImageView.g_loadImage(item.asset)
         }

@@ -7,3 +7,13 @@
 //
 
 import Foundation
+
+class ImageSection {
+    var images = [Image]()
+    var count: Int  = 0
+    let groupedDate: String
+    
+    init(groupedDate: String) {
+        self.groupedDate = groupedDate
+    }
+}

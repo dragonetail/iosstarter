@@ -47,9 +47,9 @@ class PhotoGalleryController: UIViewController {
         }
     }
     
-    func pageShowImages(images: [Image], startImage: Image){
-        let pageViewController = PageViewController()
-        pageViewController.setup(images: images, startImage: startImage)
+    func pageShowImages(album: Album, indexPath: IndexPath){
+        let pageViewController = PageViewController(album: album, indexPath: indexPath)
+        //pageViewController.setup(album: album, indexPath: indexPath)
 
         present(pageViewController, animated: true, completion: nil)
         

@@ -13,14 +13,18 @@ import PureLayout
 
 class PageViewController: UIViewController {
 
-    private var images: [Image] = []
-    private var startImage: Image?
+    private let album: Album
+    private let indexPath: IndexPath
 
-    func setup(images: [Image], startImage: Image) {
-        self.images = images
-        self.startImage = startImage
+     init(album: Album, indexPath: IndexPath) {
+        self.album = album
+        self.indexPath = indexPath
     }
-
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +62,7 @@ class PageViewController: UIViewController {
 }
 extension PageViewController: FSPagerViewDataSource {
     public func numberOfItems(in pagerView: FSPagerView) -> Int {
-        return images.count
+        return album.count
     }
 
     public func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
