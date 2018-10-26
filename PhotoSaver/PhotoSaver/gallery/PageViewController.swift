@@ -16,15 +16,17 @@ class PageViewController: UIViewController {
     private let album: Album
     private let indexPath: IndexPath
 
-     init(album: Album, indexPath: IndexPath) {
+    init(album: Album, indexPath: IndexPath) {
         self.album = album
         self.indexPath = indexPath
+
+        super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,26 +68,26 @@ extension PageViewController: FSPagerViewDataSource {
     }
 
     public func pagerView(_ pagerView: FSPagerView, cellForItemAt index: Int) -> FSPagerViewCell {
-        let image: Image = images[index]
+//        let image: Image = images[index]
         let cell = pagerView.dequeueReusableCell(withReuseIdentifier: "cell", at: index)
-        let group = DispatchGroup() // initialize
-        group.enter() // wait
-
-        print("Group enterred")
-        cell.imageView?.image = UIImage(named: "picture_unselect")
-        cell.imageView?.image = nil
-        image.resolve(completion: { uiImage in
-            print(uiImage)
-            cell.imageView?.image = uiImage
-            group.leave()
-            print("Group leaved")
-        })
-        group.notify(queue: .main) {
-            //cell.imageView?.image = UIImage(named: "picture_unselect")
-            //noop
-            print("Group notified")
-        }
-        cell.textLabel?.text = image.asset.creationDate?.description
+//        let group = DispatchGroup() // initialize
+//        group.enter() // wait
+//
+//        print("Group enterred")
+//        cell.imageView?.image = UIImage(named: "picture_unselect")
+//        cell.imageView?.image = nil
+//        image.resolve(completion: { uiImage in
+//            print(uiImage)
+//            cell.imageView?.image = uiImage
+//            group.leave()
+//            print("Group leaved")
+//        })
+//        group.notify(queue: .main) {
+//            //cell.imageView?.image = UIImage(named: "picture_unselect")
+//            //noop
+//            print("Group notified")
+//        }
+//        cell.textLabel?.text = image.asset.creationDate?.description
         return cell
     }
 }

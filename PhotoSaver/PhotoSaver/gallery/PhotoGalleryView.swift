@@ -31,7 +31,7 @@ class PhotoGalleryView: UIView {
         return arrowButton
     }()
 
-    private lazy var collectionView: UICollectionView = {
+    internal lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
 
         let columnCount: CGFloat = 4
