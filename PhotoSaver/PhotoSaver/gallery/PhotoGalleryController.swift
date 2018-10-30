@@ -70,9 +70,7 @@ class PhotoGalleryController: UIViewController {
 //        present(mediaBrowser, animated: true, completion: nil)
 
         
-         let collectionView = self.photoGalleryView.collectionView
-        
-        self.viewerController = ViewerController(initialIndexPath: indexPath, collectionView: collectionView)
+        self.viewerController = ViewerController(initialIndexPath: indexPath, album: album)
         self.viewerController!.dataSource = self
         self.viewerController!.delegate = self
         

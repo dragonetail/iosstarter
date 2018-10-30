@@ -1,12 +1,12 @@
 import UIKit
 import CoreData
 
-public protocol ViewerControllerDataSource: class {
+ protocol ViewerControllerDataSource: class {
     func numberOfItemsInViewerController(_ viewerController: ViewerController) -> Int
     func viewerController(_ viewerController: ViewerController, viewableAt indexPath: IndexPath) -> Viewable
 }
 
-public protocol ViewerControllerDelegate: class {
+ protocol ViewerControllerDelegate: class {
     func viewerController(_ viewerController: ViewerController, didChangeFocusTo indexPath: IndexPath)
     func viewerControllerDidDismiss(_ viewerController: ViewerController)
     func viewerController(_ viewerController: ViewerController, didFailDisplayingViewableAt indexPath: IndexPath, error: NSError)
@@ -14,7 +14,7 @@ public protocol ViewerControllerDelegate: class {
 }
 
 /// The ViewerController takes care of displaying the user's photos and videos in full-screen. You can swipe right or left to navigate between them.
-public class ViewerController: UIViewController {
+class ViewerController: UIViewController {
     static let domain = "com.bakkenbaeck.Viewer"
     fileprivate static let HeaderHeight = CGFloat(64)
     fileprivate static let FooterHeight = CGFloat(50)
@@ -22,10 +22,11 @@ public class ViewerController: UIViewController {
 
     fileprivate var isSlideshow: Bool
 
-    public init(initialIndexPath: IndexPath, collectionView: UICollectionView, isSlideshow: Bool = false) {
+    init(initialIndexPath: IndexPath, album: Album, isSlideshow: Bool = false) {
         self.initialIndexPath = initialIndexPath
         self.currentIndexPath = initialIndexPath
-        self.collectionView = collectionView
+//        self.collectionView = collectionView
+        self.album = album
 
         self.proposedCurrentIndexPath = initialIndexPath
         self.isSlideshow = isSlideshow
@@ -67,7 +68,9 @@ public class ViewerController: UIViewController {
     /**
      The UICollectionView to be used when dismissing and presenting elements
      */
-    fileprivate unowned var collectionView: UICollectionView
+//    fileprivate unowned var collectionView: UICollectionView
+    fileprivate unowned var  album: Album
+   
 
     /**
      CGPoint used for diffing the panning on an image
@@ -126,7 +129,7 @@ public class ViewerController: UIViewController {
     public var footerView: UIView?
 
     lazy var scrollView: PaginatedScrollView = {
-        let view = PaginatedScrollView(frame: self.view.frame, parentController: self, initialPage: self.initialIndexPath.totalRow(self.collectionView))
+        let view = PaginatedScrollView(frame: self.view.frame, parentController: self, initialPage: self.album.count)
         view.viewDataSource = self
         view.viewDelegate = self
         view.backgroundColor = .clear
@@ -135,7 +138,7 @@ public class ViewerController: UIViewController {
     }()
 
     lazy var slideshowView: SlideshowView = {
-        let view = SlideshowView(frame: self.view.frame, parentController: self, initialPage: self.initialIndexPath.totalRow(self.collectionView))
+        let view = SlideshowView(frame: self.view.frame, parentController: self, initialPage: self.album.count)
         view.dataSource = self
         view.delegate = self
         view.backgroundColor = .clear
@@ -248,9 +251,9 @@ public class ViewerController: UIViewController {
             } else {
                 self.scrollView.configure()
             }
-            if !self.collectionView.indexPathsForVisibleItems.contains(self.currentIndexPath) && self.collectionView.numberOfSections > self.currentIndexPath.section && self.collectionView.numberOfItems(inSection: self.currentIndexPath.section) > self.currentIndexPath.item {
-                self.collectionView.scrollToItem(at: self.currentIndexPath, at: .bottom, animated: true)
-            }
+//            if !self.collectionView.indexPathsForVisibleItems.contains(self.currentIndexPath) && self.collectionView.numberOfSections > self.currentIndexPath.section && self.collectionView.numberOfItems(inSection: self.currentIndexPath.section) > self.currentIndexPath.item {
+//                self.collectionView.scrollToItem(at: self.currentIndexPath, at: .bottom, animated: true)
+//            }
         }
     }
 
@@ -334,14 +337,14 @@ extension ViewerController {
     }
 
     fileprivate func present(with indexPath: IndexPath, completion: (() -> Void)?) {
-        guard let selectedCell = self.collectionView.cellForItem(at: indexPath) else { return }
+//        guard let selectedCell = self.collectionView.cellForItem(at: indexPath) else { return }
 
         let viewable = self.dataSource!.viewerController(self, viewableAt: indexPath)
         let image = viewable.placeholder
-        selectedCell.alpha = 0
+//        selectedCell.alpha = 0
 
         let presentedView = self.presentedViewCopy()
-        presentedView.frame = self.view.convert(selectedCell.frame, from: self.collectionView)
+//        presentedView.frame = self.view.convert(selectedCell.frame, from: self.collectionView)
         presentedView.image = image
 
         self.view.addSubview(self.overlayView)
@@ -425,7 +428,7 @@ extension ViewerController {
 
         guard let indexPath = viewableController.indexPath else { return }
 
-        guard let selectedCellFrame = self.collectionView.layoutAttributesForItem(at: indexPath)?.frame else { return }
+//        guard let selectedCellFrame = self.collectionView.layoutAttributesForItem(at: indexPath)?.frame else { return }
 
         let viewable = self.dataSource!.viewerController(self, viewableAt: indexPath)
         let image = viewable.placeholder
@@ -463,11 +466,11 @@ extension ViewerController {
             #if os(iOS)
                 self.setNeedsStatusBarAppearanceUpdate()
             #endif
-            presentedView.frame = self.view.convert(selectedCellFrame, from: self.collectionView)
+            //presentedView.frame = self.view.convert(selectedCellFrame, from: self.collectionView)
         }, completion: { _ in
-            if let existingCell = self.collectionView.cellForItem(at: indexPath) {
-                existingCell.alpha = 1
-            }
+//            if let existingCell = self.collectionView.cellForItem(at: indexPath) {
+//                existingCell.alpha = 1
+//            }
 
             self.headerView?.removeFromSuperview()
             self.footerView?.removeFromSuperview()
@@ -549,32 +552,32 @@ extension ViewerController {
     }
 
     fileprivate func centerElementIfNotVisible(_ indexPath: IndexPath, animated: Bool) {
-        if !self.collectionView.indexPathsForVisibleItems.contains(indexPath) {
-            self.collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
-        }
+//        if !self.collectionView.indexPathsForVisibleItems.contains(indexPath) {
+//            self.collectionView.scrollToItem(at: indexPath, at: .top, animated: animated)
+//        }
     }
 
     private func updateHiddenCellsUsingVisibleIndexPath(_ visibleIndexPath: IndexPath) {
-        for indexPath in self.collectionView.indexPathsForVisibleItems {
-            if let cell = self.collectionView.cellForItem(at: indexPath) {
-                cell.alpha = indexPath == visibleIndexPath ? 0 : 1
-            }
-        }
+//        for indexPath in self.collectionView.indexPathsForVisibleItems {
+//            if let cell = self.collectionView.cellForItem(at: indexPath) {
+//                cell.alpha = indexPath == visibleIndexPath ? 0 : 1
+//            }
+//        }
     }
-
-    fileprivate func evaluateCellVisibility(collectionView: UICollectionView, currentIndexPath: IndexPath, upcomingIndexPath: IndexPath) {
-        if !collectionView.indexPathsForVisibleItems.contains(upcomingIndexPath) {
-            var position: UICollectionView.ScrollPosition?
-            if currentIndexPath.compareDirection(upcomingIndexPath) == .forward {
-                position = .bottom
-            } else if currentIndexPath.compareDirection(upcomingIndexPath) == .backward {
-                position = .top
-            }
-            if let position = position {
-                collectionView.scrollToItem(at: upcomingIndexPath, at: position, animated: true)
-            }
-        }
-    }
+//
+//    fileprivate func evaluateCellVisibility(collectionView: UICollectionView, currentIndexPath: IndexPath, upcomingIndexPath: IndexPath) {
+//        if !collectionView.indexPathsForVisibleItems.contains(upcomingIndexPath) {
+//            var position: UICollectionView.ScrollPosition?
+//            if currentIndexPath.compareDirection(upcomingIndexPath) == .forward {
+//                position = .bottom
+//            } else if currentIndexPath.compareDirection(upcomingIndexPath) == .backward {
+//                position = .top
+//            }
+//            if let position = position {
+//                collectionView.scrollToItem(at: upcomingIndexPath, at: position, animated: true)
+//            }
+//        }
+//    }
 }
 
 extension ViewerController: ViewableControllerDelegate {
@@ -628,7 +631,7 @@ extension ViewerController: ViewableControllerContainerDataSource {
     }
 
     func viewableControllerContainer(_ viewableControllerContainer: ViewableControllerContainer, controllerAtIndex index: Int) -> UIViewController {
-        let indexPath = IndexPath.indexPathForIndex(self.collectionView, index: index)!
+        let indexPath = self.album.indexPathForIndex(index)!
 
         return self.findOrCreateViewableController(indexPath)
     }
@@ -636,8 +639,8 @@ extension ViewerController: ViewableControllerContainerDataSource {
 
 extension ViewerController: ViewableControllerContainerDelegate {
     func viewableControllerContainer(_ viewableControllerContainer: ViewableControllerContainer, didMoveToIndex index: Int) {
-        let indexPath = IndexPath.indexPathForIndex(self.collectionView, index: index)!
-        self.evaluateCellVisibility(collectionView: self.collectionView, currentIndexPath: self.currentIndexPath, upcomingIndexPath: indexPath)
+        let indexPath = self.album.indexPathForIndex(index)!
+//        self.evaluateCellVisibility(collectionView: self.collectionView, currentIndexPath: self.currentIndexPath, upcomingIndexPath: indexPath)
         self.currentIndexPath = indexPath
         self.delegate?.viewerController(self, didChangeFocusTo: indexPath)
         let viewableController = self.findOrCreateViewableController(indexPath)
@@ -645,7 +648,7 @@ extension ViewerController: ViewableControllerContainerDelegate {
     }
 
     func viewableControllerContainer(_ viewableControllerContainer: ViewableControllerContainer, didMoveFromIndex index: Int) {
-        let indexPath = IndexPath.indexPathForIndex(self.collectionView, index: index)!
+        let indexPath = self.album.indexPathForIndex(index)!
         let viewableController = self.findOrCreateViewableController(indexPath)
         viewableController.willDismiss()
     }
@@ -673,7 +676,7 @@ extension ViewerController: UIPageViewControllerDelegate {
 
 extension ViewerController: UIPageViewControllerDataSource {
     public func pageViewController(_: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        if let viewerItemController = viewController as? ViewableController, let newIndexPath = viewerItemController.indexPath?.previous(self.collectionView) {
+        if let viewerItemController = viewController as? ViewableController, let newIndexPath = self.album.previous(viewerItemController.indexPath)  {
             let controller = self.findOrCreateViewableController(newIndexPath)
             controller.display()
 
@@ -684,7 +687,7 @@ extension ViewerController: UIPageViewControllerDataSource {
     }
 
     public func pageViewController(_: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        if let viewerItemController = viewController as? ViewableController, let newIndexPath = viewerItemController.indexPath?.next(self.collectionView) {
+        if let viewerItemController = viewController as? ViewableController, let newIndexPath = self.album.next(viewerItemController.indexPath)  {
             let controller = self.findOrCreateViewableController(newIndexPath)
             controller.display()
 

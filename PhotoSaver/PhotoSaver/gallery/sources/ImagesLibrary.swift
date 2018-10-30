@@ -41,7 +41,7 @@ class ImagesLibrary {
         }
         
         // Move Camera Roll first
-        if let index = albums.index(where: { $0.collection.assetCollectionSubtype == .smartAlbumUserLibrary }) {
+        if let index = albums.index(where: { $0.collection?.assetCollectionSubtype == .smartAlbumUserLibrary }) {
             albums.g_moveToFirst(index)
         }
     }

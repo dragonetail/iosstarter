@@ -3,21 +3,27 @@ import Photos
 
 class Album {
 
-    let collection: PHAssetCollection
+    let title: String
+    let collection: PHAssetCollection?
     var sections = [ImageSection]()
     var count: Int = 0
-//    var items: [Image] = []
 
-    // MARK: - Initialization
-
-    init(collection: PHAssetCollection) {
+    convenience init() {
+        self.init(collection: nil)
+    }
+    
+    init(collection: PHAssetCollection?) {
         self.collection = collection
+        self.title = collection?.localizedTitle ?? "-"
     }
 
     func reload() {
         sections = [ImageSection]()
         count = 0
-//        items = []
+
+        guard let collection = self.collection else {
+            return
+        }
 
         let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
@@ -49,13 +55,69 @@ class Album {
             }
         })
     }
-
+}
+extension Album {
     func getImage(_ indexPath: IndexPath) -> Image {
         let section = sections[indexPath.section]
         let image = section.images[indexPath.row]
 
         return image
     }
+
+    func previous(_ indexPath: IndexPath?) -> IndexPath? {
+        guard let indexPath = indexPath else { return nil }
+
+        var sessionIndex = indexPath.section
+        var rowIndex = indexPath.row
+
+
+        rowIndex = rowIndex - 1;
+        if rowIndex < 0 {
+            sessionIndex = sessionIndex - 1
+            if sessionIndex < 0 {
+                sessionIndex = sections.count - 1
+            }
+
+            let section = sections[sessionIndex]
+            rowIndex = section.count - 1
+        }
+        return IndexPath(row: rowIndex, section: sessionIndex)
+    }
+
+    func next(_ indexPath: IndexPath?) -> IndexPath? {
+        guard let indexPath = indexPath else { return nil }
+
+        var sessionIndex = indexPath.section
+        var rowIndex = indexPath.row
+        let section = sections[sessionIndex]
+
+        rowIndex = rowIndex + 1;
+        if rowIndex >= section.count {
+            sessionIndex = sessionIndex + 1
+            rowIndex = 0
+
+            if sessionIndex >= sections.count {
+                sessionIndex = 0
+            }
+        }
+        return IndexPath(row: rowIndex, section: sessionIndex)
+    }
+
+
+    func indexPathForIndex(_ index: Int) -> IndexPath? {
+        var count = 0
+        for section in 0 ..< self.sections.count {
+            let rows = sections[section].count
+            if index >= count && index < count + rows {
+                let foundRow = index - count
+                return IndexPath(row: foundRow, section: section)
+            }
+            count += rows
+        }
+
+        return nil
+    }
+
 }
 
 

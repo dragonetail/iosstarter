@@ -3,7 +3,6 @@ import Photos
 
 /// Wrap a PHAsset
 public class Image: Equatable, Viewable {
-
     public let asset: PHAsset
     public var isSelected: Bool = false
 
@@ -15,7 +14,7 @@ public class Image: Equatable, Viewable {
     }
 
 
-    public var placeholder = UIImage()
+    public var placeholder: UIImage = UIImage(named: "picture_unselect")!
     public var type: ViewableType = .image
     public var id: String
     public var url: String?
@@ -25,7 +24,7 @@ public class Image: Equatable, Viewable {
 //        self.id = id
 //    }
 
-    public  func media(_ completion: @escaping (_ image: UIImage?, _ error: NSError?) -> Void) {
+    public func media(_ completion: @escaping (_ image: UIImage?, _ error: NSError?) -> Void) {
 //        if let assetID = self.assetID {
 //            if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil).firstObject {
         Image.image(for: asset) { image in

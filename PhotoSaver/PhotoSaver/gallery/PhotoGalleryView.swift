@@ -67,7 +67,7 @@ class PhotoGalleryView: UIView {
     }()
 
     // 数据
-    private var selectedAlbum: Album?
+    private var album: Album = Album()
     //    private var images: [Image] = []
 
     // 初始化
@@ -130,9 +130,9 @@ class PhotoGalleryView: UIView {
 
     private func selectAlbum(_ album: Album) {
         //        images = album.items
-        selectedAlbum = album
+        self.album = album
 
-        arrowButton.updateText(album.collection.localizedTitle ?? "-")
+        arrowButton.updateText(album.title)
         collectionView.reloadData()
         collectionView.g_scrollToTop()
         emptyView.isHidden = !album.sections.isEmpty
@@ -154,30 +154,26 @@ class PhotoGalleryView: UIView {
 
 
 extension PhotoGalleryView: UICollectionViewDataSource {
-
-    // MARK: - UICollectionViewDataSource
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return self.album.sections.count
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return selectedAlbum?.sections[section].images.count ?? 0
-        //return images.count
+        return album.sections[section].images.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ImageCell.self), for: indexPath) as! ImageCell
-        if let image = selectedAlbum?.getImage(indexPath) {
-            //let image = section.images[indexPath.row]
-            //let image = images[(indexPath as NSIndexPath).item]
+        let image = album.getImage(indexPath)
+        //let image = section.images[indexPath.row]
+        //let image = images[(indexPath as NSIndexPath).item]
 
-            cell.configure(image)
-        }
+        cell.configure(image)
 
         return cell
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         print(kind)
         print(UICollectionView.elementKindSectionHeader)
@@ -206,11 +202,10 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         //let image = images[(indexPath as NSIndexPath).item]
-         if let image = selectedAlbum?.getImage(indexPath) {
-            image.isSelected = !image.isSelected
+        let image = album.getImage(indexPath)
+        image.isSelected = !image.isSelected
 
-            eventBus.triggerPageShowImages(album: selectedAlbum!, indexPath: indexPath)
-        }
+        eventBus.triggerPageShowImages(album: album, indexPath: indexPath)
     }
 
     func configureFrameViews() {

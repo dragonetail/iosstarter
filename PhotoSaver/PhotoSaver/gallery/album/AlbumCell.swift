@@ -22,7 +22,7 @@ class AlbumCell: UITableViewCell {
     // MARK: - Config
 
     func configure(_ album: Album) {
-        albumTitleLabel.text = album.collection.localizedTitle
+        albumTitleLabel.text = album.title
         itemCountLabel.text = "\(album.count)"
 
         if let item = album.sections.first?.images.first {
