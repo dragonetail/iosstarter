@@ -1,10 +1,19 @@
 import UIKit
 import Photos
 
+public enum MediaType: String {
+    case image
+    case video
+}
+
 /// Wrap a PHAsset
-public class Image: Equatable, Viewable {
+public class Image: Equatable {
     public let asset: PHAsset
     public var isSelected: Bool = false
+    public var type: MediaType = .image
+    public var id: String
+    public var url: String?
+    public var assetID: String?
 
     // MARK: - Initialization
 
@@ -13,49 +22,44 @@ public class Image: Equatable, Viewable {
         self.asset = asset
     }
 
-
-    public var placeholder: UIImage = UIImage(named: "picture_unselect")!
-    public var type: ViewableType = .image
-    public var id: String
-    public var url: String?
-    public var assetID: String?
-
-//    init(id: String) {
-//        self.id = id
-//    }
-
-    public func media(_ completion: @escaping (_ image: UIImage?, _ error: NSError?) -> Void) {
-//        if let assetID = self.assetID {
-//            if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil).firstObject {
-        Image.image(for: asset) { image in
-            completion(image, nil)
-        }
-//            }
-//        } else {
-//            completion(self.placeholder, nil)
+//
+//
+////    init(id: String) {
+////        self.id = id
+////    }
+//
+//    public func media(_ completion: @escaping (_ image: UIImage?, _ error: NSError?) -> Void) {
+////        if let assetID = self.assetID {
+////            if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetID], options: nil).firstObject {
+//        Image.image(for: asset) { image in
+//            completion(image, nil)
 //        }
-    }
-
-
-    static func image(for asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
-        let imageManager = PHImageManager.default()
-        let requestOptions = PHImageRequestOptions()
-        requestOptions.isNetworkAccessAllowed = true
-        requestOptions.isSynchronous = false
-        requestOptions.deliveryMode = .opportunistic
-        requestOptions.resizeMode = .fast
-
-        let bounds = UIScreen.main.bounds.size
-        let targetSize = CGSize(width: bounds.width * 2, height: bounds.height * 2)
-        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: requestOptions) { image, _ in
-            // WARNING: This could fail if your phone doesn't have enough storage. Since the photo is probably
-            // stored in iCloud downloading it to your phone will take most of the space left making this feature fail.
-            // guard let image = image else { fatalError("Couldn't get photo data for asset \(asset)") }
-            DispatchQueue.main.async {
-                completion(image)
-            }
-        }
-    }
+////            }
+////        } else {
+////            completion(self.placeholder, nil)
+////        }
+//    }
+//
+//
+//    static func image(for asset: PHAsset, completion: @escaping (_ image: UIImage?) -> Void) {
+//        let imageManager = PHImageManager.default()
+//        let requestOptions = PHImageRequestOptions()
+//        requestOptions.isNetworkAccessAllowed = true
+//        requestOptions.isSynchronous = false
+//        requestOptions.deliveryMode = .opportunistic
+//        requestOptions.resizeMode = .fast
+//
+//        let bounds = UIScreen.main.bounds.size
+//        let targetSize = CGSize(width: bounds.width * 2, height: bounds.height * 2)
+//        imageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: requestOptions) { image, _ in
+//            // WARNING: This could fail if your phone doesn't have enough storage. Since the photo is probably
+//            // stored in iCloud downloading it to your phone will take most of the space left making this feature fail.
+//            // guard let image = image else { fatalError("Couldn't get photo data for asset \(asset)") }
+//            DispatchQueue.main.async {
+//                completion(image)
+//            }
+//        }
+//    }
 
 }
 

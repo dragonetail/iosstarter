@@ -47,7 +47,7 @@ class PhotoGalleryController: UIViewController {
         }
     }
     
-     var viewerController: ViewerController?
+     var imageViewController: ImageViewController!
     private var album: Album?
     private var indexPath: IndexPath?
     
@@ -70,10 +70,12 @@ class PhotoGalleryController: UIViewController {
 //        present(mediaBrowser, animated: true, completion: nil)
 
         
-        self.viewerController = ViewerController(initialIndexPath: indexPath, album: album)
-        self.viewerController!.dataSource = self
-        self.viewerController!.delegate = self
-        
+        self.imageViewController = ImageViewController()
+        self.imageViewController.album = self.album
+        self.imageViewController.initialIndexPath = indexPath
+        let imageViewHeader = ImageViewHeader()
+        imageViewHeader.viewDelegate = self
+        self.imageViewController.imageViewHeader = imageViewHeader
 //        #if os(iOS)
 //        let headerView = HeaderView()
 //        headerView.viewDelegate = self
@@ -83,48 +85,23 @@ class PhotoGalleryController: UIViewController {
 //        self.viewerController?.footerView = footerView
 //        #endif
         
-        self.present(self.viewerController!, animated: false, completion: nil)
+        self.present(self.imageViewController!, animated: false, completion: nil)
 
     }
 }
 
-
-extension PhotoGalleryController: ViewerControllerDataSource {
+extension PhotoGalleryController: ImageViewHeaderDelegate {
     
-    func numberOfItemsInViewerController(_: ViewerController) -> Int {
-        return album!.count
+    func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
+        self.imageViewController?.dismiss(animated: true)
     }
     
-    func viewerController(_: ViewerController, viewableAt indexPath: IndexPath) -> Viewable {
-         let image = album!.getImage(indexPath)
-//        let viewable = self.photo(at: indexPath)
-//        if let cell = self.collectionView?.cellForItem(at: indexPath) as? PhotoCell, let placeholder = cell.imageView.image {
-//            viewable.placeholder = placeholder
-//        }
-        
-        return image
+    func headerView(_: ImageViewHeader, didPressMenuButton button: UIButton) {
+//        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
+//        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
+//        self.optionsController!.delegate = self
+//        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
     }
 }
-
-extension PhotoGalleryController: ViewerControllerDelegate {
-    func viewerController(_: ViewerController, didChangeFocusTo _: IndexPath) {}
-    
-    func viewerControllerDidDismiss(_: ViewerController) {
-        #if os(tvOS)
-        // Used to refocus after swiping a few items in fullscreen.
-        self.setNeedsFocusUpdate()
-        self.updateFocusIfNeeded()
-        #endif
-    }
-    
-    func viewerController(_: ViewerController, didFailDisplayingViewableAt _: IndexPath, error _: NSError) {
-        
-    }
-    
-    func viewerController(_ viewerController: ViewerController, didLongPressViewableAt indexPath: IndexPath) {
-        print("didLongPressViewableAt: \(indexPath)")
-    }
-}
-
 
 
