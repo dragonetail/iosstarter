@@ -135,7 +135,7 @@ class PhotoGalleryView: UIView {
 
         arrowButton.updateText(album.title)
         collectionView.reloadData()
-        collectionView.g_scrollToTop()
+        collectionView._scrollToTop()
         emptyView.isHidden = !album.sections.isEmpty
 
         toggaleAlbumControllerView()

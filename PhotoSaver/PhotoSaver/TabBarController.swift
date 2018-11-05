@@ -20,21 +20,21 @@ class TabBarController: UITabBarController {
         }
         if Permission.Photos.status == .authorized {
             let localPhotoGalleryController = PhotoGalleryController()
-            localPhotoGalleryController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            localPhotoGalleryController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
             localPhotoGalleryController.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
             
             
             let cloudPhotoViewController = PhotoGalleryController()
-            cloudPhotoViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            cloudPhotoViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
             cloudPhotoViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 1)
             
             
             let transferViewController = PhotoGalleryController()
-            transferViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            transferViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
             transferViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
             
             let configViewController = PhotoGalleryController()
-            configViewController.title = "Gallery.Images.Title".g_localize(fallback: "PHOTOS")
+            configViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
             configViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
             
             

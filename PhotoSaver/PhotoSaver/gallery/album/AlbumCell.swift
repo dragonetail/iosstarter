@@ -27,7 +27,7 @@ class AlbumCell: UITableViewCell {
 
         if let item = album.sections.first?.images.first {
             albumImageView.layoutIfNeeded()
-            albumImageView.g_loadImage(item.asset)
+            albumImageView._loadImage(item.asset)
         }
     }
 

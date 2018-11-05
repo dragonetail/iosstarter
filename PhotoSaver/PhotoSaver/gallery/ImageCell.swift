@@ -67,7 +67,7 @@ class ImageCell: UICollectionViewCell {
 
     func configure(_ asset: PHAsset) {
         imageView.layoutIfNeeded()
-        imageView.g_loadImage(asset)
+        imageView._loadImage(asset)
     }
 
     private var image: Image?

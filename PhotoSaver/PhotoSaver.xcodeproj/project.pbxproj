@@ -17,7 +17,6 @@
 		D9952E8C2182EBB800331CA4 /* ImageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9952E8B2182EBB800331CA4 /* ImageSection.swift */; };
 		D99B39F02189E68B00425973 /* EmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D99B39EF2189E68B00425973 /* EmptyView.swift */; };
 		D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D935F22181FEE100C91C5E /* HeaderCell.swift */; };
-		D9ED3E15218FDF8D00BF62FC /* ImageSlideCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9ED3E14218FDF8D00BF62FC /* ImageSlideCollectionView.swift */; };
 		D9FC118C216CDC50008E466E /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118B216CDC50008E466E /* TabBarController.swift */; };
 		D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118D216CDF15008E466E /* PhotoGalleryController.swift */; };
 		D9FC124021777391008E466E /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC123F21777391008E466E /* PhotoGalleryView.swift */; };
@@ -25,10 +24,7 @@
 		D9FC124421777F51008E466E /* ArrowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC124321777F51008E466E /* ArrowButton.swift */; };
 		D9FC124821777FE6008E466E /* GalleryBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC124721777FE6008E466E /* GalleryBundle.swift */; };
 		D9FC124A217780F8008E466E /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC1249217780F8008E466E /* Permission.swift */; };
-		D9FC124E217782ED008E466E /* Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC124D217782ED008E466E /* Constraints.swift */; };
-		D9FC125721778399008E466E /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125021778399008E466E /* Array+Extensions.swift */; };
 		D9FC125821778399008E466E /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125121778399008E466E /* UIImageView+Extensions.swift */; };
-		D9FC125921778399008E466E /* UIViewController+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125221778399008E466E /* UIViewController+Extensions.swift */; };
 		D9FC125A21778399008E466E /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125321778399008E466E /* UIView+Extensions.swift */; };
 		D9FC125B21778399008E466E /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125421778399008E466E /* String+Extensions.swift */; };
 		D9FC125C21778399008E466E /* AVAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125521778399008E466E /* AVAsset+Extensions.swift */; };
@@ -49,23 +45,6 @@
 		D9FC128D217CE3CF008E466E /* PageViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC128C217CE3CF008E466E /* PageViewController2.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		D941747C216AF4FA00864119 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D941745F216AF4F800864119 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D9417466216AF4F800864119;
-			remoteInfo = PhotoSaver;
-		};
-		D9417487216AF4FA00864119 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D941745F216AF4F800864119 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = D9417466216AF4F800864119;
-			remoteInfo = PhotoSaver;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		3C51FF91ECB3F10DC73A053D /* Pods-PhotoSaver.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PhotoSaver.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PhotoSaver/Pods-PhotoSaver.debug.xcconfig"; sourceTree = "<group>"; };
 		A65C4A5B366CC035D7EAE227 /* Pods_PhotoSaver.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PhotoSaver.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,8 +54,6 @@
 		D9417471216AF4FA00864119 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D9417474216AF4FA00864119 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D9417476216AF4FA00864119 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D941747B216AF4FA00864119 /* PhotoSaverTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSaverTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D9417486216AF4FA00864119 /* PhotoSaverUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSaverUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D976985021888D8E00F41403 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D976985121888EBD00F41403 /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		D976985321889D5500F41403 /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
@@ -84,7 +61,6 @@
 		D9952E8B2182EBB800331CA4 /* ImageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSection.swift; sourceTree = "<group>"; };
 		D99B39EF2189E68B00425973 /* EmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyView.swift; sourceTree = "<group>"; };
 		D9D935F22181FEE100C91C5E /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
-		D9ED3E14218FDF8D00BF62FC /* ImageSlideCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSlideCollectionView.swift; sourceTree = "<group>"; };
 		D9FC118B216CDC50008E466E /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D9FC118D216CDF15008E466E /* PhotoGalleryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryController.swift; sourceTree = "<group>"; };
 		D9FC123F21777391008E466E /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
@@ -93,10 +69,7 @@
 		D9FC124521777FA0008E466E /* Gallery.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Gallery.bundle; sourceTree = "<group>"; };
 		D9FC124721777FE6008E466E /* GalleryBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBundle.swift; sourceTree = "<group>"; };
 		D9FC1249217780F8008E466E /* Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
-		D9FC124D217782ED008E466E /* Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constraints.swift; sourceTree = "<group>"; };
-		D9FC125021778399008E466E /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125121778399008E466E /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
-		D9FC125221778399008E466E /* UIViewController+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125321778399008E466E /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125421778399008E466E /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125521778399008E466E /* AVAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+Extensions.swift"; sourceTree = "<group>"; };
@@ -122,20 +95,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				99C1C781143E962C0026C261 /* Pods_PhotoSaver.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9417478216AF4FA00864119 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9417483216AF4FA00864119 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,8 +134,6 @@
 			isa = PBXGroup;
 			children = (
 				D9417467216AF4F800864119 /* PhotoSaver.app */,
-				D941747B216AF4FA00864119 /* PhotoSaverTests.xctest */,
-				D9417486216AF4FA00864119 /* PhotoSaverUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,9 +149,7 @@
 				D9FC118B216CDC50008E466E /* TabBarController.swift */,
 				D9417471216AF4FA00864119 /* Assets.xcassets */,
 				D9417473216AF4FA00864119 /* LaunchScreen.storyboard */,
-				D99B39EF2189E68B00425973 /* EmptyView.swift */,
 				D9417476216AF4FA00864119 /* Info.plist */,
-				D9FC124D217782ED008E466E /* Constraints.swift */,
 				D9FC127C217AB331008E466E /* EventBus.swift */,
 			);
 			path = PhotoSaver;
@@ -204,7 +159,6 @@
 			isa = PBXGroup;
 			children = (
 				D976985121888EBD00F41403 /* ImageViewController.swift */,
-				D9ED3E14218FDF8D00BF62FC /* ImageSlideCollectionView.swift */,
 				D976985321889D5500F41403 /* ImageViewCell.swift */,
 				D97698552188A39D00F41403 /* ImageViewHeader.swift */,
 			);
@@ -214,9 +168,7 @@
 		D9FC124F21778399008E466E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D9FC125021778399008E466E /* Array+Extensions.swift */,
 				D9FC125121778399008E466E /* UIImageView+Extensions.swift */,
-				D9FC125221778399008E466E /* UIViewController+Extensions.swift */,
 				D9FC125321778399008E466E /* UIView+Extensions.swift */,
 				D9FC125421778399008E466E /* String+Extensions.swift */,
 				D9FC125521778399008E466E /* AVAsset+Extensions.swift */,
@@ -246,6 +198,7 @@
 				D9FC12742178D610008E466E /* FrameView.swift */,
 				D9FC1281217CBF3C008E466E /* PageViewController.swift */,
 				D9FC128C217CE3CF008E466E /* PageViewController2.swift */,
+				D99B39EF2189E68B00425973 /* EmptyView.swift */,
 			);
 			path = gallery;
 			sourceTree = "<group>";
@@ -305,42 +258,6 @@
 			productReference = D9417467216AF4F800864119 /* PhotoSaver.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D941747A216AF4FA00864119 /* PhotoSaverTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D9417492216AF4FA00864119 /* Build configuration list for PBXNativeTarget "PhotoSaverTests" */;
-			buildPhases = (
-				D9417477216AF4FA00864119 /* Sources */,
-				D9417478216AF4FA00864119 /* Frameworks */,
-				D9417479216AF4FA00864119 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D941747D216AF4FA00864119 /* PBXTargetDependency */,
-			);
-			name = PhotoSaverTests;
-			productName = PhotoSaverTests;
-			productReference = D941747B216AF4FA00864119 /* PhotoSaverTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		D9417485216AF4FA00864119 /* PhotoSaverUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = D9417495216AF4FA00864119 /* Build configuration list for PBXNativeTarget "PhotoSaverUITests" */;
-			buildPhases = (
-				D9417482216AF4FA00864119 /* Sources */,
-				D9417483216AF4FA00864119 /* Frameworks */,
-				D9417484216AF4FA00864119 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				D9417488216AF4FA00864119 /* PBXTargetDependency */,
-			);
-			name = PhotoSaverUITests;
-			productName = PhotoSaverUITests;
-			productReference = D9417486216AF4FA00864119 /* PhotoSaverUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -353,14 +270,6 @@
 				TargetAttributes = {
 					D9417466216AF4F800864119 = {
 						CreatedOnToolsVersion = 10.0;
-					};
-					D941747A216AF4FA00864119 = {
-						CreatedOnToolsVersion = 10.0;
-						TestTargetID = D9417466216AF4F800864119;
-					};
-					D9417485216AF4FA00864119 = {
-						CreatedOnToolsVersion = 10.0;
-						TestTargetID = D9417466216AF4F800864119;
 					};
 				};
 			};
@@ -378,8 +287,6 @@
 			projectRoot = "";
 			targets = (
 				D9417466216AF4F800864119 /* PhotoSaver */,
-				D941747A216AF4FA00864119 /* PhotoSaverTests */,
-				D9417485216AF4FA00864119 /* PhotoSaverUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -393,20 +300,6 @@
 				D9FC126421788D54008E466E /* Test.bundle in Resources */,
 				D9417475216AF4FA00864119 /* LaunchScreen.storyboard in Resources */,
 				D9417472216AF4FA00864119 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9417479216AF4FA00864119 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9417484216AF4FA00864119 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,16 +380,12 @@
 				D9FC125A21778399008E466E /* UIView+Extensions.swift in Sources */,
 				D9FC118C216CDC50008E466E /* TabBarController.swift in Sources */,
 				D9FC12692178CE92008E466E /* AlbumListController.swift in Sources */,
-				D9FC125921778399008E466E /* UIViewController+Extensions.swift in Sources */,
-				D9FC124E217782ED008E466E /* Constraints.swift in Sources */,
 				D9FC125C21778399008E466E /* AVAsset+Extensions.swift in Sources */,
 				D9FC12712178CF7D008E466E /* Utils.swift in Sources */,
 				D9FC126F2178CF35008E466E /* Image.swift in Sources */,
-				D9FC125721778399008E466E /* Array+Extensions.swift in Sources */,
 				D9FC124421777F51008E466E /* ArrowButton.swift in Sources */,
 				D976985221888EBD00F41403 /* ImageViewController.swift in Sources */,
 				D9952E8C2182EBB800331CA4 /* ImageSection.swift in Sources */,
-				D9ED3E15218FDF8D00BF62FC /* ImageSlideCollectionView.swift in Sources */,
 				D9FC127D217AB331008E466E /* EventBus.swift in Sources */,
 				D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */,
 				D9FC1282217CBF3C008E466E /* PageViewController.swift in Sources */,
@@ -520,34 +409,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D9417477216AF4FA00864119 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D9417482216AF4FA00864119 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		D941747D216AF4FA00864119 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D9417466216AF4F800864119 /* PhotoSaver */;
-			targetProxy = D941747C216AF4FA00864119 /* PBXContainerItemProxy */;
-		};
-		D9417488216AF4FA00864119 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = D9417466216AF4F800864119 /* PhotoSaver */;
-			targetProxy = D9417487216AF4FA00864119 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D9417473216AF4FA00864119 /* LaunchScreen.storyboard */ = {
@@ -715,84 +577,6 @@
 			};
 			name = Release;
 		};
-		D9417493216AF4FA00864119 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoSaverTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lds.PhotoSaverTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoSaver.app/PhotoSaver";
-			};
-			name = Debug;
-		};
-		D9417494216AF4FA00864119 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoSaverTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lds.PhotoSaverTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoSaver.app/PhotoSaver";
-			};
-			name = Release;
-		};
-		D9417496216AF4FA00864119 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoSaverUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lds.PhotoSaverUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = PhotoSaver;
-			};
-			name = Debug;
-		};
-		D9417497216AF4FA00864119 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = PhotoSaverUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lds.PhotoSaverUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = PhotoSaver;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -810,24 +594,6 @@
 			buildConfigurations = (
 				D9417490216AF4FA00864119 /* Debug */,
 				D9417491216AF4FA00864119 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D9417492216AF4FA00864119 /* Build configuration list for PBXNativeTarget "PhotoSaverTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D9417493216AF4FA00864119 /* Debug */,
-				D9417494216AF4FA00864119 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		D9417495216AF4FA00864119 /* Build configuration list for PBXNativeTarget "PhotoSaverUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				D9417496216AF4FA00864119 /* Debug */,
-				D9417497216AF4FA00864119 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

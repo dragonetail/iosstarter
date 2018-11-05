@@ -8,19 +8,17 @@ protocol ImageViewHeaderDelegate: class {
 
 class ImageViewHeader: UIView {
     weak var viewDelegate: ImageViewHeaderDelegate?
-    static let ButtonSize = CGFloat(50.0)
-    static let TopMargin = CGFloat(15.0)
 
-    lazy var clearButton: UIButton = {
-        let image = UIImage(named: "clear")!
+    lazy var exitButton: UIButton = {
+        let image = UIImage(named: "exit")!
         let button = UIButton(type: .custom)
         button.setImage(image, for: .normal)
-        button.addTarget(self, action: #selector(ImageViewHeader.clearAction(button:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(ImageViewHeader.exitAction(button:)), for: .touchUpInside)
 
         return button
     }()
     
-    @objc func clearAction(button: UIButton) {
+    @objc func exitAction(button: UIButton) {
         self.viewDelegate?.headerView(self, didPressClearButton: button)
     }
 
@@ -40,7 +38,7 @@ class ImageViewHeader: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        self.addSubview(self.clearButton)
+        self.addSubview(self.exitButton)
         self.addSubview(self.menuButton)
     }
 
@@ -51,10 +49,13 @@ class ImageViewHeader: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        self.clearButton.frame = CGRect(x: 0, y: ImageViewHeader.TopMargin, width: ImageViewHeader.ButtonSize, height: ImageViewHeader.ButtonSize)
-
-        let x = UIScreen.main.bounds.size.width - ImageViewHeader.ButtonSize
-        self.menuButton.frame = CGRect(x: x, y: ImageViewHeader.TopMargin, width: ImageViewHeader.ButtonSize, height: ImageViewHeader.ButtonSize)
+        
+        exitButton.autoPinEdge(toSuperviewEdge: .top   , withInset: 10)
+        exitButton.autoPinEdge(toSuperviewEdge: .left, withInset: 0)
+        exitButton.autoSetDimensions(to: CGSize(width: 50, height: 50 ))
+        
+        menuButton.autoPinEdge(toSuperviewEdge: .top   , withInset: 10)
+        menuButton.autoPinEdge(toSuperviewEdge: .right, withInset: 0)
+        menuButton.autoSetDimensions(to: CGSize(width: 50, height: 50 ))
     }
-
 }

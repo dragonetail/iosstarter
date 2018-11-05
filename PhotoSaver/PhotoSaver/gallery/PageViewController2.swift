@@ -31,7 +31,6 @@ extension PageViewController2 :MediaBrowserViewControllerDataSource{
         // block along with the index, zoom scale, and error if any.
         let image: Image = images[index]
         image.resolve(completion: { uiImage in
-            print(uiImage)
             completion(index, uiImage, ZoomScale.default, nil)
         })
     }

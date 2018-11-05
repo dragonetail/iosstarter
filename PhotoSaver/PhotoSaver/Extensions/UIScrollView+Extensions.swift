@@ -2,15 +2,16 @@ import UIKit
 
 extension UIScrollView {
 
-  func g_scrollToTop() {
+  func _scrollToTop() {
     setContentOffset(CGPoint.zero, animated: false)
   }
 
-  func g_updateBottomInset(_ value: CGFloat) {
+  func _updateBottomInset(_ value: CGFloat) {
     var inset = contentInset
     inset.bottom = value
 
     contentInset = inset
     scrollIndicatorInsets = inset
   }
+    
 }

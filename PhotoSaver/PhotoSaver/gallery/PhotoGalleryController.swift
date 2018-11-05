@@ -55,53 +55,9 @@ class PhotoGalleryController: UIViewController {
         self.album = album
         self.indexPath = indexPath
         
-//        let pageViewController = PageViewController(album: album, indexPath: indexPath)
-//        //pageViewController.setup(album: album, indexPath: indexPath)
-//
-//        present(pageViewController, animated: true, completion: nil)
-//
-//        let pageViewController = PageViewController2()
-//        pageViewController.setup(images: images, startImage: startImage)
-//
-//        let mediaBrowser = MediaBrowserViewController(dataSource: pageViewController)
-//       mediaBrowser.shouldShowPageControl = false
-////        mediaBrowser.index = 5
-//        
-//        present(mediaBrowser, animated: true, completion: nil)
-
-        
-        self.imageViewController = ImageViewController()
-        self.imageViewController.album = self.album
-        self.imageViewController.initialIndexPath = IndexPath(row: indexPath.row, section: indexPath.section + 1)
-        let imageViewHeader = ImageViewHeader()
-        imageViewHeader.viewDelegate = self
-        self.imageViewController.imageViewHeader = imageViewHeader
-//        #if os(iOS)
-//        let headerView = HeaderView()
-//        headerView.viewDelegate = self
-//        self.viewerController?.headerView = headerView
-//        let footerView = FooterView()
-//        footerView.viewDelegate = self
-//        self.viewerController?.footerView = footerView
-//        #endif
+        self.imageViewController = ImageViewController(album: album, initialIndexPath: indexPath)
         
         self.present(self.imageViewController!, animated: false, completion: nil)
 
     }
 }
-
-extension PhotoGalleryController: ImageViewHeaderDelegate {
-    
-    func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
-        self.imageViewController?.dismiss(animated: true)
-    }
-    
-    func headerView(_: ImageViewHeader, didPressMenuButton button: UIButton) {
-//        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
-//        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
-//        self.optionsController!.delegate = self
-//        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
-    }
-}
-
-

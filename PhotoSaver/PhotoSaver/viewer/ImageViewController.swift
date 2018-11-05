@@ -1,97 +1,114 @@
-//
-//  ImageViewController.swift
-//  photosApp2
-//
-//  Created by Muskan on 10/4/17.
-//  Copyright © 2017 akhil. All rights reserved.
-//
-
 import UIKit
+import PureLayout
 
 class ImageViewController: UIViewController {
-
-    var imageCollectionView: UICollectionView!
-    var album: Album!
-    var initialIndexPath: IndexPath = IndexPath(row: 0, section: 1) //Infinite Logic, The first and last section are dummy
-
-    var imageViewHeader: UIView?
-
-   
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.view.backgroundColor = UIColor.black
-
+    lazy var imageCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
 
-        imageCollectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        var imageCollectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
         imageCollectionView.delegate = self
         imageCollectionView.dataSource = self
         imageCollectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "Cell")
         imageCollectionView.isPagingEnabled = true
-        imageCollectionView.scrollToItem(at: initialIndexPath, at: .left, animated: false)
-
-        self.view.addSubview(imageCollectionView)
+        if self.album.count > 1 {
+            //循环模式设置，如果多于一个元素，处理Dummy区
+            let targetIndex = IndexPath(row: initialIndexPath.row, section: initialIndexPath.section + 1)
+            imageCollectionView.scrollToItem(at: targetIndex, at: .left, animated: false)
+        } else {
+            imageCollectionView.scrollToItem(at: initialIndexPath, at: .left, animated: false)
+        }
 
         imageCollectionView.autoresizingMask = UIView.AutoresizingMask(rawValue: UIView.AutoresizingMask.RawValue(UInt8(UIView.AutoresizingMask.flexibleWidth.rawValue) | UInt8(UIView.AutoresizingMask.flexibleHeight.rawValue)))
 
-        if let imageViewHeader = self.imageViewHeader {
-            imageViewHeader.translatesAutoresizingMaskIntoConstraints = false
-            imageViewHeader.alpha = 1
-            self.view.addSubview(imageViewHeader)
+        return imageCollectionView
+    }()
 
-            NSLayoutConstraint.activate([
-                imageViewHeader.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                imageViewHeader.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                imageViewHeader.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                imageViewHeader.heightAnchor.constraint(equalToConstant: CGFloat(64))
-            ])
+    lazy var imageViewHeader: UIView = {
+        let imageViewHeader = ImageViewHeader()
+        imageViewHeader.viewDelegate = self
+
+        imageViewHeader.translatesAutoresizingMaskIntoConstraints = false
+        imageViewHeader.alpha = 1
+
+        return imageViewHeader
+    }()
+
+
+    let album: Album
+    let initialIndexPath: IndexPath //循环模式设置，前后插入一个Dummy的区和一个元素
+
+    init(album: Album, initialIndexPath: IndexPath) {
+        self.album = album
+        self.initialIndexPath = initialIndexPath
+
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.backgroundColor = UIColor.black
+        //self.view._roundBorder()
+
+        [imageCollectionView, imageViewHeader].forEach {
+            self.view.addSubview($0)
         }
     }
 
-    //    override func viewWillLayoutSubviews() {
-    //        super.viewWillLayoutSubviews()
-    //
-    //        guard let flowLayout = imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-    //
-    //        flowLayout.itemSize = imageCollectionView.frame.size
-    //
-    //        flowLayout.invalidateLayout()
-    //
-    //        imageCollectionView.collectionViewLayout.invalidateLayout()
-    //    }
-    //
-    //    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-    //        super.viewWillTransition(to: size, with: coordinator)
-    //        let offset = imageCollectionView.contentOffset
-    //        let width = imageCollectionView.bounds.size.width
-    //
-    //        let index = round(offset.x / width)
-    //        let newOffset = CGPoint(x: index * size.width, y: offset.y)
-    //
-    //        imageCollectionView.setContentOffset(newOffset, animated: false)
-    //
-    //        coordinator.animate(alongsideTransition: { (context) in
-    //            self.imageCollectionView.reloadData()
-    //
-    //            self.imageCollectionView.setContentOffset(newOffset, animated: false)
-    //        }, completion: nil)
-    //    }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
 
+        imageViewHeader.autoSetDimension(.height, toSize: 64)
+        imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+
+        guard let flowLayout = imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        flowLayout.itemSize = imageCollectionView.frame.size
+        flowLayout.invalidateLayout()
+
+        imageCollectionView.collectionViewLayout.invalidateLayout()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        let offset = imageCollectionView.contentOffset
+        let width = imageCollectionView.bounds.size.width
+
+        let index = round(offset.x / width)
+        let newOffset = CGPoint(x: index * size.width, y: offset.y)
+
+        imageCollectionView.setContentOffset(newOffset, animated: false)
+
+        coordinator.animate(alongsideTransition: { (context) in
+            self.imageCollectionView.reloadData()
+
+            self.imageCollectionView.setContentOffset(newOffset, animated: false)
+        }, completion: nil)
+    }
 }
+
 extension ImageViewController: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        //Infinite Logic, The first and last section are dummy
+        if self.album.count == 1 { //只有一个元素不需要
+            return 1
+        }
+
+        //循环模式设置，前后插入一个Dummy的区和一个元素，因此总数加2
         return self.album.sections.count + 2
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //Infinite Logic, The first and last section are dummy
+        if self.album.count == 1 { //只有一个元素不需要
+            return 1
+        }
+
+        //循环模式设置，前后插入一个Dummy的区和一个元素，判断是否为插入的Dummy区
         if section == 0 || section == self.album.sections.count + 1 {
             return 1
         }
@@ -101,16 +118,19 @@ extension ImageViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         //Infinite Logic, The first and last section are dummy
-        print(indexPath.section, indexPath.row)
         let section = indexPath.section
         //真实相册数据中的坐标
         var targetIndexPath = indexPath
-        if section == 0 {
-            targetIndexPath = IndexPath(row: album.sections[album.sections.count - 1].count - 1, section: self.album.sections.count - 1)
-        } else if section == self.album.sections.count + 1 {
-            targetIndexPath = IndexPath(row: 0, section: 0)
-        } else {
-            targetIndexPath = IndexPath(row: indexPath.row, section: indexPath.section - 1)
+        if self.album.count > 1 { //只有一个元素不需要
+            if section == 0 {
+                //循环模式设置，头Dummy区，内容为最后一个图片
+                targetIndexPath = IndexPath(row: album.sections[album.sections.count - 1].count - 1, section: self.album.sections.count - 1)
+            } else if section == self.album.sections.count + 1 {
+                //循环模式设置，尾Dummy区，内容为第一个图片
+                targetIndexPath = IndexPath(row: 0, section: 0)
+            } else {
+                targetIndexPath = IndexPath(row: indexPath.row, section: indexPath.section - 1)
+            }
         }
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ImageViewCell
@@ -124,11 +144,9 @@ extension ImageViewController: UICollectionViewDataSource {
     }
 }
 extension ImageViewController: UICollectionViewDelegateFlowLayout {
-
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        //return imageCollectionView.bounds.size
         return collectionView.frame.size
     }
 
@@ -138,37 +156,40 @@ extension ImageViewController: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
 }
+
 extension ImageViewController: UICollectionViewDelegate {
 }
 
 extension ImageViewController: UIScrollViewDelegate {
-
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        print("scrollViewWillBeginDecelerating: ", scrollView.contentOffset.x / scrollView.frame.size.width)
-        //Infinite Logic, The first and last section are dummy
+        if self.album.count == 1 { //只有一个元素不需要
+            return
+        }
+
+        //循环模式设置，计算循环滚动
         let fullyScrolledContentOffset: CGFloat = scrollView.frame.size.width * CGFloat(album.count)
         if (scrollView.contentOffset.x > fullyScrolledContentOffset) {
-            //if album.count > 2 {
-            print("scrollToItem: ", 1, 0)
             let indexPath: IndexPath = IndexPath(row: 0, section: 1)
             imageCollectionView.scrollToItem(at: indexPath, at: .left, animated: false)
-            //}
         } else if (scrollView.contentOffset.x < scrollView.frame.size.width) {
-            //if album.count > 2 {
-            print("scrollToItem: ", album.sections.count, album.sections[album.sections.count - 1].count - 1)
             let indexPath: IndexPath = IndexPath(row: album.sections[album.sections.count - 1].count - 1, section: album.sections.count)
             imageCollectionView.scrollToItem(at: indexPath, at: .left, animated: false)
-            //}
         }
     }
-
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let X = scrollView.contentOffset.x
-//         print("scrolled: ", X / scrollView.frame.size.width)
-//        if X >= scrollView.frame.size.width * CGFloat(album.count - 1 + 2){
-//            scrollView.contentOffset = CGPoint(x: scrollView.frame.size.width, y: 0)
-//        }else if X <= 0 {
-//            scrollView.contentOffset = CGPoint(x: scrollView.frame.size.width * CGFloat(album.count), y: 0)
-//        }
-//    }
 }
+
+extension ImageViewController: ImageViewHeaderDelegate {
+
+    func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
+        self.dismiss(animated: true)
+    }
+
+    func headerView(_: ImageViewHeader, didPressMenuButton button: UIButton) {
+        //        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
+        //        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
+        //        self.optionsController!.delegate = self
+        //        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
+    }
+}
+
+

@@ -16,7 +16,7 @@ class EmptyView: UIView {
         let label = UILabel()
         label.textColor = EmptyView.textColor
         label.font = EmptyView.regular.withSize(14)
-        label.text = "Gallery.EmptyView.Text".g_localize(fallback: "Nothing to show")
+        label.text = "Gallery.EmptyView.Text"._localize(fallback: "Nothing to show")
         
         return label
     }()
@@ -38,7 +38,6 @@ class EmptyView: UIView {
         
         imageView.autoCenterInSuperview()
         label.autoPinEdge(.top, to: .bottom, of: imageView, withOffset: 12)
-//        label.autoAlignAxis(toSuperviewAxis: .horizontal)
-        
+        label.autoAlignAxis(toSuperviewAxis: .vertical)
     }
 }
