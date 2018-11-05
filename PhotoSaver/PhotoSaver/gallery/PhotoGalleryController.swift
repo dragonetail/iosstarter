@@ -12,7 +12,7 @@ class PhotoGalleryController: UIViewController {
         let photoGalleryView = PhotoGalleryView()
         return photoGalleryView
     }()
-
+    
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +72,7 @@ class PhotoGalleryController: UIViewController {
         
         self.imageViewController = ImageViewController()
         self.imageViewController.album = self.album
-        self.imageViewController.initialIndexPath = indexPath
+        self.imageViewController.initialIndexPath = IndexPath(row: indexPath.row, section: indexPath.section + 1)
         let imageViewHeader = ImageViewHeader()
         imageViewHeader.viewDelegate = self
         self.imageViewController.imageViewHeader = imageViewHeader

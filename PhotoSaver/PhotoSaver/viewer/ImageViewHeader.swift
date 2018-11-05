@@ -1,4 +1,5 @@
 import UIKit
+import PureLayout
 
 protocol ImageViewHeaderDelegate: class {
     func headerView(_ headerView: ImageViewHeader, didPressClearButton button: UIButton)
@@ -18,6 +19,10 @@ class ImageViewHeader: UIView {
 
         return button
     }()
+    
+    @objc func clearAction(button: UIButton) {
+        self.viewDelegate?.headerView(self, didPressClearButton: button)
+    }
 
     lazy var menuButton: UIButton = {
         let image = UIImage(named: "menu")!
@@ -27,6 +32,10 @@ class ImageViewHeader: UIView {
 
         return button
     }()
+    
+    @objc func menuAction(button: UIButton) {
+        self.viewDelegate?.headerView(self, didPressMenuButton: button)
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -48,11 +57,4 @@ class ImageViewHeader: UIView {
         self.menuButton.frame = CGRect(x: x, y: ImageViewHeader.TopMargin, width: ImageViewHeader.ButtonSize, height: ImageViewHeader.ButtonSize)
     }
 
-    @objc func clearAction(button: UIButton) {
-        self.viewDelegate?.headerView(self, didPressClearButton: button)
-    }
-
-    @objc func menuAction(button: UIButton) {
-        self.viewDelegate?.headerView(self, didPressMenuButton: button)
-    }
 }

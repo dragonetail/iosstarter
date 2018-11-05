@@ -98,6 +98,7 @@ class PhotoGalleryView: UIView {
 
     private func setupConstraints() {
         loadingIndicatorView.autoCenterInSuperview()
+        emptyView.autoCenterInSuperview()
 
         topView.autoSetDimension(.height, toSize: 40)
         topView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
