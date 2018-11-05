@@ -1,7 +1,7 @@
 import UIKit
 import PureLayout
 
-class AlbumCell: UITableViewCell {
+class AlbumListCell: UITableViewCell {
 
     lazy var albumImageView: UIImageView = self.makeAlbumImageView()
     lazy var albumTitleLabel: UILabel = self.makeAlbumTitleLabel()
