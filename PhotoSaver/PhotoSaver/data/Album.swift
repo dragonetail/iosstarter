@@ -11,7 +11,7 @@ class Album {
     convenience init() {
         self.init(collection: nil)
     }
-    
+
     init(collection: PHAssetCollection?) {
         self.collection = collection
         self.title = collection?.localizedTitle ?? "-"
@@ -123,13 +123,46 @@ extension Album {
 
 extension Date {
 
-    func groupedDateString() -> String {
-        let noTimeDate = Calendar.current.startOfDay(for: self)
-
+    static var aaa:String = ""
+    
+    static var shortDateFormatter: DateFormatter = {
+        //Ref: http://nsdateformatter.com/
+        //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
+        guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale.current)
+            else { fatalError() }
+        print(formatString)
+        
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let groupedDateString = dateFormatter.string(from: noTimeDate)
+        dateFormatter.locale = Locale.current
+        dateFormatter.dateFormat = formatString
+        
+        return dateFormatter
+    }()
+    
+    static var fullDateFormatter: DateFormatter = {
+        //Ref: http://nsdateformatter.com/
+        //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
+        guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdyyyyEEEE", options: 0, locale: Locale.current)
+            else { fatalError() }
+        print(formatString)
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale.current
+        dateFormatter.dateFormat = formatString
+        
+        return dateFormatter
+    }()
+    
+    func groupedDateString() -> String {
+        let now = Date()
+        let calendar = Calendar.current
+        let curYear = calendar.component(.year, from: now)
+        let year = calendar.component(.year, from: self)
 
-        return groupedDateString
+        if year == curYear {
+            return Date.shortDateFormatter.string(from: self)
+        } else {
+             return Date.fullDateFormatter.string(from: self)
+        }
     }
 }

@@ -19,6 +19,7 @@ target 'PhotoSaver' do
   pod 'SwiftEventBus', :tag => '3.0.1', :git => 'https://github.com/cesarferreira/SwiftEventBus.git'
   pod 'FSPagerView'
   pod 'ATGMediaBrowser', '~> 1.0'
+  pod 'CyaneaOctopus'
 end
 
 target 'UIViewsSample' do

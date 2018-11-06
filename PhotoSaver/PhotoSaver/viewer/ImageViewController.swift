@@ -91,6 +91,11 @@ class ImageViewController: UIViewController {
             self.imageCollectionView.setContentOffset(newOffset, animated: false)
         }, completion: nil)
     }
+    
+    //隐藏状态栏
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 }
 
 extension ImageViewController: UICollectionViewDataSource {

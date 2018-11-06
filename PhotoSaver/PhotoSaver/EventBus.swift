@@ -19,31 +19,31 @@ class EventBus {
 //        SwiftEventBus.unregister(self)
 //    }
     
-    func bindSelectAlbum(_ selectAlbum: @escaping (Album)->()){
-        SwiftEventBus.onMainThread(self, name: "selectAlbum") { result in
-            let album : Album = result!.object as! Album
-            selectAlbum(album)
-        }
-    }
+//    func bindSelectAlbum(_ selectAlbum: @escaping (Album)->()){
+//        SwiftEventBus.onMainThread(self, name: "selectAlbum") { result in
+//            let album : Album = result!.object as! Album
+//            selectAlbum(album)
+//        }
+//    }
+//
+//    func triggerSelectAlbum(_ album: Album){
+//        SwiftEventBus.postToMainThread("selectAlbum", sender: album)
+//    }
     
-    func triggerSelectAlbum(_ album: Album){
-        SwiftEventBus.postToMainThread("selectAlbum", sender: album)
-    }
-    
-    func bindPageShowImages(_ pageShowImages: @escaping (Album, IndexPath)->()){
-        SwiftEventBus.onMainThread(self, name: "pageShowImages") { result in
-            let data = result!.object as! (album: Album, indexPath: IndexPath)
-            pageShowImages(data.album, data.indexPath)
-        }
-    }
-    
-    func triggerPageShowImages(album: Album, indexPath: IndexPath){
-        SwiftEventBus.postToMainThread("pageShowImages", sender: (album: album, indexPath: indexPath))
-    }
-    
-    func unbindAll(){
-        SwiftEventBus.unregister(self)
-    }
+//    func bindPageShowImages(_ pageShowImages: @escaping (Album, IndexPath)->()){
+//        SwiftEventBus.onMainThread(self, name: "pageShowImages") { result in
+//            let data = result!.object as! (album: Album, indexPath: IndexPath)
+//            pageShowImages(data.album, data.indexPath)
+//        }
+//    }
+//    
+//    func triggerPageShowImages(album: Album, indexPath: IndexPath){
+//        SwiftEventBus.postToMainThread("pageShowImages", sender: (album: album, indexPath: indexPath))
+//    }
+//    
+//    func unbindAll(){
+//        SwiftEventBus.unregister(self)
+//    }
     
 }
 

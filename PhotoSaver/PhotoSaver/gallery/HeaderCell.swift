@@ -1,13 +1,15 @@
 import UIKit
 import Photos
 import PureLayout
+import CyaneaOctopus
+import CyaneaOctopus.Swift
 
 class HeaderCell: UICollectionViewCell {
 
     lazy var label: UILabel = {
         let label = UILabel()
-        label.font = Config.Font.Main.regular.withSize(16)
-        label.textColor = UIColor.green
+        label.font = Config.Font.Main.regular.withSize(14)
+        label.textColor = UIColor.black
 
         return label
     }()
@@ -16,12 +18,22 @@ class HeaderCell: UICollectionViewCell {
     lazy var selectButton: UIButton = {
         var selectButton: UIButton = UIButton(frame: CGRect(x: 100, y: 400, width: 100, height: 50))
         selectButton.addTarget(self, action: #selector(self.selectButtonTapped), for: .touchUpInside)
-        selectButton.setImage(UIImage(named: "picture_unselect"), for: .normal)
+        //selectButton.setImage(UIImage(named: "picture_unselect"), for: .normal)
+        //Ref: https://briangrinstead.com/blog/ios-uicolor-picker/
+        //http://www.flatuicolorpicker.com/blue-rgb-color-code/
+        //https://github.com/adammcelhaney/CyaneaOctopus
+        selectButton.setTitleColor(UIColor.flatSkyBlueColor(), for: .normal)
+        selectButton.titleLabel?.font = UIFont.init(name: "Helvetica", size:14)
+        selectButton.setTitle("选择", for: .normal)
+        selectButton.setTitle("取消选择", for: .selected)
         return selectButton
     }()
 
     @objc func selectButtonTapped() {
         print("selectButtonTapped")
+        selectButton.isSelected = !selectButton.isSelected
+        
+        
 //        guard let image = self.image else {
 //            return
 //        }
@@ -54,12 +66,12 @@ class HeaderCell: UICollectionViewCell {
 
     func setup() {
         self.contentView.addSubview(label)
-        label.autoAlignAxis(toSuperviewAxis: .baseline)
-        label.autoPinEdge(toSuperviewEdge: .left, withInset: 15)
+        label.autoAlignAxis(toSuperviewAxis: .horizontal)
+        label.autoPinEdge(toSuperviewEdge: .left, withInset: 10)
 
         self.contentView.addSubview(selectButton)
-        selectButton.autoAlignAxis(toSuperviewAxis: .baseline)
-        selectButton.autoPinEdge(toSuperviewEdge: .right, withInset: 15)
+        selectButton.autoAlignAxis(toSuperviewAxis: .horizontal)
+        selectButton.autoPinEdge(toSuperviewEdge: .right, withInset: 10)
     }
 
 }

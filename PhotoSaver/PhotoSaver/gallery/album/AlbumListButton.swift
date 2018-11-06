@@ -1,10 +1,11 @@
 import UIKit
 
-class ArrowButton: UIButton {
+class AlbumListButton: UIButton {
+    private static let tintColor: UIColor = UIColor(red: 110 / 255, green: 117 / 255, blue: 131 / 255, alpha: 1)
 
     private lazy var label: UILabel = {
         let label = UILabel()
-        label.textColor = Config.Grid.ArrowButton.tintColor
+        label.textColor = AlbumListButton.tintColor
         label.font = Config.Font.Main.regular.withSize(16)
         label.textAlignment = .center
 
@@ -16,7 +17,7 @@ class ArrowButton: UIButton {
         let image: UIImage? = UIImage(named: "down_arrow")
         //        arrow.image = GalleryBundle.image("gallery_title_arrow")?.withRenderingMode(.alwaysTemplate)
         arrow.image = image
-        arrow.tintColor = Config.Grid.ArrowButton.tintColor
+        arrow.tintColor = AlbumListButton.tintColor
         arrow.alpha = 0
 
         return arrow
@@ -24,8 +25,6 @@ class ArrowButton: UIButton {
 
     private let padding: CGFloat = 10
     private let arrowSize: CGFloat = 8
-
-    // MARK: - Initialization
 
     init() {
         super.init(frame: CGRect.zero)
@@ -38,8 +37,6 @@ class ArrowButton: UIButton {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    // MARK: - Layout
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -59,8 +56,6 @@ class ArrowButton: UIButton {
                       height: size.height)
     }
 
-    // MARK: - Logic
-
     func updateText(_ text: String) {
         label.text = text.uppercased()
         arrow.alpha = text.isEmpty ? 0 : 1
@@ -76,13 +71,10 @@ class ArrowButton: UIButton {
         })
     }
 
-
-    // MARK: - Touch
-
     override var isHighlighted: Bool {
         didSet {
-            label.textColor = isHighlighted ? UIColor.lightGray : Config.Grid.ArrowButton.tintColor
-            arrow.tintColor = isHighlighted ? UIColor.lightGray : Config.Grid.ArrowButton.tintColor
+            label.textColor = isHighlighted ? UIColor.lightGray : AlbumListButton.tintColor
+            arrow.tintColor = isHighlighted ? UIColor.lightGray : AlbumListButton.tintColor
         }
     }
 }

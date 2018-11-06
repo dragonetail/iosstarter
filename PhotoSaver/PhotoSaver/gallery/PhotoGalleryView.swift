@@ -2,6 +2,17 @@ import UIKit
 import Photos
 import PureLayout
 
+
+protocol PhotoGalleryViewDataSource: class {
+    func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int
+    func titleOfSctions(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> String
+    func numberInSctions(_ photoGalleryView: PhotoGalleryView, section: Int) -> Int
+    func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image
+}
+protocol PhotoGalleryViewDelegate: class {
+    func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath)
+}
+
 class PhotoGalleryView: UIView {
     //控件
     private lazy var loadingIndicatorView: UIActivityIndicatorView = {
@@ -22,29 +33,20 @@ class PhotoGalleryView: UIView {
         return topView
     }()
 
-    private lazy var arrowButton: ArrowButton = {
-        let arrowButton = ArrowButton()
-        arrowButton.layoutSubviews()
-
-        arrowButton.addTarget(self, action: #selector(arrowButtonTapped(_:)), for: .touchUpInside)
-
-        return arrowButton
-    }()
-
     internal lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
 
-        let columnCount: CGFloat = 4
-        let cellSpacing: CGFloat = 2
+        let columnCount: CGFloat = 3
+        let cellSpacing: CGFloat = 1
         let size = (UIScreen.main.bounds.width - 2 - (columnCount - 1) * cellSpacing) / columnCount
 
         layout.itemSize = CGSize(width: size, height: size)
-//         layout.itemSize = CGSize(width: 150, height: 150)
-        layout.minimumInteritemSpacing = 2
-        layout.minimumLineSpacing = 2
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 30)
-        layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 1, bottom: 10, right: 1)
+        //         layout.itemSize = CGSize(width: 150, height: 150)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 40)
+        //layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
@@ -54,7 +56,7 @@ class PhotoGalleryView: UIView {
         collectionView.delegate = self
         collectionView.register(ImageCell.self, forCellWithReuseIdentifier: String(describing: ImageCell.self))
         collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: HeaderCell.self))
-        collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: String(describing: HeaderCell.self))
+        //collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: String(describing: HeaderCell.self))
 
         return collectionView
     }()
@@ -66,62 +68,64 @@ class PhotoGalleryView: UIView {
         return view
     }()
 
-    // 数据
-    private var album: Album = Album()
-    //    private var images: [Image] = []
 
+    private weak var dataSource: PhotoGalleryViewDataSource?
+    private weak var delegate: PhotoGalleryViewDelegate?
+    private weak var albumListButton: AlbumListButton?
     // 初始化
-    override init(frame: CGRect) {
+
+    convenience init(dataSource: PhotoGalleryViewDataSource, delegate: PhotoGalleryViewDelegate?, albumListButton: AlbumListButton?) {
+        self.init(frame: .zero)
+
+        self.dataSource = dataSource
+        self.delegate = delegate
+
+        self.albumListButton = albumListButton
+        if let albumListButton = albumListButton {
+            topView.addSubview(albumListButton)
+        }
+    }
+
+    private override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubviews()
-        setupConstraints()
-
-        //loadingIndicatorView.startAnimating()
-        eventBus.bindSelectAlbum(selectAlbum)
+        [collectionView, topView, emptyView, loadingIndicatorView].forEach {
+            addSubview($0)
+        }
     }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
-    // MARK: - Setup
-    private func addSubviews() {
-        [collectionView, topView, emptyView, loadingIndicatorView].forEach {
-            addSubview($0)
-        }
-
-        [arrowButton].forEach {
-            topView.addSubview($0)
-        }
-    }
-
-    private func setupConstraints() {
         loadingIndicatorView.autoCenterInSuperview()
         emptyView.autoCenterInSuperview()
 
         topView.autoSetDimension(.height, toSize: 40)
         topView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
 
-        arrowButton.autoSetDimension(.height, toSize: 40)
-        arrowButton.autoCenterInSuperview()
-        arrowButton.updateText("Blank Title")
+        albumListButton?.autoSetDimension(.height, toSize: 40)
+        albumListButton?.autoCenterInSuperview()
+        albumListButton?.layoutSubviews()
 
         collectionView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
         collectionView.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
     }
 
-    private var albumListController: AlbumListController?
-    internal func insertAlbumListControllerView(_ albumListController: AlbumListController) {
-        self.albumListController = albumListController
+    internal func insertAlbumListControllerView(_ albumListControllerView: UIView) -> (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint) {
 
-        let albumListControllerView = albumListController.view!
-        insertSubview(albumListControllerView, belowSubview: topView)
+        insertSubview(albumListControllerView, belowSubview: loadingIndicatorView)
 
         albumListControllerView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
-        albumListController.expandedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
-        albumListController.expandedTopConstraint?.isActive = false
-        albumListController.collapsedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: albumListControllerView)
+        let expandedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
+        expandedTopConstraint.isActive = false
+        let collapsedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: albumListControllerView)
+        collapsedTopConstraint.isActive = true
+
+        return (expandedTopConstraint: expandedTopConstraint, collapsedTopConstraint: collapsedTopConstraint)
     }
 
 
@@ -129,46 +133,33 @@ class PhotoGalleryView: UIView {
         loadingIndicatorView.stopAnimating()
     }
 
-    private func selectAlbum(_ album: Album) {
-        //        images = album.items
-        self.album = album
+    internal func updateView() {
+        loadingIndicatorView.startAnimating()
 
-        arrowButton.updateText(album.title)
+        let numberOfSections = self.dataSource!.numberOfSections(self)
+        emptyView.isHidden = (numberOfSections > 0)
+
         collectionView.reloadData()
         collectionView._scrollToTop()
-        emptyView.isHidden = !album.sections.isEmpty
 
-        toggaleAlbumControllerView()
-    }
-
-
-
-    @objc func arrowButtonTapped(_ button: ArrowButton) {
-        toggaleAlbumControllerView()
-    }
-
-    func toggaleAlbumControllerView() {
-        albumListController!.toggle()
-        arrowButton.toggle(albumListController!.expanding)
+        loadingIndicatorView.stopAnimating()
     }
 }
 
 
 extension PhotoGalleryView: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self.album.sections.count
+        return self.dataSource!.numberOfSections(self)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return album.sections[section].images.count
+        return self.dataSource!.numberInSctions(self, section: section)
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ImageCell.self), for: indexPath) as! ImageCell
-        let image = album.getImage(indexPath)
-        //let image = section.images[indexPath.row]
-        //let image = images[(indexPath as NSIndexPath).item]
+        let image = self.dataSource!.image(self, indexPath: indexPath)
 
         cell.configure(image)
 
@@ -176,17 +167,23 @@ extension PhotoGalleryView: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        print(kind)
-        print(UICollectionView.elementKindSectionHeader)
-        print(UICollectionView.elementKindSectionFooter)
-//        if kind == UICollectionView.elementKindSectionHeader {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier:
-            String(describing: HeaderCell.self), for: indexPath) as! HeaderCell
-
-        header.configure("Test")
-        return header
-//        }
-//        return UICollectionReusableView()
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            //print("HEADER DETECTED");//CALLED
+            let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier:
+                String(describing: HeaderCell.self), for: indexPath) as! HeaderCell
+            
+            header.configure(self.dataSource!.titleOfSctions(self, indexPath: indexPath))
+            return header
+        case UICollectionView.elementKindSectionFooter:
+            print("FOOTER DETECTED");//NEVER CALLED
+            break;
+        default:
+            print("DEFAULT DETECTED");//NEVER CALLED
+            break;
+        }
+        
+        return UICollectionReusableView();
     }
 }
 
@@ -202,11 +199,7 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 //    }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //let image = images[(indexPath as NSIndexPath).item]
-        let image = album.getImage(indexPath)
-        image.isSelected = !image.isSelected
-
-        eventBus.triggerPageShowImages(album: album, indexPath: indexPath)
+        self.delegate?.didSelectImage(self, indexPath: indexPath)
     }
 
     func configureFrameViews() {

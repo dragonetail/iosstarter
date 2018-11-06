@@ -3,7 +3,7 @@ import Photos
 import PureLayout
 
 protocol AlbumListControllerDelegate: class {
-    func albumListController(_ controller: AlbumListController, didSelect album: Album)
+    func didSelectAlbum(_ controller: AlbumListController, didSelect album: Album)
 }
 
 class AlbumListController: UIViewController {
@@ -26,21 +26,35 @@ class AlbumListController: UIViewController {
         return view
     }()
 
-    var animating: Bool = false
-    var expanding: Bool = false
-    var selectedIndex: Int = 0
+    let delegate: AlbumListControllerDelegate?
+    
+    init(delegate: AlbumListControllerDelegate?) {
+        self.delegate = delegate
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
+    private var expandedTopConstraint: NSLayoutConstraint?
+    private var collapsedTopConstraint: NSLayoutConstraint?
+    
+    internal func updateToggleConstraint(_ result: (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint)){
+        self.expandedTopConstraint =  result.expandedTopConstraint
+        self.collapsedTopConstraint = result.collapsedTopConstraint
+    }
+    
+    
+    private var animating: Bool = false
+    var selectedIndex: Int = 0
     var albums: [Album] = [] {
         didSet {
             selectedIndex = 0
         }
     }
-
-    var expandedTopConstraint: NSLayoutConstraint?
-    var collapsedTopConstraint: NSLayoutConstraint?
-
-    weak var delegate: AlbumListControllerDelegate?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -56,13 +70,31 @@ class AlbumListController: UIViewController {
         tableView.register(AlbumListCell.self, forCellReuseIdentifier: String(describing: AlbumListCell.self))
 
         tableView.autoPinEdgesToSuperviewEdges()
+        
+        loadAlbums()
     }
+    
+    private func loadAlbums() {
+        let library = ImagesLibrary()
+        let runOnce = RunOnce()
+        runOnce.run {
+            library.reload {
+                self.albums = library.albums
+                
+                if let album = library.albums.first {
+                    self.delegate?.didSelectAlbum(self, didSelect: album)
+                }
+                
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
 
-    func toggle() {
+    internal func toggle(_ expanding: Bool) {
         guard !animating else { return }
 
         animating = true
-        expanding = !expanding
 
         if expanding {
             collapsedTopConstraint?.isActive = false
@@ -82,9 +114,6 @@ class AlbumListController: UIViewController {
 }
 
 extension AlbumListController: UITableViewDataSource {
-
-    // MARK: - UITableViewDataSource
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return albums.count
     }
@@ -107,11 +136,10 @@ extension AlbumListController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let album = albums[(indexPath as NSIndexPath).row]
-//        delegate?.albumListController(self, didSelect: album)
-        eventBus.triggerSelectAlbum(album)
-
-        selectedIndex = (indexPath as NSIndexPath).row
-        tableView.reloadData()
+        delegate?.didSelectAlbum(self, didSelect: album)
+//
+//        selectedIndex = (indexPath as NSIndexPath).row
+//        tableView.reloadData()
     }
 }
 

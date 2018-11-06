@@ -1,6 +1,7 @@
 PODS:
   - ATGMediaBrowser (1.0.1)
   - Cache (5.2.0)
+  - CyaneaOctopus (0.2.0)
   - FSPagerView (0.8.1)
   - Gallery (2.2.0)
   - Hue (3.0.1)
@@ -8,13 +9,14 @@ PODS:
     - Cache (~> 5.0)
   - Lightbox (2.3.0):
     - Imaginary (~> 4.0)
-  - PureLayout (3.1.2)
+  - PureLayout (3.1.4)
   - SVProgressHUD (2.2.5)
   - SwiftEventBus (3.0.1)
 
 DEPENDENCIES:
   - ATGMediaBrowser (~> 1.0)
   - Cache (from `./LocalPods/Cache`)
+  - CyaneaOctopus
   - FSPagerView
   - Gallery (from `./LocalPods/Gallery`)
   - Hue (from `./LocalPods/Hue`)
@@ -27,6 +29,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - ATGMediaBrowser
+    - CyaneaOctopus
     - FSPagerView
     - PureLayout
 
@@ -55,15 +58,16 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   ATGMediaBrowser: aade73960db4fc9e5c923ec133ee220a1bc9c4d1
   Cache: 9d4617a0dc37d72fb80030a70ef56072b1237b46
+  CyaneaOctopus: da94f4462cf359e42c58f7f01d67ffe1e4aa82d3
   FSPagerView: 4e865526acc0b0e3077e2abb29b8d10a9f395476
   Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
   Hue: 8c03f7aca9b9ef3a15052296bea5d60a3be56350
   Imaginary: deadb35fdfc6cfbe25d1baf3f1e421929f577142
   Lightbox: 63b567b8aa7be5a786aa6a60f17b51efa5091b45
-  PureLayout: 4634d0b61e3b5021166e8ec7c18e9e0ca0720c8b
+  PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
   SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
 
-PODFILE CHECKSUM: 79d003276fc703de5a855b26c5f8e47e10a464ae
+PODFILE CHECKSUM: e4cef01b060270197d5ac32a2ac32417126f069c
 
 COCOAPODS: 1.5.3
