@@ -11,6 +11,7 @@ import Foundation
 class ImageSection {
     var images = [Image]()
     var count: Int  = 0
+    var isSelected: Bool  = false
     let groupedDate: String
     
     init(groupedDate: String) {

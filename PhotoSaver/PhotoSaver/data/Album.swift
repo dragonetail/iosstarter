@@ -130,7 +130,7 @@ extension Date {
         //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
         guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale.current)
             else { fatalError() }
-        print(formatString)
+        //print(formatString)
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current
@@ -144,7 +144,7 @@ extension Date {
         //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
         guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdyyyyEEEE", options: 0, locale: Locale.current)
             else { fatalError() }
-        print(formatString)
+        //print(formatString)
         
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current

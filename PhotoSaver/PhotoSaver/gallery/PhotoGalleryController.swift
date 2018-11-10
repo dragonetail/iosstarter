@@ -79,12 +79,8 @@ extension PhotoGalleryController: PhotoGalleryViewDataSource {
     func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int {
         return self.album.sections.count
     }
-    func titleOfSctions(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> String{
-        let section = indexPath.section
-        return album.sections[section].groupedDate
-    }
-    func numberInSctions(_ photoGalleryView: PhotoGalleryView, section: Int) -> Int {
-        return album.sections[section].images.count
+    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection{
+        return album.sections[section]
     }
     func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image {
         return album.getImage(indexPath)
@@ -98,4 +94,3 @@ extension PhotoGalleryController: PhotoGalleryViewDelegate {
         self.present(imageViewController, animated: false, completion: nil)
     }
 }
-

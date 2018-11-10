@@ -4,6 +4,12 @@ import PureLayout
 import CyaneaOctopus
 import CyaneaOctopus.Swift
 
+
+protocol SectionSelectedDelegate: class {
+    func didSelectSection(_ headerCell: HeaderCell)
+}
+
+
 class HeaderCell: UICollectionViewCell {
 
     lazy var label: UILabel = {
@@ -23,30 +29,15 @@ class HeaderCell: UICollectionViewCell {
         //http://www.flatuicolorpicker.com/blue-rgb-color-code/
         //https://github.com/adammcelhaney/CyaneaOctopus
         selectButton.setTitleColor(UIColor.flatSkyBlueColor(), for: .normal)
-        selectButton.titleLabel?.font = UIFont.init(name: "Helvetica", size:14)
+        selectButton.titleLabel?.font = UIFont.init(name: "Helvetica", size: 14)
         selectButton.setTitle("选择", for: .normal)
         selectButton.setTitle("取消选择", for: .selected)
         return selectButton
     }()
 
     @objc func selectButtonTapped() {
-        print("selectButtonTapped")
         selectButton.isSelected = !selectButton.isSelected
-        
-        
-//        guard let image = self.image else {
-//            return
-//        }
-//
-//        image.isSelected = !image.isSelected
-//        if self.image!.isSelected {
-//            selectButton.setImage(UIImage(named: "picture_selected"), for: .normal)
-//
-//        } else {
-//            selectButton.setImage(UIImage(named: "picture_unselect"), for: .normal)
-//        }
-//        self.reconfigure()
-
+        self.delegate.didSelectSection(self)
     }
 
     override init(frame: CGRect) {
@@ -60,8 +51,14 @@ class HeaderCell: UICollectionViewCell {
     }
 
 
-    func configure(_ headerTitle: String) {
+    private var delegate: SectionSelectedDelegate!
+//    private var indexPath: IndexPath!
+    func configure(_ headerTitle: String, selected: Bool, delegate: SectionSelectedDelegate) {
         label.text = headerTitle
+        selectButton.isSelected = selected
+        
+        self.delegate = delegate
+//        self.indexPath = indexPath
     }
 
     func setup() {
@@ -73,5 +70,4 @@ class HeaderCell: UICollectionViewCell {
         selectButton.autoAlignAxis(toSuperviewAxis: .horizontal)
         selectButton.autoPinEdge(toSuperviewEdge: .right, withInset: 10)
     }
-
 }

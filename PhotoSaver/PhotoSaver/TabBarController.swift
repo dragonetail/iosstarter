@@ -1,11 +1,3 @@
-//
-//  TabBarController.swift
-//  PhotoSaver
-//
-//  Created by 孙玉新 on 2018/10/9.
-//  Copyright © 2018年 dragonetail. All rights reserved.
-//
-
 import UIKit
 
 class TabBarController: UITabBarController {
@@ -13,38 +5,28 @@ class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if Permission.Photos.status == .notDetermined {
-            Permission.Photos.request { //[weak self] in
-                //self?.check()
-            }
-        }
-        if Permission.Photos.status == .authorized {
-            let localPhotoGalleryController = PhotoGalleryController()
-            localPhotoGalleryController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
-            localPhotoGalleryController.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
-            
-            
-            let cloudPhotoViewController = PhotoGalleryController()
-            cloudPhotoViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
-            cloudPhotoViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .more, tag: 1)
-            
-            
-            let transferViewController = PhotoGalleryController()
-            transferViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
-            transferViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
-            
-            let configViewController = PhotoGalleryController()
-            configViewController.title = "Gallery.Images.Title"._localize(fallback: "PHOTOS")
-            configViewController.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 1)
-            
-            
-            let tabBarList = [localPhotoGalleryController, cloudPhotoViewController, transferViewController, configViewController]
-            
-            
-            viewControllers = tabBarList
-        }else{
-            print("没有获取用户访问相册的授权")
-        }
+        let localPhotoGalleryController = PhotoGalleryController()
+        localPhotoGalleryController.title = "Gallery.Images.Title"._localize(fallback: "本地相册")
+        localPhotoGalleryController.tabBarItem = UITabBarItem(title: localPhotoGalleryController.title, image: UIImage(named: "album"), tag: 0)
+
+
+        let cloudPhotoViewController = PhotoGalleryController()
+        cloudPhotoViewController.title = "Gallery.Images.Title"._localize(fallback: "云相册")
+        cloudPhotoViewController.tabBarItem = UITabBarItem(title: cloudPhotoViewController.title, image: UIImage(named: "cloud"), tag: 0)
+
+
+        let transferViewController = PhotoGalleryController()
+        transferViewController.title = "Gallery.Images.Title"._localize(fallback: "云传输")
+        transferViewController.tabBarItem = UITabBarItem(title: transferViewController.title, image: UIImage(named: "cloud-transfer"), tag: 0)
+
+        let configViewController = PhotoGalleryController()
+        configViewController.title = "Gallery.Images.Title"._localize(fallback: "我")
+        configViewController.tabBarItem = UITabBarItem(title: configViewController.title, image: UIImage(named: "profile"), tag: 0)
+
+
+        let tabBarList = [localPhotoGalleryController, cloudPhotoViewController, transferViewController, configViewController]
+
+
+        viewControllers = tabBarList
     }
 }
-

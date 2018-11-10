@@ -5,8 +5,7 @@ import PureLayout
 
 protocol PhotoGalleryViewDataSource: class {
     func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int
-    func titleOfSctions(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> String
-    func numberInSctions(_ photoGalleryView: PhotoGalleryView, section: Int) -> Int
+    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection
     func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image
 }
 protocol PhotoGalleryViewDelegate: class {
@@ -20,8 +19,8 @@ class PhotoGalleryView: UIView {
         loadingIndicatorView.color = .gray
         loadingIndicatorView.isHidden = false
         loadingIndicatorView.hidesWhenStopped = true
-        //loadingIndicatorView.g_addRoundBorder()
-        //loadingIndicatorView.g_addShadow()
+        //loadingIndicatorView._roundBorder()
+        //loadingIndicatorView._shadow()
 
         return loadingIndicatorView
     }()
@@ -32,7 +31,7 @@ class PhotoGalleryView: UIView {
 
         return topView
     }()
-
+    
     internal lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
 
@@ -44,13 +43,13 @@ class PhotoGalleryView: UIView {
         //         layout.itemSize = CGSize(width: 150, height: 150)
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = 1
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 40)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
         //layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
+
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
-
 
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -58,8 +57,20 @@ class PhotoGalleryView: UIView {
         collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: HeaderCell.self))
         //collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: String(describing: HeaderCell.self))
 
+        //collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 10)
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.showsHorizontalScrollIndicator = false
+        
         return collectionView
     }()
+    private lazy var scrollSlider: ScrollSlider = {
+        let scrollSlider = ScrollSlider(collectionView)
+        scrollSlider.isHidden = true
+        
+        return scrollSlider
+    }()
+    
+    
 
     private lazy var emptyView: UIView = {
         let view = EmptyView()
@@ -89,9 +100,12 @@ class PhotoGalleryView: UIView {
     private override init(frame: CGRect) {
         super.init(frame: frame)
 
-        [collectionView, topView, emptyView, loadingIndicatorView].forEach {
+        backgroundColor = .white
+        
+        [collectionView, scrollSlider, topView, emptyView, loadingIndicatorView].forEach {
             addSubview($0)
         }
+        loadingIndicatorView.startAnimating()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -129,11 +143,9 @@ class PhotoGalleryView: UIView {
     }
 
 
-    internal func stopLoadingIndicatorView() {
-        loadingIndicatorView.stopAnimating()
-    }
-
     internal func updateView() {
+        let startTime = CACurrentMediaTime()
+        // let endTime = CACurrentMediaTime()
         loadingIndicatorView.startAnimating()
 
         let numberOfSections = self.dataSource!.numberOfSections(self)
@@ -143,6 +155,8 @@ class PhotoGalleryView: UIView {
         collectionView._scrollToTop()
 
         loadingIndicatorView.stopAnimating()
+        let endTime = CACurrentMediaTime()
+        print("Escaped seconds: ", (endTime - startTime) * 1000)
     }
 }
 
@@ -153,7 +167,7 @@ extension PhotoGalleryView: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.dataSource!.numberInSctions(self, section: section)
+        return self.dataSource!.section(self, section: section).count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -166,14 +180,21 @@ extension PhotoGalleryView: UICollectionViewDataSource {
         return cell
     }
 
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        let imageCell = cell as! ImageCell
+        imageCell.reconfigure()
+    }
+
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             //print("HEADER DETECTED");//CALLED
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier:
                 String(describing: HeaderCell.self), for: indexPath) as! HeaderCell
-            
-            header.configure(self.dataSource!.titleOfSctions(self, indexPath: indexPath))
+
+            let section = self.dataSource!.section(self, section: indexPath.section)
+
+            header.configure(section.groupedDate, selected: section.isSelected, delegate: self)
             return header
         case UICollectionView.elementKindSectionFooter:
             print("FOOTER DETECTED");//NEVER CALLED
@@ -182,47 +203,68 @@ extension PhotoGalleryView: UICollectionViewDataSource {
             print("DEFAULT DETECTED");//NEVER CALLED
             break;
         }
-        
+
         return UICollectionReusableView();
     }
 }
 
 extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
-    // MARK: - UICollectionViewDelegateFlowLayout
-
-//    static let columnCount: CGFloat = 4
-//    static let cellSpacing: CGFloat = 2
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//
-//        let size = (collectionView.bounds.size.width - (PhotoGalleryView.columnCount - 1) * PhotoGalleryView.cellSpacing) / PhotoGalleryView.columnCount
-//        return CGSize(width: size, height: size)
-//    }
-
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.delegate?.didSelectImage(self, indexPath: indexPath)
     }
+}
 
-    func configureFrameViews() {
+extension PhotoGalleryView: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollSlider.dragAndScrollView()
+        
+        var visibleRect = CGRect()
+        visibleRect.origin = collectionView.contentOffset
+        visibleRect.size = collectionView.bounds.size
+        let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
+        let section = self.dataSource!.section(self, section: indexPath.section)
+        
+        self.scrollSlider.updateScrollLabel(section.groupedDate)
+    }
+    
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        NotificationCenter.default.post(Notification(name: DragScrollIndicatorDidScroll))
+//        NotificationCenter.default.post(name: DragScrollIndicatorDidScroll, object: self, userInfo: ["scrollView":scrollView])
+//    }
+}
+
+extension PhotoGalleryView: SectionSelectedDelegate {
+    func didSelectSection(_ headerCell: HeaderCell) {
+        //查找HeaderCell对应的IndexPath
+        let indexPaths = self.collectionView.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionView.elementKindSectionHeader)
+
+        var foundedIndexPath: IndexPath?
+        for indexPath in indexPaths {
+            if headerCell == collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) {
+                print("found at : \(indexPath)")
+                foundedIndexPath = indexPath
+                break
+            }
+        }
+
+        guard let indexPath = foundedIndexPath else {
+            print("ERROR: 没有发现HeaderCell的indexPath")
+            return
+        }
+
+        let section = self.dataSource!.section(self, section: indexPath.section)
+
+        section.isSelected = !section.isSelected
+
+        section.images.forEach {
+            $0.isSelected = section.isSelected
+        }
+
         for case let cell as ImageCell in collectionView.visibleCells {
             cell.reconfigure()
         }
     }
-
-
-//   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{
-//        return UIEdgeInsets.init(top: 10, left: 0, bottom: 10, right: 0)
-//    }
-//
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize{
-//        return CGSize(width: collectionView.bounds.size.width, height: 30)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize{
-//        return CGSize(width: collectionView.bounds.size.width, height: 5)
-//    }
-
-
 }
 
 

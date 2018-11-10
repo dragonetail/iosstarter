@@ -137,9 +137,6 @@ extension AlbumListController: UITableViewDelegate {
 
         let album = albums[(indexPath as NSIndexPath).row]
         delegate?.didSelectAlbum(self, didSelect: album)
-//
-//        selectedIndex = (indexPath as NSIndexPath).row
-//        tableView.reloadData()
     }
 }
 

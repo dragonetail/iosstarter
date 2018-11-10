@@ -20,7 +20,8 @@ class ImagesLibrary {
     }
 
     fileprivate func reloadSync() {
-        let types: [PHAssetCollectionType] = [.smartAlbum, .album, .moment]
+        //let types: [PHAssetCollectionType] = [.smartAlbum, .album, .moment]
+        let types: [PHAssetCollectionType] = [.smartAlbum, .album]
 
         var albumsFetchResults = [PHFetchResult<PHAssetCollection>]()
         albumsFetchResults = types.map {
@@ -42,7 +43,7 @@ class ImagesLibrary {
 
         // Move Camera Roll first
         if let index = albums.index(where: { $0.collection?.assetCollectionSubtype == .smartAlbumUserLibrary }) {
-            //albums._moveToFirst(index)
+            //_moveToFirst(index)
             let item = albums[index]
             albums.remove(at: index)
             albums.insert(item, at: 0)
