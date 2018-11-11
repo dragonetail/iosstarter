@@ -27,7 +27,6 @@
 		D9FC124421777F51008E466E /* AlbumListButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC124321777F51008E466E /* AlbumListButton.swift */; };
 		D9FC124821777FE6008E466E /* GalleryBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC124721777FE6008E466E /* GalleryBundle.swift */; };
 		D9FC124A217780F8008E466E /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC1249217780F8008E466E /* Permission.swift */; };
-		D9FC125821778399008E466E /* UIImageView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125121778399008E466E /* UIImageView+Extensions.swift */; };
 		D9FC125A21778399008E466E /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125321778399008E466E /* UIView+Extensions.swift */; };
 		D9FC125B21778399008E466E /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125421778399008E466E /* String+Extensions.swift */; };
 		D9FC125C21778399008E466E /* AVAsset+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC125521778399008E466E /* AVAsset+Extensions.swift */; };
@@ -41,7 +40,7 @@
 		D9FC12712178CF7D008E466E /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12702178CF7D008E466E /* Utils.swift */; };
 		D9FC12732178D5DC008E466E /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12722178D5DC008E466E /* ImageCell.swift */; };
 		D9FC12752178D610008E466E /* FrameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12742178D610008E466E /* FrameView.swift */; };
-		D9FC12772178D693008E466E /* ImagesLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12762178D693008E466E /* ImagesLibrary.swift */; };
+		D9FC12772178D693008E466E /* AlbumManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12762178D693008E466E /* AlbumManager.swift */; };
 		D9FC12792179BBD0008E466E /* RunOnce.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC12782179BBD0008E466E /* RunOnce.swift */; };
 		D9FC127D217AB331008E466E /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC127C217AB331008E466E /* EventBus.swift */; };
 /* End PBXBuildFile section */
@@ -74,7 +73,6 @@
 		D9FC124521777FA0008E466E /* Gallery.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Gallery.bundle; sourceTree = "<group>"; };
 		D9FC124721777FE6008E466E /* GalleryBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryBundle.swift; sourceTree = "<group>"; };
 		D9FC1249217780F8008E466E /* Permission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
-		D9FC125121778399008E466E /* UIImageView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125321778399008E466E /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125421778399008E466E /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		D9FC125521778399008E466E /* AVAsset+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAsset+Extensions.swift"; sourceTree = "<group>"; };
@@ -87,7 +85,7 @@
 		D9FC12702178CF7D008E466E /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		D9FC12722178D5DC008E466E /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
 		D9FC12742178D610008E466E /* FrameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameView.swift; sourceTree = "<group>"; };
-		D9FC12762178D693008E466E /* ImagesLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesLibrary.swift; sourceTree = "<group>"; };
+		D9FC12762178D693008E466E /* AlbumManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumManager.swift; sourceTree = "<group>"; };
 		D9FC12782179BBD0008E466E /* RunOnce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunOnce.swift; sourceTree = "<group>"; };
 		D9FC127C217AB331008E466E /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -173,7 +171,6 @@
 		D9FC124F21778399008E466E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D9FC125121778399008E466E /* UIImageView+Extensions.swift */,
 				D9FC125321778399008E466E /* UIView+Extensions.swift */,
 				D9FC125421778399008E466E /* String+Extensions.swift */,
 				D9FC125521778399008E466E /* AVAsset+Extensions.swift */,
@@ -224,7 +221,7 @@
 			children = (
 				D9FC126E2178CF35008E466E /* Image.swift */,
 				D9FC126C2178CF16008E466E /* Album.swift */,
-				D9FC12762178D693008E466E /* ImagesLibrary.swift */,
+				D9FC12762178D693008E466E /* AlbumManager.swift */,
 				D9952E8B2182EBB800331CA4 /* ImageSection.swift */,
 			);
 			path = data;
@@ -400,13 +397,12 @@
 				D9FC127D217AB331008E466E /* EventBus.swift in Sources */,
 				D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */,
 				D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */,
-				D9FC125821778399008E466E /* UIImageView+Extensions.swift in Sources */,
 				D9FC125D21778399008E466E /* UIScrollView+Extensions.swift in Sources */,
 				D9FC1242217773F1008E466E /* Config.swift in Sources */,
 				D9FC125B21778399008E466E /* String+Extensions.swift in Sources */,
 				D97698562188A39D00F41403 /* ImageViewHeader.swift in Sources */,
 				D9FC124A217780F8008E466E /* Permission.swift in Sources */,
-				D9FC12772178D693008E466E /* ImagesLibrary.swift in Sources */,
+				D9FC12772178D693008E466E /* AlbumManager.swift in Sources */,
 				D99B39F02189E68B00425973 /* EmptyView.swift in Sources */,
 				D9FC124021777391008E466E /* PhotoGalleryView.swift in Sources */,
 				D941746B216AF4F800864119 /* AppDelegate.swift in Sources */,

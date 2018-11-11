@@ -2,18 +2,30 @@ import UIKit
 import Photos
 
 class Album {
-
+    var id: String
+    var collectionId: [String]?
+    var assetCollectionType: PHAssetCollectionType?
+    var assetCollectionSubtype: PHAssetCollectionSubtype?
     let title: String
-    let collection: PHAssetCollection?
+    //let collection: PHAssetCollection?
     var sections = [ImageSection]()
     var count: Int = 0
+
+//    open var localizedLocationNames: [String] { get }
+//
+//
+//    // Fetch asset collections of a single type matching the provided local identifiers (type is inferred from the local identifiers)
+//    open class func fetchAssetCollections(withLocalIdentifiers identifiers: [String], options: PHFetchOptions?) -> PHFetchResult<PHAssetCollection>
 
     convenience init() {
         self.init(collection: nil)
     }
 
     init(collection: PHAssetCollection?) {
-        self.collection = collection
+        self.id = UUID.init().uuidString
+        self.collectionId = collection?.localizedLocationNames
+        self.assetCollectionType = collection?.assetCollectionType
+        self.assetCollectionSubtype = collection?.assetCollectionSubtype
         self.title = collection?.localizedTitle ?? "-"
     }
 
@@ -21,11 +33,28 @@ class Album {
         sections = [ImageSection]()
         count = 0
 
-        guard let collection = self.collection else {
+        guard let collectionId = collectionId else {
             return
         }
 
-        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
+        var result: PHFetchResult<PHAssetCollection>? = nil
+        var collection: PHAssetCollection? = nil
+        if collectionId.count > 0 {
+            result = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: collectionId, options: nil)
+        }else{
+            result = PHAssetCollection.fetchAssetCollections(with: assetCollectionType!, subtype: assetCollectionSubtype!, options: nil)
+        }
+        
+        if result!.count == 0 {
+            return
+        }
+        if result!.count > 1 {
+            fatalError("不可思议的相册数量。")
+        }
+        
+        collection = result!.firstObject
+
+        let itemsFetchResult = PHAsset.fetchAssets(in: collection!, options: Utils.fetchOptions())
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
             if asset.mediaType == .image {
                 let groupedDate = asset.creationDate?.groupedDateString() ?? ""
@@ -123,36 +152,36 @@ extension Album {
 
 extension Date {
 
-    static var aaa:String = ""
-    
+    static var aaa: String = ""
+
     static var shortDateFormatter: DateFormatter = {
         //Ref: http://nsdateformatter.com/
         //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
         guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale.current)
             else { fatalError() }
         //print(formatString)
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current
         dateFormatter.dateFormat = formatString
-        
+
         return dateFormatter
     }()
-    
+
     static var fullDateFormatter: DateFormatter = {
         //Ref: http://nsdateformatter.com/
         //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
         guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdyyyyEEEE", options: 0, locale: Locale.current)
             else { fatalError() }
         //print(formatString)
-        
+
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale.current
         dateFormatter.dateFormat = formatString
-        
+
         return dateFormatter
     }()
-    
+
     func groupedDateString() -> String {
         let now = Date()
         let calendar = Calendar.current
@@ -162,7 +191,7 @@ extension Date {
         if year == curYear {
             return Date.shortDateFormatter.string(from: self)
         } else {
-             return Date.fullDateFormatter.string(from: self)
+            return Date.fullDateFormatter.string(from: self)
         }
     }
 }

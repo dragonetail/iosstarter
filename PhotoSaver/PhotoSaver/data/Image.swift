@@ -8,18 +8,18 @@ public enum MediaType: String {
 
 /// Wrap a PHAsset
 public class Image: Equatable {
-    public let asset: PHAsset
+    public var id: String
+    public var assetId: String
     public var isSelected: Bool = false
     public var type: MediaType = .image
-    public var id: String
-    public var url: String?
-    public var assetID: String?
+    //public let asset: PHAsset
+    //public var url: String?
 
     // MARK: - Initialization
 
     init(asset: PHAsset) {
         self.id = UUID.init().uuidString
-        self.asset = asset
+        self.assetId = asset.localIdentifier
     }
 
 //
@@ -76,17 +76,19 @@ extension Image {
         options.isNetworkAccessAllowed = true
         options.deliveryMode = .highQualityFormat
 
-        let targetSize = CGSize(
-            width: asset.pixelWidth,
-            height: asset.pixelHeight
-        )
+        if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject {
+            let targetSize = CGSize(
+                width: asset.pixelWidth,
+                height: asset.pixelHeight
+            )
 
-        PHImageManager.default().requestImage(
-            for: asset,
-            targetSize: targetSize,
-            contentMode: .default,
-            options: options) { (image, _) in
-            completion(image)
+            PHImageManager.default().requestImage(
+                for: asset,
+                targetSize: targetSize,
+                contentMode: .default,
+                options: options) { (image, _) in
+                completion(image)
+            }
         }
     }
 
@@ -119,10 +121,38 @@ extension Image {
             completion(sortedImages)
         })
     }
+
+    func loadToView(_ imageView: UIImageView) {
+        guard imageView.frame.size != CGSize.zero else {
+            imageView.image = GalleryBundle.image("gallery_placeholder")
+            return
+        }
+
+        if imageView.tag == 0 {
+            imageView.image = GalleryBundle.image("gallery_placeholder")
+        } else {
+            PHImageManager.default().cancelImageRequest(PHImageRequestID(imageView.tag))
+        }
+
+        let options = PHImageRequestOptions()
+        options.isNetworkAccessAllowed = true
+
+        if let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject {
+            let id = PHImageManager.default().requestImage(
+                for: asset,
+                targetSize: imageView.frame.size,
+                contentMode: .aspectFill,
+                options: options) { image, _ in
+                imageView.image = image
+            }
+
+            imageView.tag = Int(id)
+        }
+    }
+
 }
 
 // MARK: - Equatable
-
 public func == (lhs: Image, rhs: Image) -> Bool {
-    return lhs.asset == rhs.asset
+    return lhs.assetId == rhs.assetId
 }

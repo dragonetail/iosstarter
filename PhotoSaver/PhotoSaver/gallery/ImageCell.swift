@@ -62,22 +62,17 @@ class ImageCell: UICollectionViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         print("ImageCell.layoutSubviews")
         //reconfigure()
-    }
-    
-    private func configure(_ asset: PHAsset) {
-        imageView.layoutIfNeeded()
-        imageView._loadImage(asset)
     }
 
     private var image: Image?
     func configure(_ image: Image) {
         self.image = image
-        configure(image.asset)
 
-        //reconfigure()
+        imageView.layoutIfNeeded()
+        image.loadToView(imageView)
     }
 
     func reconfigure() {

@@ -122,8 +122,7 @@ open class ScrollSlider: UIView {
 
         labelContainer.isHidden = true
 
-        indicatorContainer.autoPinEdgesToSuperviewEdges()
-        indicatorContainer.autoPinEdge(toSuperviewEdge: .left, withInset: 160) // 60 width
+        indicatorContainer.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 160, bottom: 0, right: 0))
 
         upImageView.autoSetDimensions(to: CGSize(width: 15, height: 15))
         upImageView.autoPinEdge(toSuperviewEdge: .left, withInset: 15)

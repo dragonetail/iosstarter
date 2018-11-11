@@ -75,13 +75,13 @@ class AlbumListController: UIViewController {
     }
     
     private func loadAlbums() {
-        let library = ImagesLibrary()
+        let albumManager = AlbumManager()
         let runOnce = RunOnce()
         runOnce.run {
-            library.reload {
-                self.albums = library.albums
+            albumManager.reload {
+                self.albums = albumManager.albums
                 
-                if let album = library.albums.first {
+                if let album = albumManager.albums.first {
                     self.delegate?.didSelectAlbum(self, didSelect: album)
                 }
                 
