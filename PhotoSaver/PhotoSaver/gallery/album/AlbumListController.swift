@@ -13,40 +13,40 @@ class AlbumListController: UIViewController {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.rowHeight = 84
-        
+
         tableView.dataSource = self
         tableView.delegate = self
-        
+
         return tableView
     }()
-    
+
     lazy var blurView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
-        
+
         return view
     }()
 
     let delegate: AlbumListControllerDelegate?
-    
+
     init(delegate: AlbumListControllerDelegate?) {
         self.delegate = delegate
-        
+
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
     private var expandedTopConstraint: NSLayoutConstraint?
     private var collapsedTopConstraint: NSLayoutConstraint?
-    
-    internal func updateToggleConstraint(_ result: (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint)){
-        self.expandedTopConstraint =  result.expandedTopConstraint
+
+    internal func updateToggleConstraint(_ result: (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint)) {
+        self.expandedTopConstraint = result.expandedTopConstraint
         self.collapsedTopConstraint = result.collapsedTopConstraint
     }
-    
-    
+
+
     private var animating: Bool = false
     var selectedIndex: Int = 0
     var albums: [Album] = [] {
@@ -54,7 +54,7 @@ class AlbumListController: UIViewController {
             selectedIndex = 0
         }
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -70,27 +70,12 @@ class AlbumListController: UIViewController {
         tableView.register(AlbumListCell.self, forCellReuseIdentifier: String(describing: AlbumListCell.self))
 
         tableView.autoPinEdgesToSuperviewEdges()
-        
-        loadAlbums()
-    }
-    
-    private func loadAlbums() {
-        let albumManager = AlbumManager()
-        let runOnce = RunOnce()
-        runOnce.run {
-            albumManager.reload {
-                self.albums = albumManager.albums
-                
-                if let album = albumManager.albums.first {
-                    self.delegate?.didSelectAlbum(self, didSelect: album)
-                }
-                
-                self.tableView.reloadData()
-            }
-        }
-    }
-    
 
+        AlbumManager.shared.albumsLoadingDelegate = self
+    }
+
+
+    private var needToReload: Bool = false
     internal func toggle(_ expanding: Bool) {
         guard !animating else { return }
 
@@ -99,6 +84,10 @@ class AlbumListController: UIViewController {
         if expanding {
             collapsedTopConstraint?.isActive = false
             expandedTopConstraint?.isActive = true
+            if needToReload {
+                needToReload = false
+                self.tableView.reloadData()
+            }
         } else {
             expandedTopConstraint?.isActive = false
             collapsedTopConstraint?.isActive = true
@@ -140,3 +129,25 @@ extension AlbumListController: UITableViewDelegate {
     }
 }
 
+extension AlbumListController: AlbumsLoadingDelegate {
+    func albumsLoading(_ albumManager: AlbumManager) {
+        let albumManager = AlbumManager.shared
+        self.albums = albumManager.albums
+
+//        if let album = albumManager.albums.first {
+//            self.delegate?.didSelectAlbum(self, didSelect: album)
+//        }
+
+        self.tableView.reloadData()
+    }
+    func albumsLoaded(_ albumManager: AlbumManager) {
+        let albumManager = AlbumManager.shared
+        self.albums = albumManager.albums
+
+        if expandedTopConstraint?.isActive ?? false {
+            self.tableView.reloadData()
+        } else {
+            self.needToReload = true
+        }
+    }
+}

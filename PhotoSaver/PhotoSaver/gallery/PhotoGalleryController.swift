@@ -23,12 +23,16 @@ class PhotoGalleryController: UIViewController {
         return photoGalleryView
     }()
 
-
+    // 数据
+    private var album: Album? = nil
+    
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor.white
+        
+        AlbumManager.shared.albumLoadingDelegate = self
 
         view.addSubview(photoGalleryView)
         
@@ -40,7 +44,6 @@ class PhotoGalleryController: UIViewController {
         albumListController.endAppearanceTransition()
         albumListController.didMove(toParent: self)
 
-        //loadAlbums()
     }
     
     override func viewWillLayoutSubviews() {
@@ -58,9 +61,6 @@ class PhotoGalleryController: UIViewController {
         albumListController.toggle(albumListExpanding)
         albumListButton.toggle(albumListExpanding)
     }
-    
-    // 数据
-    private var album: Album = Album()
 }
 
 
@@ -77,20 +77,41 @@ extension PhotoGalleryController: AlbumListControllerDelegate {
 
 extension PhotoGalleryController: PhotoGalleryViewDataSource {
     func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int {
-        return self.album.sections.count
+        return self.album?.sections.count ?? 0
     }
     func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection{
-        return album.sections[section]
+        return album!.sections[section]
     }
     func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image {
-        return album.getImage(indexPath)
+        return album!.getImage(indexPath)
     }
 }
 extension PhotoGalleryController: PhotoGalleryViewDelegate {
     func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) {
 
-        let imageViewController = ImageViewController(album: album, initialIndexPath: indexPath)
+        let imageViewController = ImageViewController(album: album!, initialIndexPath: indexPath)
         
         self.present(imageViewController, animated: false, completion: nil)
+    }
+}
+
+extension PhotoGalleryController: AlbumLoadingDelegate {
+    func albumLoading(_ album: Album){
+        if self.album == nil && AlbumManager.shared.albumOfSmartAlbumUserLibrary.id == album.id {
+            self.album = album
+            
+            albumListButton.updateText(album.title)
+            self.photoGalleryView.updateView()
+        }
+    }
+    
+    func albumLoaded(_ album: Album){
+        guard let selfAlbum = self.album else {
+            return
+        }
+        
+        if selfAlbum.id == album.id {
+            self.photoGalleryView.updateView()
+        }
     }
 }

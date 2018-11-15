@@ -31,7 +31,7 @@ class PhotoGalleryView: UIView {
 
         return topView
     }()
-    
+
     internal lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
 
@@ -60,17 +60,17 @@ class PhotoGalleryView: UIView {
         //collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 10)
         collectionView.showsVerticalScrollIndicator = false
         collectionView.showsHorizontalScrollIndicator = false
-        
+
         return collectionView
     }()
     private lazy var scrollSlider: ScrollSlider = {
         let scrollSlider = ScrollSlider(collectionView)
         scrollSlider.isHidden = true
-        
+
         return scrollSlider
     }()
-    
-    
+
+
 
     private lazy var emptyView: UIView = {
         let view = EmptyView()
@@ -101,7 +101,7 @@ class PhotoGalleryView: UIView {
         super.init(frame: frame)
 
         backgroundColor = .white
-        
+
         [collectionView, scrollSlider, topView, emptyView, loadingIndicatorView].forEach {
             addSubview($0)
         }
@@ -143,20 +143,17 @@ class PhotoGalleryView: UIView {
     }
 
 
+    private var isFirstReload: Bool = true
     internal func updateView() {
-        let startTime = CACurrentMediaTime()
-        // let endTime = CACurrentMediaTime()
         loadingIndicatorView.startAnimating()
 
         let numberOfSections = self.dataSource!.numberOfSections(self)
         emptyView.isHidden = (numberOfSections > 0)
 
         collectionView.reloadData()
-        collectionView._scrollToTop()
+        //collectionView._scrollToTop()
 
         loadingIndicatorView.stopAnimating()
-        let endTime = CACurrentMediaTime()
-        print("Escaped seconds: ", (endTime - startTime) * 1000)
     }
 }
 
@@ -217,17 +214,17 @@ extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
 extension PhotoGalleryView: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         scrollSlider.dragAndScrollView()
-        
+
         var visibleRect = CGRect()
         visibleRect.origin = collectionView.contentOffset
         visibleRect.size = collectionView.bounds.size
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
         guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         let section = self.dataSource!.section(self, section: indexPath.section)
-        
+
         self.scrollSlider.updateScrollLabel(section.groupedDate)
     }
-    
+
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //        NotificationCenter.default.post(Notification(name: DragScrollIndicatorDidScroll))
 //        NotificationCenter.default.post(name: DragScrollIndicatorDidScroll, object: self, userInfo: ["scrollView":scrollView])
@@ -266,5 +263,4 @@ extension PhotoGalleryView: SectionSelectedDelegate {
         }
     }
 }
-
 

@@ -63,7 +63,6 @@ class ImageCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        print("ImageCell.layoutSubviews")
         //reconfigure()
     }
 

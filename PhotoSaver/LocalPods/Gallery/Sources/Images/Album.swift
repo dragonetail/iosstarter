@@ -6,7 +6,7 @@ class Album {
   let collection: PHAssetCollection
   var items: [Image] = []
 
-  // MARK: - Initialization
+  
 
   init(collection: PHAssetCollection) {
     self.collection = collection
@@ -14,7 +14,8 @@ class Album {
 
   func reload() {
     items = []
-
+// MARK: - Initialization
+    
     let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
     itemsFetchResult.enumerateObjects({ (asset, count, stop) in
       if asset.mediaType == .image {

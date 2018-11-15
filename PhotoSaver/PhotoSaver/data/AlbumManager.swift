@@ -1,25 +1,90 @@
 import UIKit
 import Photos
 
-/// 获取本机图片库
+
+protocol AlbumsLoadingDelegate: class {
+    func albumsLoading(_ albumManager: AlbumManager)
+    func albumsLoaded(_ albumManager: AlbumManager)
+}
+protocol AlbumLoadingDelegate: class {
+    func albumLoading(_ album: Album)
+    func albumLoaded(_ album: Album)
+}
+
+/**
+    获取本机图片库
+*/
 class AlbumManager {
+    static let shared = AlbumManager()
 
     var albums: [Album] = []
+    var albumOfSmartAlbumUserLibrary: Album
+    weak var albumsLoadingDelegate: AlbumsLoadingDelegate?
+    weak var albumLoadingDelegate: AlbumLoadingDelegate?
 
-    init() {
+    private init() {
+        let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
+        
+        if result.count != 1 {
+            fatalError("不可思议的用户相册数量。")
+        }
+        
+        let collection: PHAssetCollection = result.firstObject!
+        self.albumOfSmartAlbumUserLibrary = Album(collection: collection)
     }
 
     /// 重新加载图片库
-    func reload(_ completion: @escaping () -> Void) {
-        DispatchQueue.global().async {
-            self.reloadSync()
-            DispatchQueue.main.async {
-                completion()
-            }
+    func reload() {
+        //加载用户主相册
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.albumOfSmartAlbumUserLibrary.reload()
+        }
+
+        //加载其他相册
+        DispatchQueue.global(qos: .default).async {
+            let startTime = CACurrentMediaTime()
+            self.loadAllCollectionsAndInit()
+            let endTime = CACurrentMediaTime()
+            print("Escaped seconds of Loading Albums: ", (endTime - startTime) * 1000)
         }
     }
 
-    fileprivate func reloadSync() {
+
+    fileprivate func loadAllCollectionsAndInit() {
+        albums = []
+
+        loadAllCollections()
+
+        //通知UI刷新列表
+        DispatchQueue.main.async {
+            self.albumsLoadingDelegate?.albumsLoading(self)
+        }
+
+
+        self.albums.forEach { (album: Album) in
+            album.reload()
+
+            //通知UI刷新列表
+            DispatchQueue.main.async {
+                self.albumLoadingDelegate?.albumLoaded(album)
+            }
+        }
+
+        self.albums.sort { (left, right) -> Bool in
+            return left.count > right.count
+        }
+        
+        self.albums.insert(albumOfSmartAlbumUserLibrary, at: 0)
+
+        //通知UI刷新列表
+        DispatchQueue.main.async {
+            self.albumsLoadingDelegate?.albumsLoaded(self)
+        }
+    }
+
+
+    fileprivate func loadAllCollections() {
+        //查找所有的相薄
         //let types: [PHAssetCollectionType] = [.smartAlbum, .album, .moment]
         let types: [PHAssetCollectionType] = [.smartAlbum, .album]
 
@@ -28,31 +93,28 @@ class AlbumManager {
             return PHAssetCollection.fetchAssetCollections(with: $0, subtype: .any, options: nil)
         }
 
-        albums = []
-
         for result in albumsFetchResults {
             result.enumerateObjects({ (collection, _, _) in
-                let album = Album(collection: collection)
-                album.reload()
-
-                if !album.sections.isEmpty {
-                    self.albums.append(album)
+                if collection.assetCollectionSubtype == .smartAlbumUserLibrary {
+                    return
                 }
+                let album = Album(collection: collection)
+                self.albums.append(album)
             })
         }
-
-        // Move Camera Roll first
-        if let index = albums.index(where: { $0.assetCollectionSubtype == .smartAlbumUserLibrary }) {
-            //_moveToFirst(index)
-            let item = albums[index]
-            albums.remove(at: index)
-            albums.insert(item, at: 0)
-        }
     }
+
+//    fileprivate func changeSmartAlbumUserLibraryToFirst() {
+//        // Move Camera Roll first
+//        if let index = albums.index(where: { $0.assetCollectionSubtype == .smartAlbumUserLibrary }) {
+//            //_moveToFirst(index)
+//            let smartAlbumUserLibrary = albums[index]
+//            albums.remove(at: index)
+//            albums.insert(smartAlbumUserLibrary, at: 0)
+//        }
+//    }
+
 }
-
-
-
 //enum PHAssetCollectionType : Int {
 //    case Album //从 iTunes 同步来的相册，以及用户在 Photos 中自己建立的相册
 //    case SmartAlbum //经由相机得来的相册
@@ -79,3 +141,5 @@ class AlbumManager {
 //    case SmartAlbumUserLibrary //这个命名最神奇了，就是相机相册，所有相机拍摄的照片或视频都会出现在该相册中，而且使用其他应用保存的照片也会出现在这里。
 //    case Any //包含所有类型
 //}
+
+

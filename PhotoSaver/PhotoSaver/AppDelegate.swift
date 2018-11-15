@@ -28,6 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     private func startup() {
+        AlbumManager.shared.reload()
+
         DispatchQueue.main.async(execute: { () -> Void in
             self.window = UIWindow(frame: UIScreen.main.bounds)
             if let window = self.window {
@@ -49,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     action in
                     //noop
                 }))
-                
+
                 window.rootViewController = NoPhotoAuthorizationController()
                 window.makeKeyAndVisible()
                 self.window?.rootViewController?.present(alertController, animated: true, completion: nil)

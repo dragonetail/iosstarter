@@ -3,58 +3,39 @@ import Photos
 
 class Album {
     var id: String
-    var collectionId: [String]?
-    var assetCollectionType: PHAssetCollectionType?
-    var assetCollectionSubtype: PHAssetCollectionSubtype?
+    var collectionId: String
+    var assetCollectionType: PHAssetCollectionType
+    var assetCollectionSubtype: PHAssetCollectionSubtype
     let title: String
     //let collection: PHAssetCollection?
     var sections = [ImageSection]()
     var count: Int = 0
 
-//    open var localizedLocationNames: [String] { get }
-//
-//
-//    // Fetch asset collections of a single type matching the provided local identifiers (type is inferred from the local identifiers)
-//    open class func fetchAssetCollections(withLocalIdentifiers identifiers: [String], options: PHFetchOptions?) -> PHFetchResult<PHAssetCollection>
-
-    convenience init() {
-        self.init(collection: nil)
-    }
-
-    init(collection: PHAssetCollection?) {
+    init(collection: PHAssetCollection) {
         self.id = UUID.init().uuidString
-        self.collectionId = collection?.localizedLocationNames
-        self.assetCollectionType = collection?.assetCollectionType
-        self.assetCollectionSubtype = collection?.assetCollectionSubtype
-        self.title = collection?.localizedTitle ?? "-"
+        self.collectionId = collection.localIdentifier
+        self.assetCollectionType = collection.assetCollectionType
+        self.assetCollectionSubtype = collection.assetCollectionSubtype
+        print("PHAssetCollection: ", self.collectionId, self.assetCollectionType.rawValue, self.assetCollectionSubtype.rawValue)
+        self.title = collection.localizedTitle ?? "-"
     }
 
     func reload() {
         sections = [ImageSection]()
         count = 0
 
-        guard let collectionId = collectionId else {
-            return
-        }
+        let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionId], options: nil)
 
-        var result: PHFetchResult<PHAssetCollection>? = nil
-        var collection: PHAssetCollection? = nil
-        if collectionId.count > 0 {
-            result = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: collectionId, options: nil)
-        }else{
-            result = PHAssetCollection.fetchAssetCollections(with: assetCollectionType!, subtype: assetCollectionSubtype!, options: nil)
-        }
-        
-        if result!.count == 0 {
+        if result.count == 0 {
             return
         }
-        if result!.count > 1 {
+        if result.count > 1 {
             fatalError("不可思议的相册数量。")
         }
-        
-        collection = result!.firstObject
 
-        let itemsFetchResult = PHAsset.fetchAssets(in: collection!, options: Utils.fetchOptions())
+        let collection: PHAssetCollection = result.firstObject!
+
+        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
             if asset.mediaType == .image {
                 let groupedDate = asset.creationDate?.groupedDateString() ?? ""
@@ -80,6 +61,13 @@ class Album {
 
                 if foundIndex == nil {
                     self.sections.append(foundSection)
+                }
+
+                if self.count % 20 == 0 {
+                    //通知UI刷新列表
+                    DispatchQueue.main.async {
+                        AlbumManager.shared.albumLoadingDelegate?.albumLoading(self)
+                    }
                 }
             }
         })
@@ -149,11 +137,7 @@ extension Album {
 
 }
 
-
 extension Date {
-
-    static var aaa: String = ""
-
     static var shortDateFormatter: DateFormatter = {
         //Ref: http://nsdateformatter.com/
         //guard let formatString = DateFormatter.dateFormat(fromTemplate: "MMMdEEEE", options: 0, locale: Locale(identifier: "zh_CN"))
