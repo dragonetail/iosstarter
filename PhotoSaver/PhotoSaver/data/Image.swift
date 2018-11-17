@@ -1,25 +1,44 @@
 import UIKit
 import Photos
+import RealmSwift
 
-public enum MediaType: String {
+public enum MediaType: Int {
     case image
     case video
 }
 
-/// Wrap a PHAsset
-public class Image: Equatable {
-    public var id: String
-    public var assetId: String
-    public var isSelected: Bool = false
-    public var type: MediaType = .image
-    //public let asset: PHAsset
-    //public var url: String?
+class Image: Object {
+    @objc dynamic var id: String = ""
+    @objc dynamic var assetId: String = ""
+    @objc dynamic var mediaType: Int = MediaType.image.rawValue
 
-    // MARK: - Initialization
+    var isSelected: Bool = false
 
-    init(asset: PHAsset) {
-        self.id = UUID.init().uuidString
-        self.assetId = asset.localIdentifier
+    override static func primaryKey() -> String? {
+        return "id"
+    }
+    override static func indexedProperties() -> [String] {
+        return ["assetId"]
+    }
+    override static func ignoredProperties() -> [String] {
+        return ["isSelected"]
+    }
+
+    func save() {
+        let realm = RealmManager.shared.realm
+        
+        try! realm.write {
+            realm.add(self, update: true)
+        }
+    }
+
+    static func build(asset: PHAsset) -> Image {
+        let image: Image = Image()
+        image.id = UUID.init().uuidString
+        image.assetId = asset.localIdentifier
+        image.mediaType = MediaType.image.rawValue
+        
+        return image
     }
 
 //
@@ -152,7 +171,8 @@ extension Image {
 
 }
 
-// MARK: - Equatable
-public func == (lhs: Image, rhs: Image) -> Bool {
-    return lhs.assetId == rhs.assetId
-}
+//extension Image :Equatable{}
+//
+//public func == (lhs: Image, rhs: Image) -> Bool {
+//    return lhs.assetId == rhs.assetId
+//}

@@ -11,6 +11,7 @@
 		D941746B216AF4F800864119 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D941746A216AF4F800864119 /* AppDelegate.swift */; };
 		D9417472216AF4FA00864119 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D9417471216AF4FA00864119 /* Assets.xcassets */; };
 		D9417475216AF4FA00864119 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D9417473216AF4FA00864119 /* LaunchScreen.storyboard */; };
+		D96ADF4E219DA9A900A9E2FC /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96ADF4D219DA9A900A9E2FC /* RealmManager.swift */; };
 		D96E968321919D4F0066F745 /* CyaneaOctopus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96E968221919D4F0066F745 /* CyaneaOctopus.swift */; };
 		D96E96872192914E0066F745 /* ScrollSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D96E96862192914D0066F745 /* ScrollSlider.swift */; };
 		D976985221888EBD00F41403 /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D976985121888EBD00F41403 /* ImageViewController.swift */; };
@@ -54,6 +55,7 @@
 		D9417471216AF4FA00864119 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D9417474216AF4FA00864119 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D9417476216AF4FA00864119 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D96ADF4D219DA9A900A9E2FC /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		D96E968221919D4F0066F745 /* CyaneaOctopus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyaneaOctopus.swift; sourceTree = "<group>"; };
 		D96E96862192914D0066F745 /* ScrollSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollSlider.swift; sourceTree = "<group>"; };
 		D976985021888D8E00F41403 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				D9FC1249217780F8008E466E /* Permission.swift */,
 				D9FC12782179BBD0008E466E /* RunOnce.swift */,
 				D96E968221919D4F0066F745 /* CyaneaOctopus.swift */,
+				D96ADF4D219DA9A900A9E2FC /* RealmManager.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -342,13 +345,12 @@
 				"${BUILT_PRODUCTS_DIR}/Cache/Cache.framework",
 				"${BUILT_PRODUCTS_DIR}/CyaneaOctopus/CyaneaOctopus.framework",
 				"${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework",
+				"${BUILT_PRODUCTS_DIR}/GRDB.swift/GRDB.framework",
 				"${BUILT_PRODUCTS_DIR}/Gallery/Gallery.framework",
 				"${BUILT_PRODUCTS_DIR}/Hue/Hue.framework",
 				"${BUILT_PRODUCTS_DIR}/Imaginary/Imaginary.framework",
 				"${BUILT_PRODUCTS_DIR}/Lightbox/Lightbox.framework",
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftEventBus/SwiftEventBus.framework",
 			);
@@ -360,13 +362,12 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Cache.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CyaneaOctopus.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSPagerView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GRDB.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gallery.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Hue.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Imaginary.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Lightbox.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftEventBus.framework",
 			);
@@ -389,6 +390,7 @@
 				D9FC12692178CE92008E466E /* AlbumListController.swift in Sources */,
 				D9BBD24D2196A8A200EC6823 /* NoPhotoAuthorizationController.swift in Sources */,
 				D9FC125C21778399008E466E /* AVAsset+Extensions.swift in Sources */,
+				D96ADF4E219DA9A900A9E2FC /* RealmManager.swift in Sources */,
 				D9FC12712178CF7D008E466E /* Utils.swift in Sources */,
 				D9FC126F2178CF35008E466E /* Image.swift in Sources */,
 				D9FC124421777F51008E466E /* AlbumListButton.swift in Sources */,

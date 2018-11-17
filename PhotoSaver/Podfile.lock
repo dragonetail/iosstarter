@@ -4,17 +4,13 @@ PODS:
   - CyaneaOctopus (0.3.1)
   - FSPagerView (0.8.1)
   - Gallery (2.2.0)
+  - GRDB.swift (3.5.0)
   - Hue (3.0.1)
   - Imaginary (4.2.0):
     - Cache (~> 5.0)
   - Lightbox (2.3.0):
     - Imaginary (~> 4.0)
   - PureLayout (3.1.4)
-  - Realm (3.11.1):
-    - Realm/Headers (= 3.11.1)
-  - Realm/Headers (3.11.1)
-  - RealmSwift (3.11.1):
-    - Realm (= 3.11.1)
   - SVProgressHUD (2.2.5)
   - SwiftEventBus (3.0.1)
 
@@ -24,11 +20,11 @@ DEPENDENCIES:
   - CyaneaOctopus
   - FSPagerView
   - Gallery (from `./LocalPods/Gallery`)
+  - GRDB.swift
   - Hue (from `./LocalPods/Hue`)
   - Imaginary (from `./LocalPods/Imaginary`)
   - Lightbox (from `./LocalPods/Lightbox`)
   - PureLayout (~> 3.1.2)
-  - RealmSwift
   - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `3.0.1`)
 
@@ -37,9 +33,8 @@ SPEC REPOS:
     - ATGMediaBrowser
     - CyaneaOctopus
     - FSPagerView
+    - GRDB.swift
     - PureLayout
-    - Realm
-    - RealmSwift
 
 EXTERNAL SOURCES:
   Cache:
@@ -69,15 +64,14 @@ SPEC CHECKSUMS:
   CyaneaOctopus: 6f683b8cee6c372419993a0e7de240c599edef1c
   FSPagerView: 4e865526acc0b0e3077e2abb29b8d10a9f395476
   Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
+  GRDB.swift: 225cf9c1354753e92e20c2a1fa2912b924c9da6e
   Hue: 8c03f7aca9b9ef3a15052296bea5d60a3be56350
   Imaginary: deadb35fdfc6cfbe25d1baf3f1e421929f577142
   Lightbox: 63b567b8aa7be5a786aa6a60f17b51efa5091b45
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
-  Realm: 037c5919b9ceb59d6beed5d3b031096856b119b3
-  RealmSwift: c9580133e73ef40ed340401af2dbc9a5790dfea7
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
   SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
 
-PODFILE CHECKSUM: 98a2adf3d289fafff0b4e2b33616a8e60bf34a97
+PODFILE CHECKSUM: 0d230f7a971e10184839eb2e357c3a974a8ab37f
 
 COCOAPODS: 1.5.3

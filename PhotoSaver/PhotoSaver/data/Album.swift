@@ -1,27 +1,67 @@
 import UIKit
 import Photos
+import RealmSwift
 
-class Album {
-    var id: String
-    var collectionId: String
-    var assetCollectionType: PHAssetCollectionType
-    var assetCollectionSubtype: PHAssetCollectionSubtype
-    let title: String
-    //let collection: PHAssetCollection?
-    var sections = [ImageSection]()
-    var count: Int = 0
+class Album: Object {
+    @objc dynamic var collectionId: String = ""
+    @objc dynamic var assetCollectionType: PHAssetCollectionType = PHAssetCollectionType.album
+    @objc dynamic var assetCollectionSubtype: PHAssetCollectionSubtype = PHAssetCollectionSubtype.any
+    @objc dynamic var title: String = ""
+    let sections = List<ImageSection>()
+    @objc var count: Int = 0
 
-    init(collection: PHAssetCollection) {
-        self.id = UUID.init().uuidString
-        self.collectionId = collection.localIdentifier
-        self.assetCollectionType = collection.assetCollectionType
-        self.assetCollectionSubtype = collection.assetCollectionSubtype
-        print("PHAssetCollection: ", self.collectionId, self.assetCollectionType.rawValue, self.assetCollectionSubtype.rawValue)
-        self.title = collection.localizedTitle ?? "-"
+    override static func primaryKey() -> String? {
+        return "collectionId"
     }
+    
+    func save() {
+        let realm = RealmManager.shared.realm
+        
+        try! realm.write {
+            realm.add(self, update: true)
+        }
+    }
+    
+    func exist() -> Bool{
+        let realm = RealmManager.shared.realm
+        
+        //let predicate = NSPredicate(format: "collectionId = %@", self.collectionId)
+        let results = realm.objects(Album.self).filter("collectionId = %@", self.collectionId)
+        
+        return results.count > 0
+    }
+    
+    static func findAll() -> [Album]{
+        let realm = RealmManager.shared.realm
+        
+        let results = realm.objects(Album.self)
+        var albums: [Album] = []
+        for album in results {
+            albums.append(album)
+        }
+        
+        return albums
+    }
+    
+    static func build(collection: PHAssetCollection)-> Album {
+        let album :Album = Album()
+        //album.id = UUID.init().uuidString
+        album.collectionId = collection.localIdentifier
+        album.assetCollectionType = collection.assetCollectionType
+        album.assetCollectionSubtype = collection.assetCollectionSubtype
+        print("PHAssetCollection: ", album.collectionId, album.assetCollectionType.rawValue, album.assetCollectionSubtype.rawValue)
+        album.title = collection.localizedTitle ?? "-"
+        album.count = 0
+        
+        return album
+    }
+    
+     func isSame(_ other: Album)-> Bool {
+        return self.collectionId == other.collectionId
+    }
+    
 
     func reload() {
-        sections = [ImageSection]()
         count = 0
 
         let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionId], options: nil)
@@ -39,16 +79,17 @@ class Album {
         itemsFetchResult.enumerateObjects({ (asset, count, stop) in
             if asset.mediaType == .image {
                 let groupedDate = asset.creationDate?.groupedDateString() ?? ""
-                var foundSection = ImageSection(groupedDate: groupedDate)
+                var foundSection = ImageSection.build(groupedDate: groupedDate)
                 var foundIndex: Int?
                 for (index, section) in self.sections.enumerated() {
                     if section.groupedDate == groupedDate {
                         foundSection = section
                         foundIndex = index
+                        break
                     }
                 }
 
-                let image = Image(asset: asset)
+                let image = Image.build(asset: asset)
 //                photo.assetID = asset.localIdentifier
 //
 //                if asset.duration > 0 {

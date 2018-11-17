@@ -20,7 +20,8 @@ target 'PhotoSaver' do
   pod 'FSPagerView'
   pod 'ATGMediaBrowser', '~> 1.0'
   pod 'CyaneaOctopus'
-  pod 'RealmSwift'
+  # pod 'RealmSwift'
+  pod 'GRDB.swift'
 end
 
 target 'UIViewsSample' do

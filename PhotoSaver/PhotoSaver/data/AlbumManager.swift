@@ -24,35 +24,38 @@ class AlbumManager {
 
     private init() {
         let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
-        
+
         if result.count != 1 {
             fatalError("不可思议的用户相册数量。")
         }
-        
+
         let collection: PHAssetCollection = result.firstObject!
-        self.albumOfSmartAlbumUserLibrary = Album(collection: collection)
+        self.albumOfSmartAlbumUserLibrary = Album.build(collection: collection)
+        self.albumOfSmartAlbumUserLibrary.save()
     }
 
     /// 重新加载图片库
     func reload() {
         //加载用户主相册
-        DispatchQueue.global(qos: .userInitiated).async {
+        //DispatchQueue.global(qos: .userInitiated).async {
             self.albumOfSmartAlbumUserLibrary.reload()
-        }
+        //}
 
         //加载其他相册
-        DispatchQueue.global(qos: .default).async {
+        //DispatchQueue.global(qos: .default).async {
+            self.albums = Album.findAll()
+            
             let startTime = CACurrentMediaTime()
             self.loadAllCollectionsAndInit()
             let endTime = CACurrentMediaTime()
             print("Escaped seconds of Loading Albums: ", (endTime - startTime) * 1000)
-        }
+        //}
     }
 
 
     fileprivate func loadAllCollectionsAndInit() {
-        albums = []
-
+        //TODO 添加albums中数据库中有，本地删除的数据处理
+        
         loadAllCollections()
 
         //通知UI刷新列表
@@ -73,8 +76,8 @@ class AlbumManager {
         self.albums.sort { (left, right) -> Bool in
             return left.count > right.count
         }
-        
-        self.albums.insert(albumOfSmartAlbumUserLibrary, at: 0)
+
+        //self.albums.insert(albumOfSmartAlbumUserLibrary, at: 0)
 
         //通知UI刷新列表
         DispatchQueue.main.async {
@@ -98,8 +101,11 @@ class AlbumManager {
                 if collection.assetCollectionSubtype == .smartAlbumUserLibrary {
                     return
                 }
-                let album = Album(collection: collection)
-                self.albums.append(album)
+                let album = Album.build(collection: collection)
+                if(!album.exist()) {
+                    album.save()
+                    self.albums.append(album)
+                }
             })
         }
     }

@@ -97,7 +97,7 @@ extension PhotoGalleryController: PhotoGalleryViewDelegate {
 
 extension PhotoGalleryController: AlbumLoadingDelegate {
     func albumLoading(_ album: Album){
-        if self.album == nil && AlbumManager.shared.albumOfSmartAlbumUserLibrary.id == album.id {
+        if self.album == nil && album.isSame(AlbumManager.shared.albumOfSmartAlbumUserLibrary) {
             self.album = album
             
             albumListButton.updateText(album.title)
@@ -110,7 +110,7 @@ extension PhotoGalleryController: AlbumLoadingDelegate {
             return
         }
         
-        if selfAlbum.id == album.id {
+        if album.isSame(selfAlbum) {
             self.photoGalleryView.updateView()
         }
     }

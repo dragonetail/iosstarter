@@ -22,3 +22,9 @@ my-image@3x.png  // for retina displays(plus editions) (Ex: 90x90 dpi)
 
 https://appicon.co/#app-icon
 http://appiconmaker.co/
+
+
+https://infinum.co/the-capsized-eight/top-10-ios-swift-libraries-every-ios-developer-should-know-about
+ Alamofire、SwiftyJSON、ObjectMapper、Quick、Eureka、RxSwift、
+
+
