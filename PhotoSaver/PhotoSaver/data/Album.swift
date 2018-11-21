@@ -4,75 +4,31 @@ import Photos
 class Album {
     var id: String
     var collectionId: String
-    var assetCollectionType: PHAssetCollectionType
-    var assetCollectionSubtype: PHAssetCollectionSubtype
+    var collectionType: PHAssetCollectionType
+    var collectionSubtype: PHAssetCollectionSubtype
     let title: String
-    //let collection: PHAssetCollection?
+
     var sections = [ImageSection]()
     var count: Int = 0
 
-    init(collection: PHAssetCollection) {
-        self.id = UUID.init().uuidString
-        self.collectionId = collection.localIdentifier
-        self.assetCollectionType = collection.assetCollectionType
-        self.assetCollectionSubtype = collection.assetCollectionSubtype
-        print("PHAssetCollection: ", self.collectionId, self.assetCollectionType.rawValue, self.assetCollectionSubtype.rawValue)
-        self.title = collection.localizedTitle ?? "-"
+    init(_ albumModel: AlbumModel) {
+        self.id = albumModel.id
+        self.collectionId = albumModel.collectionId
+        self.collectionType = albumModel.collectionType
+        self.collectionSubtype = albumModel.collectionSubtype
+        self.title = albumModel.title
     }
-
-    func reload() {
-        sections = [ImageSection]()
-        count = 0
-
-        let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [collectionId], options: nil)
-
-        if result.count == 0 {
-            return
-        }
-        if result.count > 1 {
-            fatalError("不可思议的相册数量。")
-        }
-
-        let collection: PHAssetCollection = result.firstObject!
-
-        let itemsFetchResult = PHAsset.fetchAssets(in: collection, options: Utils.fetchOptions())
-        itemsFetchResult.enumerateObjects({ (asset, count, stop) in
-            if asset.mediaType == .image {
-                let groupedDate = asset.creationDate?.groupedDateString() ?? ""
-                var foundSection = ImageSection(groupedDate: groupedDate)
-                var foundIndex: Int?
-                for (index, section) in self.sections.enumerated() {
-                    if section.groupedDate == groupedDate {
-                        foundSection = section
-                        foundIndex = index
-                    }
-                }
-
-                let image = Image(asset: asset)
-//                photo.assetID = asset.localIdentifier
-//
-//                if asset.duration > 0 {
-//                    photo.type = .video
-//                }
-
-                foundSection.images.append(image)
-                self.count = self.count + 1
-                foundSection.count = foundSection.count + 1
-
-                if foundIndex == nil {
-                    self.sections.append(foundSection)
-                }
-
-                if self.count % 20 == 0 {
-                    //通知UI刷新列表
-                    DispatchQueue.main.async {
-                        AlbumManager.shared.albumLoadingDelegate?.albumLoading(self)
-                    }
-                }
-            }
-        })
-    }
+    
+//    init(_ collection: PHAssetCollection) {
+//        self.id = UUID.init().uuidString
+//        self.collectionId = collection.localIdentifier
+//        self.collectionType = collection.assetCollectionType
+//        self.collectionSubtype = collection.assetCollectionSubtype
+//        print("PHAssetCollection: ", self.collectionId, self.collectionType.rawValue, self.collectionSubtype.rawValue)
+//        self.title = collection.localizedTitle ?? "-"
+//    }
 }
+
 extension Album {
     func getImage(_ indexPath: IndexPath) -> Image {
         let section = sections[indexPath.section]

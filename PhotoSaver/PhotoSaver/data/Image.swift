@@ -1,26 +1,24 @@
 import UIKit
 import Photos
 
-public enum MediaType: String {
-    case image
-    case video
-}
+class Image: Equatable {
+    var id: String
+    var assetId: String
+    var isSelected: Bool = false
+    var mediaType: MediaType = .image
 
-/// Wrap a PHAsset
-public class Image: Equatable {
-    public var id: String
-    public var assetId: String
-    public var isSelected: Bool = false
-    public var type: MediaType = .image
-    //public let asset: PHAsset
-    //public var url: String?
-
-    // MARK: - Initialization
-
-    init(asset: PHAsset) {
-        self.id = UUID.init().uuidString
-        self.assetId = asset.localIdentifier
+    
+    init(_ imageModel: ImageModel) {
+        self.id = imageModel.id
+        self.assetId = imageModel.assetId
+        self.mediaType = imageModel.mediaType
     }
+    
+    
+//    init(_ asset: PHAsset) {
+//        self.id = UUID.init().uuidString
+//        self.assetId = asset.localIdentifier
+//    }
 
 //
 //
@@ -153,6 +151,6 @@ extension Image {
 }
 
 // MARK: - Equatable
-public func == (lhs: Image, rhs: Image) -> Bool {
+func == (lhs: Image, rhs: Image) -> Bool {
     return lhs.assetId == rhs.assetId
 }

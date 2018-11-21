@@ -7,9 +7,9 @@ class PhotoGalleryController: UIViewController {
     private lazy var albumListButton: AlbumListButton = {
         let albumListButton = AlbumListButton()
         //albumListButton.updateText("Blank Title")
-        
+
         albumListButton.addTarget(self, action: #selector(albumListButtonTapped(_:)), for: .touchUpInside)
-        
+
         return albumListButton
     }()
     private lazy var albumListController: AlbumListController = {
@@ -19,23 +19,23 @@ class PhotoGalleryController: UIViewController {
 
     private lazy var photoGalleryView: PhotoGalleryView = {
         let photoGalleryView = PhotoGalleryView(dataSource: self, delegate: self, albumListButton: albumListButton)
-        
+
         return photoGalleryView
     }()
 
     // 数据
     private var album: Album? = nil
-    
+
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = UIColor.white
-        
-        AlbumManager.shared.albumLoadingDelegate = self
+
+        //AlbumManager.shared.albumLoadingDelegate = self
 
         view.addSubview(photoGalleryView)
-        
+        photoGalleryView.autoPinEdgesToSuperviewSafeArea()
 
         //addChild(albumListController)
         albumListController.beginAppearanceTransition(true, animated: false)
@@ -45,17 +45,11 @@ class PhotoGalleryController: UIViewController {
         albumListController.didMove(toParent: self)
 
     }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-
-        photoGalleryView.autoPinEdgesToSuperviewSafeArea(with: UIEdgeInsets.zero)
-    }
 
     @objc func albumListButtonTapped(_ button: AlbumListButton) {
         toggaleAlbumControllerView()
     }
-    
+
     func toggaleAlbumControllerView() {
         albumListExpanding = !albumListExpanding
         albumListController.toggle(albumListExpanding)
@@ -66,8 +60,8 @@ class PhotoGalleryController: UIViewController {
 
 extension PhotoGalleryController: AlbumListControllerDelegate {
     func didSelectAlbum(_ controller: AlbumListController, didSelect album: Album) {
-         self.album = album
-       
+        self.album = album
+
         albumListButton.updateText(album.title)
         self.photoGalleryView.updateView()
         toggaleAlbumControllerView()
@@ -79,7 +73,7 @@ extension PhotoGalleryController: PhotoGalleryViewDataSource {
     func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int {
         return self.album?.sections.count ?? 0
     }
-    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection{
+    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection {
         return album!.sections[section]
     }
     func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image {
@@ -90,28 +84,28 @@ extension PhotoGalleryController: PhotoGalleryViewDelegate {
     func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) {
 
         let imageViewController = ImageViewController(album: album!, initialIndexPath: indexPath)
-        
+
         self.present(imageViewController, animated: false, completion: nil)
     }
 }
 
-extension PhotoGalleryController: AlbumLoadingDelegate {
-    func albumLoading(_ album: Album){
-        if self.album == nil && AlbumManager.shared.albumOfSmartAlbumUserLibrary.id == album.id {
-            self.album = album
-            
-            albumListButton.updateText(album.title)
-            self.photoGalleryView.updateView()
-        }
-    }
-    
-    func albumLoaded(_ album: Album){
-        guard let selfAlbum = self.album else {
-            return
-        }
-        
-        if selfAlbum.id == album.id {
-            self.photoGalleryView.updateView()
-        }
-    }
-}
+//extension PhotoGalleryController: AlbumLoadingDelegate {
+//    func albumLoading(_ albumManager: AlbumManager, album: Album) {
+////        if self.album == nil && AlbumManager.shared.albumOfSmartAlbumUserLibrary.id == album.id {
+//            self.album = album
+//
+//            albumListButton.updateText(album.title)
+//            self.photoGalleryView.updateView()
+////        }
+//    }
+//
+//    func albumLoaded(_ albumManager: AlbumManager, album: Album) {
+//        guard let selfAlbum = self.album else {
+//            return
+//        }
+//
+//        if selfAlbum.id == album.id {
+//            self.photoGalleryView.updateView()
+//        }
+//    }
+//}

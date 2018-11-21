@@ -1,20 +1,15 @@
-//
-//  ImageSection.swift
-//  PhotoSaver
-//
-//  Created by 孙玉新 on 2018/10/26.
-//  Copyright © 2018年 dragonetail. All rights reserved.
-//
-
 import Foundation
 
 class ImageSection {
+    let title: String
+    
     var images = [Image]()
     var count: Int  = 0
-    var isSelected: Bool  = false
-    let groupedDate: String
     
-    init(groupedDate: String) {
-        self.groupedDate = groupedDate
+    var isSelected: Bool  = false
+    
+    
+    init(_ sectionModel: SectionModel) {
+        self.title = sectionModel.title
     }
 }

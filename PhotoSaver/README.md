@@ -22,3 +22,9 @@ my-image@3x.png  // for retina displays(plus editions) (Ex: 90x90 dpi)
 
 https://appicon.co/#app-icon
 http://appiconmaker.co/
+
+实现Profile页面
+实现云端页面
+实现上传页面
+
+

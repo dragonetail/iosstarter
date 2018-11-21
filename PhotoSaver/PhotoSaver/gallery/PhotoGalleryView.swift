@@ -115,9 +115,6 @@ class PhotoGalleryView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        loadingIndicatorView.autoCenterInSuperview()
-        emptyView.autoCenterInSuperview()
-
         topView.autoSetDimension(.height, toSize: 40)
         topView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
 
@@ -125,8 +122,10 @@ class PhotoGalleryView: UIView {
         albumListButton?.autoCenterInSuperview()
         albumListButton?.layoutSubviews()
 
-        collectionView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
-        collectionView.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
+        [collectionView, emptyView, loadingIndicatorView].forEach { subview in
+            subview.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+            subview.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
+        }
     }
 
     internal func insertAlbumListControllerView(_ albumListControllerView: UIView) -> (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint) {
@@ -191,7 +190,7 @@ extension PhotoGalleryView: UICollectionViewDataSource {
 
             let section = self.dataSource!.section(self, section: indexPath.section)
 
-            header.configure(section.groupedDate, selected: section.isSelected, delegate: self)
+            header.configure(section.title, selected: section.isSelected, delegate: self)
             return header
         case UICollectionView.elementKindSectionFooter:
             print("FOOTER DETECTED");//NEVER CALLED
@@ -222,7 +221,7 @@ extension PhotoGalleryView: UIScrollViewDelegate {
         guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
         let section = self.dataSource!.section(self, section: indexPath.section)
 
-        self.scrollSlider.updateScrollLabel(section.groupedDate)
+        self.scrollSlider.updateScrollLabel(section.title)
     }
 
 //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -252,6 +251,7 @@ extension PhotoGalleryView: SectionSelectedDelegate {
 
         let section = self.dataSource!.section(self, section: indexPath.section)
 
+        //TODO
         section.isSelected = !section.isSelected
 
         section.images.forEach {

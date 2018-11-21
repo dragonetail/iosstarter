@@ -48,12 +48,8 @@ class AlbumListController: UIViewController {
 
 
     private var animating: Bool = false
-    var selectedIndex: Int = 0
-    var albums: [Album] = [] {
-        didSet {
-            selectedIndex = 0
-        }
-    }
+    var selectedIndex: Int? = nil
+    var albums: [Album] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -124,25 +120,29 @@ extension AlbumListController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let album = albums[(indexPath as NSIndexPath).row]
+        selectedIndex = (indexPath as NSIndexPath).row
+        let album = albums[selectedIndex!]
         delegate?.didSelectAlbum(self, didSelect: album)
     }
 }
 
 extension AlbumListController: AlbumsLoadingDelegate {
-    func albumsLoading(_ albumManager: AlbumManager) {
-        let albumManager = AlbumManager.shared
-        self.albums = albumManager.albums
-
-//        if let album = albumManager.albums.first {
-//            self.delegate?.didSelectAlbum(self, didSelect: album)
-//        }
-
-        self.tableView.reloadData()
-    }
+//    func albumsFirstLoaded(_ albumManager: AlbumManager) {
+//        let albumManager = AlbumManager.shared
+//        self.albums = albumManager.albums
+//
+//
+//
+//        self.tableView.reloadData()
+//    }
     func albumsLoaded(_ albumManager: AlbumManager) {
         let albumManager = AlbumManager.shared
         self.albums = albumManager.albums
+
+        if selectedIndex == nil, let album = self.albums.first {
+            selectedIndex = 0
+            self.delegate?.didSelectAlbum(self, didSelect: album)
+        }
 
         if expandedTopConstraint?.isActive ?? false {
             self.tableView.reloadData()
