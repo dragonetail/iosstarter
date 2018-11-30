@@ -23,6 +23,13 @@ target 'PhotoSaver' do
   #pod 'RealmSwift'
   pod 'GRDB.swift'
   pod 'XCGLogger', '~> 6.1.0'
+  pod 'FLEX', '~> 2.0', :configurations => ['Debug']
+  pod 'WechatOpenSDK'
+  #https://github.com/xmartlabs/XLSwiftKit
+  #pod 'XLSwiftKit'
+  #pod 'SwiftLint'
+  pod 'Eureka'
+  pod 'SwiftyJSON', '~> 4.0'
 end
 
 target 'UIViewsSample' do

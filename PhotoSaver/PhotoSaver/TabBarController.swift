@@ -19,12 +19,11 @@ class TabBarController: UITabBarController {
         transferViewController.title = "Gallery.Images.Title"._localize(fallback: "云传输")
         transferViewController.tabBarItem = UITabBarItem(title: transferViewController.title, image: UIImage(named: "cloud-transfer"), tag: 0)
 
-        let configViewController = PhotoGalleryController()
-        configViewController.title = "Gallery.Images.Title"._localize(fallback: "我")
-        configViewController.tabBarItem = UITabBarItem(title: configViewController.title, image: UIImage(named: "profile"), tag: 0)
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        profileViewController.title = "Gallery.Images.Title"._localize(fallback: "我")
+        profileViewController.tabBarItem = UITabBarItem(title: profileViewController.title, image: UIImage(named: "profile"), tag: 0)
 
-
-        let tabBarList = [localPhotoGalleryController, cloudPhotoViewController, transferViewController, configViewController]
+        let tabBarList = [ localPhotoGalleryController, profileViewController, cloudPhotoViewController, transferViewController]
 
 
         viewControllers = tabBarList

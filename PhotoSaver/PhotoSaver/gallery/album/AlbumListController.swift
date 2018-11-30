@@ -55,6 +55,9 @@ class AlbumListController: UIViewController {
         super.viewDidLoad()
 
         setup()
+        
+        //视图延迟加载时，主动询问数据是否加载完成，更新视图
+        AlbumManager.shared.checkLoadedAndNotify()
     }
 
     func setup() {
@@ -127,14 +130,6 @@ extension AlbumListController: UITableViewDelegate {
 }
 
 extension AlbumListController: AlbumsLoadingDelegate {
-//    func albumsFirstLoaded(_ albumManager: AlbumManager) {
-//        let albumManager = AlbumManager.shared
-//        self.albums = albumManager.albums
-//
-//
-//
-//        self.tableView.reloadData()
-//    }
     func albumsLoaded(_ albumManager: AlbumManager) {
         let albumManager = AlbumManager.shared
         self.albums = albumManager.albums

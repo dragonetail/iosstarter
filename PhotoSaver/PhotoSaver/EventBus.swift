@@ -40,10 +40,22 @@ class EventBus {
 //    func triggerPageShowImages(album: Album, indexPath: IndexPath){
 //        SwiftEventBus.postToMainThread("pageShowImages", sender: (album: album, indexPath: indexPath))
 //    }
-//    
-//    func unbindAll(){
-//        SwiftEventBus.unregister(self)
-//    }
+    
+        func bindProfileChanged(_ profileChanged: @escaping ()->()){
+            SwiftEventBus.onMainThread(self, name: "profileChanged") { result in
+                profileChanged()
+            }
+        }
+    
+        func triggerProfileChanged(){
+            SwiftEventBus.postToMainThread("profileChanged")
+        }
+    
+    func unbindAll(){
+        SwiftEventBus.unregister(self)
+    }
+    
+    
     
 }
 

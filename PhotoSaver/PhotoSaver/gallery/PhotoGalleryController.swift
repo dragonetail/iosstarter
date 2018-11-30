@@ -80,6 +80,7 @@ extension PhotoGalleryController: PhotoGalleryViewDataSource {
         return album!.getImage(indexPath)
     }
 }
+
 extension PhotoGalleryController: PhotoGalleryViewDelegate {
     func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) {
 
@@ -89,23 +90,3 @@ extension PhotoGalleryController: PhotoGalleryViewDelegate {
     }
 }
 
-//extension PhotoGalleryController: AlbumLoadingDelegate {
-//    func albumLoading(_ albumManager: AlbumManager, album: Album) {
-////        if self.album == nil && AlbumManager.shared.albumOfSmartAlbumUserLibrary.id == album.id {
-//            self.album = album
-//
-//            albumListButton.updateText(album.title)
-//            self.photoGalleryView.updateView()
-////        }
-//    }
-//
-//    func albumLoaded(_ albumManager: AlbumManager, album: Album) {
-//        guard let selfAlbum = self.album else {
-//            return
-//        }
-//
-//        if selfAlbum.id == album.id {
-//            self.photoGalleryView.updateView()
-//        }
-//    }
-//}

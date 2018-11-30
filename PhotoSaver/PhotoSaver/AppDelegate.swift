@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     log.info("访问照片成功授权。")
                     self.startup(application)
                 } else {
-                     log.info("访问照片拒绝授权。")
+                    log.info("访问照片拒绝授权。")
                     self.alertAuthorizationStatus()
                 }
             })
@@ -40,6 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func startup(_ application: UIApplication) {
         try! setupDatabase(application)
 
+        ProfileManager.shared.load()
+        
         DispatchQueue.main.async(execute: { () -> Void in
             try! AlbumManager.shared.load()
         })
@@ -50,6 +52,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 window.backgroundColor = UIColor.white
 
                 let tabBarController = TabBarController()
+//                let navigationController = UINavigationController(rootViewController: tabBarController)
+//                navigationController.isNavigationBarHidden = true
+//                window.rootViewController = navigationController
                 window.rootViewController = tabBarController
                 window.makeKeyAndVisible()
             }

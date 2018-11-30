@@ -2,6 +2,8 @@ PODS:
   - ATGMediaBrowser (1.0.1)
   - Cache (5.2.0)
   - CyaneaOctopus (0.3.1)
+  - Eureka (4.3.0)
+  - FLEX (2.4.0)
   - FSPagerView (0.8.1)
   - Gallery (2.2.0)
   - GRDB.swift (3.5.0)
@@ -16,6 +18,8 @@ PODS:
   - PureLayout (3.1.4)
   - SVProgressHUD (2.2.5)
   - SwiftEventBus (3.0.1)
+  - SwiftyJSON (4.2.0)
+  - WechatOpenSDK (1.8.3)
   - XCGLogger (6.1.0):
     - XCGLogger/Core (= 6.1.0)
   - XCGLogger/Core (6.1.0):
@@ -25,6 +29,8 @@ DEPENDENCIES:
   - ATGMediaBrowser (~> 1.0)
   - Cache (from `./LocalPods/Cache`)
   - CyaneaOctopus
+  - Eureka
+  - FLEX (~> 2.0)
   - FSPagerView
   - Gallery (from `./LocalPods/Gallery`)
   - GRDB.swift
@@ -34,16 +40,22 @@ DEPENDENCIES:
   - PureLayout (~> 3.1.2)
   - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `3.0.1`)
+  - SwiftyJSON (~> 4.0)
+  - WechatOpenSDK
   - XCGLogger (~> 6.1.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - ATGMediaBrowser
     - CyaneaOctopus
+    - Eureka
+    - FLEX
     - FSPagerView
     - GRDB.swift
     - ObjcExceptionBridging
     - PureLayout
+    - SwiftyJSON
+    - WechatOpenSDK
     - XCGLogger
 
 EXTERNAL SOURCES:
@@ -72,6 +84,8 @@ SPEC CHECKSUMS:
   ATGMediaBrowser: aade73960db4fc9e5c923ec133ee220a1bc9c4d1
   Cache: 9d4617a0dc37d72fb80030a70ef56072b1237b46
   CyaneaOctopus: 6f683b8cee6c372419993a0e7de240c599edef1c
+  Eureka: 6d711cb30ca333b4bc893110285a722ae3840114
+  FLEX: bd1a39e55b56bb413b6f1b34b3c10a0dc44ef079
   FSPagerView: 4e865526acc0b0e3077e2abb29b8d10a9f395476
   Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
   GRDB.swift: 225cf9c1354753e92e20c2a1fa2912b924c9da6e
@@ -82,8 +96,10 @@ SPEC CHECKSUMS:
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
   SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  WechatOpenSDK: 3117412f8aafde4758cac1e8d20b93c67cafcfef
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
 
-PODFILE CHECKSUM: 5cc20f8d443c9e891511ad5d7914e15a8c2472fc
+PODFILE CHECKSUM: bc4806b9517ed9295a1268714d16c4b29b8e6266
 
 COCOAPODS: 1.5.3

@@ -3,13 +3,8 @@ import Photos
 import GRDB
 
 protocol AlbumsLoadingDelegate: class {
-//    func albumsFirstLoaded(_ albumManager: AlbumManager)
     func albumsLoaded(_ albumManager: AlbumManager)
 }
-//protocol AlbumLoadingDelegate: class {
-//    func albumLoading(_ albumManager: AlbumManager, album: Album)
-//    func albumLoaded(_ albumManager: AlbumManager, album: Album)
-//}
 
 /**
     获取本机图片库
@@ -17,26 +12,34 @@ protocol AlbumsLoadingDelegate: class {
 class AlbumManager {
     static let shared = AlbumManager()
 
+    var loaded: Bool = false
     var albums: [Album] = []
     var total: Int = 0
     weak var albumsLoadingDelegate: AlbumsLoadingDelegate?
-    //weak var albumLoadingDelegate: AlbumLoadingDelegate?
 
     private init() {
     }
 
+    func checkLoadedAndNotify() {
+        if loaded {
+            self.albumsLoadingDelegate?.albumsLoaded(self)
+        }
+    }
     /// 重新加载图片库
     func load() throws {
+        loaded = false
+
         log.info("即将准备用户主相册数据(第一次运行时有效)。")
         loadAndPrepareSmartAlbumUserLibrary()
 
         log.info("即将加载DB数据到内存。")
         loadAllFromDBToMemory({ imageModelsByAssetId in
+            self.loaded = true
             //通知UI刷新列表
             DispatchQueue.main.async {
                 self.albumsLoadingDelegate?.albumsLoaded(self)
             }
-            
+
             log.info("即将同步设备数据到DB。")
             self.syncAllCollections(imageModelsByAssetId, complete: {
                 log.info("即将再次加载DB数据更新到内存。")
@@ -138,7 +141,7 @@ class AlbumManager {
     fileprivate func loadAllFromDBToMemory(_ db: Database) throws -> Dictionary<String, ImageModel> {
         var albums: [Album] = []
         var total: Int = 0
-        
+
         let albumModels: [AlbumModel] = try AlbumModel.fetchAll(db)
         let imageModelArray: [ImageModel] = try ImageModel.fetchAll(db)
         let imageModels: Dictionary<String, ImageModel> =
@@ -174,7 +177,7 @@ class AlbumManager {
         albums.sort { $0.count > $1.count }
 
         self.albums = albums
-         self.total = total
+        self.total = total
 
         //特殊处理，为了加快后面同步操作
         let imageModelsByAssetId: Dictionary<String, ImageModel> =

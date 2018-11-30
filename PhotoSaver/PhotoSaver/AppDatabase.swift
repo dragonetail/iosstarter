@@ -12,8 +12,9 @@ struct AppDatabase {
 
         // Use DatabaseMigrator to define the database schema
         // See https://github.com/groue/GRDB.swift/#migrations
-        //log.info("即将执行数据库迁移。")
-        //try migrator.migrate(dbConn)
+        log.info("即将执行数据库迁移。")
+        
+        try migrator.migrate(dbConn)
 
         return dbConn
     }
@@ -36,10 +37,17 @@ struct AppDatabase {
     // Ref: https://github.com/groue/GRDB.swift/#migrations
     static var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
+        #if DEBUG
+        migrator.eraseDatabaseOnSchemaChange = true
+        #endif
 
         migrator.registerMigration("v0.1.create_tables") { db in
             log.info("即将执行数据库迁移v0.1.create_tables。")
             // Ref: https://github.com/groue/GRDB.swift#create-tables
+            try db.create(table: "settingsModel") { t in
+                t.column("settingsType", .integer).primaryKey()
+                t.column("contents", .text)
+            }
             try db.create(table: "albumModel") { t in
                 //uuids as 16-bytes data blobs
                 t.column("id", .text).primaryKey()
