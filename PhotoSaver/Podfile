@@ -30,6 +30,7 @@ target 'PhotoSaver' do
   #pod 'SwiftLint'
   pod 'Eureka'
   pod 'SwiftyJSON', '~> 4.0'
+  pod 'GesturePassword'
 end
 
 target 'UIViewsSample' do

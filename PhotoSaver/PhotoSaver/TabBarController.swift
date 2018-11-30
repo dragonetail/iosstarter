@@ -23,7 +23,7 @@ class TabBarController: UITabBarController {
         profileViewController.title = "Gallery.Images.Title"._localize(fallback: "我")
         profileViewController.tabBarItem = UITabBarItem(title: profileViewController.title, image: UIImage(named: "profile"), tag: 0)
 
-        let tabBarList = [ localPhotoGalleryController, profileViewController, cloudPhotoViewController, transferViewController]
+        let tabBarList = [ profileViewController, localPhotoGalleryController, cloudPhotoViewController, transferViewController]
 
 
         viewControllers = tabBarList
