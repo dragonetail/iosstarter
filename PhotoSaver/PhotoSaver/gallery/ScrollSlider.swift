@@ -2,6 +2,7 @@ import UIKit
 import PureLayout
 import CyaneaOctopus
 
+//FIXME: 当前滑动块的窗口是显示日期的时候的实际大小，在只有箭头的时候，日期内容不显示，但是这个区域可以被选中，导致滑动块被误拖动
 open class ScrollSlider: UIView {
 
     private weak var scrollView: UIScrollView!
