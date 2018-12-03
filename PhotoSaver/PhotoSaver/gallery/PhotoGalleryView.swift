@@ -38,21 +38,7 @@ class PhotoGalleryView: UIView {
 
     internal lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-
-        let columnCount: CGFloat = 3
-        let cellSpacing: CGFloat = 1
-        let size = (UIScreen.main.bounds.width - 2 - (columnCount - 1) * cellSpacing) / columnCount
-
-        layout.itemSize = CGSize(width: size, height: size)
-        //         layout.itemSize = CGSize(width: 150, height: 150)
-        layout.minimumInteritemSpacing = 1
-        layout.minimumLineSpacing = 1
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
-        //layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-
-
-        let collectionView = SwipeSelectingCollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = SwipeSelectingCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.backgroundColor = UIColor.white
         collectionView.allowsMultipleSelection = true
 
@@ -106,7 +92,6 @@ class PhotoGalleryView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
         topView.autoSetDimension(.height, toSize: 40)
         topView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
 
@@ -118,8 +103,25 @@ class PhotoGalleryView: UIView {
             subview.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
             subview.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
         }
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
+        
+        let cellSpacing: CGFloat = 1
+        var columnCount: CGFloat = CGFloat(floorf(Float(UIScreen.main.bounds.width / 145)))
+        columnCount = columnCount < 3 ? 3 : columnCount
+        columnCount = columnCount > 6 ? 6 : columnCount
+        let size = (UIScreen.main.bounds.width - layout.minimumInteritemSpacing * 2 - (columnCount - 1) * cellSpacing) / columnCount
+        layout.itemSize = CGSize(width: size, height: size)
+        
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        //layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        collectionView.collectionViewLayout = layout
     }
-
+    
+    
     internal func insertAlbumListControllerView(_ albumListControllerView: UIView) -> (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint) {
 
         insertSubview(albumListControllerView, belowSubview: loadingIndicatorView)
@@ -136,7 +138,7 @@ class PhotoGalleryView: UIView {
 
     internal func update(_ dataSource: PhotoGalleryViewDataSource) {
         loadingIndicatorView.startAnimating()
-        
+
         self.dataSource = dataSource
 
         let numberOfSections = self.dataSource?.numberOfSections() ?? 0

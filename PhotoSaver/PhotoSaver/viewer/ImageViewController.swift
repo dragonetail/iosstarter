@@ -48,13 +48,23 @@ class ImageViewController: UIViewController {
 
         return imageViewHeader
     }()
+    
+    lazy var imageViewFooter: UIView = {
+        let imageViewFooter = ImageViewFooter()
+        imageViewFooter.viewDelegate = self
+        
+        imageViewFooter.translatesAutoresizingMaskIntoConstraints = false
+        imageViewFooter.alpha = 1
+        
+        return imageViewFooter
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.black
         //self.view._roundBorder()
 
-        [imageCollectionView, imageViewHeader].forEach {
+        [imageCollectionView, imageViewHeader, imageViewFooter].forEach {
             self.view.addSubview($0)
         }
         
@@ -85,8 +95,14 @@ class ImageViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
+        imageViewHeader._roundBorder()
+        imageViewFooter._roundBorder()
+        
         imageViewHeader.autoSetDimension(.height, toSize: 64)
         imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+        
+        imageViewFooter.autoSetDimension(.height, toSize: 64)
+        imageViewFooter.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
 
         guard let flowLayout = imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         flowLayout.itemSize = imageCollectionView.frame.size
@@ -137,6 +153,7 @@ class ImageViewController: UIViewController {
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
         imageViewHeader.isHidden = !imageViewHeader.isHidden
+        imageViewFooter.isHidden = !imageViewFooter.isHidden
     }
     @objc func handleLongPressGesture(sender: UILongPressGestureRecognizer) {
         print("handleLongPressGesture: \(sender.state)")
@@ -239,4 +256,24 @@ extension ImageViewController: ImageViewHeaderDelegate {
     }
 }
 
-
+extension ImageViewController: ImageViewFooterDelegate {
+    
+    func footerView(_: ImageViewFooter, didPressClearButton _: UIButton) {
+        self.dismiss(animated: true)
+        
+        guard let dataSource = dataSource else{
+            return
+        }
+        
+        if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
+            self.exitProcesser?(dataSource.originalIndexPath(indexPath))
+        }
+    }
+    
+    func footerView(_: ImageViewFooter, didPressMenuButton button: UIButton) {
+        //        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
+        //        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
+        //        self.optionsController!.delegate = self
+        //        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
+    }
+}

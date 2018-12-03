@@ -24,13 +24,10 @@ class PhotoGalleryController: UIViewController {
         return photoGalleryView
     }()
 
-    // 数据
-    private var album: Album? = nil
-
     // 初始化逻辑
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = UIColor.white
 
         //AlbumManager.shared.albumLoadingDelegate = self
@@ -47,7 +44,7 @@ class PhotoGalleryController: UIViewController {
         
         self.view.isMultipleTouchEnabled = true
     }
-
+    
     @objc func albumListButtonTapped(_ button: AlbumListButton) {
         toggaleAlbumControllerView()
     }
@@ -62,8 +59,6 @@ class PhotoGalleryController: UIViewController {
 
 extension PhotoGalleryController: AlbumListControllerDelegate {
     func didSelectAlbum(_ controller: AlbumListController, didSelect album: Album) {
-        self.album = album
-        
         albumListButton.updateText(album.title)
         toggaleAlbumControllerView()
         
@@ -80,11 +75,9 @@ extension PhotoGalleryController: PhotoGalleryViewDelegate {
         }
         
         let imageViewController = ImageViewController()
-        print(indexPath)
         imageViewController.dataSource = dataSource.forkOneCyclic(indexPath)
        
         imageViewController.exitProcesser = { indexPath in
-                 print(indexPath)
             photoGalleryView.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
         }
         
