@@ -1,15 +1,19 @@
 import UIKit
 import Photos
 import PureLayout
+import SwipeSelectingCollectionView2
 
 
-protocol PhotoGalleryViewDataSource: class {
-    func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int
-    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection
-    func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image
+protocol PhotoGalleryViewDataSource {
+    func numberOfSections() -> Int
+    func numberOfSection(_ section: Int) -> Int
+    func titleOfSection(_ section: Int) -> String
+    func initialIndexPath() -> IndexPath
+    func image(_ indexPath: IndexPath) -> Image
 }
-protocol PhotoGalleryViewDelegate: class {
-    func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath)
+
+protocol PhotoGalleryViewDelegate {
+    func didSelectImage(_ photoGalleryView: PhotoGalleryView, dataSource: PhotoGalleryViewDataSource?, indexPath: IndexPath)
 }
 
 class PhotoGalleryView: UIView {
@@ -48,14 +52,14 @@ class PhotoGalleryView: UIView {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
 
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = SwipeSelectingCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = UIColor.white
+        collectionView.allowsMultipleSelection = true
 
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(ImageCell.self, forCellWithReuseIdentifier: String(describing: ImageCell.self))
-        collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: String(describing: HeaderCell.self))
-        //collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: String(describing: HeaderCell.self))
+        collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.identifier)
+        collectionView.register(HeaderCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderCell.identifier)
 
         //collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 10)
         collectionView.showsVerticalScrollIndicator = false
@@ -79,26 +83,18 @@ class PhotoGalleryView: UIView {
         return view
     }()
 
+    private var dataSource: PhotoGalleryViewDataSource?
+    private var delegate: PhotoGalleryViewDelegate?
+    private var albumListButton: AlbumListButton?
 
-    private weak var dataSource: PhotoGalleryViewDataSource?
-    private weak var delegate: PhotoGalleryViewDelegate?
-    private weak var albumListButton: AlbumListButton?
     // 初始化
-
-    convenience init(dataSource: PhotoGalleryViewDataSource, delegate: PhotoGalleryViewDelegate?, albumListButton: AlbumListButton?) {
-        self.init(frame: .zero)
-
-        self.dataSource = dataSource
+    func setup(delegate: PhotoGalleryViewDelegate?, albumListButton: AlbumListButton?) {
         self.delegate = delegate
 
         self.albumListButton = albumListButton
         if let albumListButton = albumListButton {
             topView.addSubview(albumListButton)
         }
-    }
-
-    private override init(frame: CGRect) {
-        super.init(frame: frame)
 
         backgroundColor = .white
 
@@ -106,10 +102,6 @@ class PhotoGalleryView: UIView {
             addSubview($0)
         }
         loadingIndicatorView.startAnimating()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
     override func layoutSubviews() {
@@ -142,15 +134,15 @@ class PhotoGalleryView: UIView {
     }
 
 
-    private var isFirstReload: Bool = true
-    internal func updateView() {
+    internal func update(_ dataSource: PhotoGalleryViewDataSource) {
         loadingIndicatorView.startAnimating()
+        
+        self.dataSource = dataSource
 
-        let numberOfSections = self.dataSource!.numberOfSections(self)
+        let numberOfSections = self.dataSource?.numberOfSections() ?? 0
         emptyView.isHidden = (numberOfSections > 0)
 
         collectionView.reloadData()
-        //collectionView._scrollToTop()
 
         loadingIndicatorView.stopAnimating()
     }
@@ -159,38 +151,38 @@ class PhotoGalleryView: UIView {
 
 extension PhotoGalleryView: UICollectionViewDataSource {
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return self.dataSource!.numberOfSections(self)
+        return self.dataSource?.numberOfSections() ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.dataSource!.section(self, section: section).count
+        return self.dataSource?.numberOfSection(section) ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.identifier, for: indexPath) as! ImageCell
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ImageCell.self), for: indexPath) as! ImageCell
-        let image = self.dataSource!.image(self, indexPath: indexPath)
+        guard let dataSource = self.dataSource else {
+            return cell
+        }
 
+        let image = dataSource.image(indexPath)
+
+        //TODO 统一Viewer部分Image的取法
         cell.configure(image)
 
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let imageCell = cell as! ImageCell
-        imageCell.reconfigure()
-    }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
             //print("HEADER DETECTED");//CALLED
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier:
-                String(describing: HeaderCell.self), for: indexPath) as! HeaderCell
+                HeaderCell.identifier, for: indexPath) as! HeaderCell
 
-            let section = self.dataSource!.section(self, section: indexPath.section)
-
-            header.configure(section.title, selected: section.isSelected, delegate: self)
+            let title = self.dataSource?.titleOfSection(indexPath.section) ?? "UNKNOWN"
+            header.configure(title, delegate: self)
             return header
         case UICollectionView.elementKindSectionFooter:
             print("FOOTER DETECTED");//NEVER CALLED
@@ -204,9 +196,17 @@ extension PhotoGalleryView: UICollectionViewDataSource {
     }
 }
 
-extension PhotoGalleryView: UICollectionViewDelegateFlowLayout {
+extension PhotoGalleryView: SwipeUICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAtByTapped indexPath: IndexPath) {
+        self.delegate?.didSelectImage(self, dataSource: dataSource, indexPath: indexPath)
+    }
+}
+
+extension PhotoGalleryView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.delegate?.didSelectImage(self, indexPath: indexPath)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
     }
 }
 
@@ -218,16 +218,13 @@ extension PhotoGalleryView: UIScrollViewDelegate {
         visibleRect.origin = collectionView.contentOffset
         visibleRect.size = collectionView.bounds.size
         let visiblePoint = CGPoint(x: visibleRect.midX, y: visibleRect.midY)
-        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint) else { return }
-        let section = self.dataSource!.section(self, section: indexPath.section)
+        guard let indexPath = collectionView.indexPathForItem(at: visiblePoint),
+            let dataSource = self.dataSource
+            else { return }
 
-        self.scrollSlider.updateScrollLabel(section.title)
+        let title = dataSource.titleOfSection(indexPath.section)
+        self.scrollSlider.updateScrollLabel(title)
     }
-
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        NotificationCenter.default.post(Notification(name: DragScrollIndicatorDidScroll))
-//        NotificationCenter.default.post(name: DragScrollIndicatorDidScroll, object: self, userInfo: ["scrollView":scrollView])
-//    }
 }
 
 extension PhotoGalleryView: SectionSelectedDelegate {
@@ -249,18 +246,20 @@ extension PhotoGalleryView: SectionSelectedDelegate {
             return
         }
 
-        let section = self.dataSource!.section(self, section: indexPath.section)
+        headerCell.isSelected = !headerCell.isSelected
 
-        //TODO
-        section.isSelected = !section.isSelected
-
-        section.images.forEach {
-            $0.isSelected = section.isSelected
-        }
-
-        for case let cell as ImageCell in collectionView.visibleCells {
-            cell.reconfigure()
-        }
+        let sectionIndex = indexPath.section
+        let size = collectionView.numberOfItems(inSection: indexPath.section)
+        collectionView.performBatchUpdates({
+            for rowIndex in 0..<size {
+                let indexPath = IndexPath(row: rowIndex, section: sectionIndex)
+                if headerCell.isSelected {
+                    collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                } else {
+                    collectionView.deselectItem(at: indexPath, animated: false)
+                }
+            }
+        })
     }
 }
 

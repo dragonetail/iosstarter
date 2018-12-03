@@ -9,9 +9,17 @@ protocol SectionSelectedDelegate: class {
     func didSelectSection(_ headerCell: HeaderCell)
 }
 
-
 class HeaderCell: UICollectionViewCell {
-
+    static var identifier: String {
+        return String(describing: HeaderCell.self)
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            selectButton.isSelected = isSelected
+        }
+    }
+    
     lazy var label: UILabel = {
         let label = UILabel()
         label.font = Config.Font.Main.regular.withSize(14)
@@ -52,13 +60,11 @@ class HeaderCell: UICollectionViewCell {
 
 
     private var delegate: SectionSelectedDelegate!
-//    private var indexPath: IndexPath!
-    func configure(_ headerTitle: String, selected: Bool, delegate: SectionSelectedDelegate) {
+    
+    func configure(_ headerTitle: String, delegate: SectionSelectedDelegate) {
         label.text = headerTitle
-        selectButton.isSelected = selected
         
         self.delegate = delegate
-//        self.indexPath = indexPath
     }
 
     func setup() {

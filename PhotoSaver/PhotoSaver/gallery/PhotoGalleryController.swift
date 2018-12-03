@@ -18,7 +18,8 @@ class PhotoGalleryController: UIViewController {
     }()
 
     private lazy var photoGalleryView: PhotoGalleryView = {
-        let photoGalleryView = PhotoGalleryView(dataSource: self, delegate: self, albumListButton: albumListButton)
+        let photoGalleryView = PhotoGalleryView()
+        photoGalleryView.setup(delegate: self, albumListButton: albumListButton)
 
         return photoGalleryView
     }()
@@ -43,7 +44,8 @@ class PhotoGalleryController: UIViewController {
         albumListController.updateToggleConstraint(result)
         albumListController.endAppearanceTransition()
         albumListController.didMove(toParent: self)
-
+        
+        self.view.isMultipleTouchEnabled = true
     }
 
     @objc func albumListButtonTapped(_ button: AlbumListButton) {
@@ -61,31 +63,31 @@ class PhotoGalleryController: UIViewController {
 extension PhotoGalleryController: AlbumListControllerDelegate {
     func didSelectAlbum(_ controller: AlbumListController, didSelect album: Album) {
         self.album = album
-
+        
         albumListButton.updateText(album.title)
-        self.photoGalleryView.updateView()
         toggaleAlbumControllerView()
-    }
-}
-
-
-extension PhotoGalleryController: PhotoGalleryViewDataSource {
-    func numberOfSections(_ photoGalleryView: PhotoGalleryView) -> Int {
-        return self.album?.sections.count ?? 0
-    }
-    func section(_ photoGalleryView: PhotoGalleryView, section: Int) -> ImageSection {
-        return album!.sections[section]
-    }
-    func image(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) -> Image {
-        return album!.getImage(indexPath)
+        
+        let dataSource = AlbumImageDataSource(album)
+        self.photoGalleryView.update(dataSource)
+        
     }
 }
 
 extension PhotoGalleryController: PhotoGalleryViewDelegate {
-    func didSelectImage(_ photoGalleryView: PhotoGalleryView, indexPath: IndexPath) {
-
-        let imageViewController = ImageViewController(album: album!, initialIndexPath: indexPath)
-
+    func didSelectImage(_ photoGalleryView: PhotoGalleryView, dataSource: PhotoGalleryViewDataSource?, indexPath: IndexPath) {
+        guard let dataSource = dataSource as? AlbumImageDataSource else{
+            return
+        }
+        
+        let imageViewController = ImageViewController()
+        print(indexPath)
+        imageViewController.dataSource = dataSource.forkOneCyclic(indexPath)
+       
+        imageViewController.exitProcesser = { indexPath in
+                 print(indexPath)
+            photoGalleryView.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
+        }
+        
         self.present(imageViewController, animated: false, completion: nil)
     }
 }

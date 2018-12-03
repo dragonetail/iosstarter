@@ -4,7 +4,6 @@ import Photos
 class Image: Equatable {
     var id: String
     var assetId: String
-    var isSelected: Bool = false
     var mediaType: MediaType = .image
 
     

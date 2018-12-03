@@ -31,6 +31,8 @@ target 'PhotoSaver' do
   pod 'Eureka'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'GesturePassword'
+  pod 'SwipeSelectingCollectionView2'
+  
 end
 
 target 'UIViewsSample' do

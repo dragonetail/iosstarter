@@ -3,11 +3,30 @@ import Photos
 import PureLayout
 
 class ImageCell: UICollectionViewCell {
+    static var identifier: String {
+        return String(describing: ImageCell.self)
+    }
+    
+    override var isSelected: Bool {
+        didSet {
+            //TODO image.isSelected 删除
+            if isSelected {
+                UIView.animate(withDuration: 0.1, animations: {
+                    self.frameView.alpha = 1
+                })
+                isHighlighted = true
+            } else {
+                frameView.alpha = 0
+                isHighlighted = false
+            }
+        }
+    }
 
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
+        imageView.isUserInteractionEnabled = false
 
         return imageView
     }()
@@ -22,27 +41,19 @@ class ImageCell: UICollectionViewCell {
     private lazy var frameView: FrameView = {
         let frameView = FrameView(frame: .zero)
         frameView.alpha = 0
+        frameView.isUserInteractionEnabled = false
 
         return frameView
     }()
 
-    private lazy var selectButton: UIButton = {
-        var selectButton: UIButton = UIButton(frame: CGRect(x: 100, y: 400, width: 100, height: 50))
-        selectButton.addTarget(self, action: #selector(self.selectButtonTapped), for: .touchUpInside)
-        selectButton.setImage(UIImage(named: "picture_unselect"), for: .normal)
-        selectButton.setImage(UIImage(named: "picture_selected"), for: .selected)
-        return selectButton
-    }()
-
-    @objc func selectButtonTapped() {
-        guard let image = self.image else {
-            return
-        }
-
-        image.isSelected = !image.isSelected
-
-        self.reconfigure()
-    }
+//    private lazy var selectButton: UIButton = {
+//        var selectButton: UIButton = UIButton(frame: CGRect(x: 100, y: 400, width: 100, height: 50))
+//        //selectButton.addTarget(self, action: #selector(self.selectButtonTapped), for: .touchUpInside)
+//        selectButton.isUserInteractionEnabled = false
+//        selectButton.setImage(UIImage(named: "picture_unselect"), for: .normal)
+//        selectButton.setImage(UIImage(named: "picture_selected"), for: .selected)
+//        return selectButton
+//    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,27 +85,27 @@ class ImageCell: UICollectionViewCell {
         image.loadToView(imageView)
     }
 
-    func reconfigure() {
-        guard let image = self.image else {
-            return
-        }
-
-        selectButton.isSelected = image.isSelected
-
-        if image.isSelected {
-            UIView.animate(withDuration: 0.1, animations: {
-                self.frameView.alpha = 1
-            })
-            isHighlighted = true
-        } else {
-            frameView.alpha = 0
-            isHighlighted = false
-        }
-    }
+//    func reconfigure() {
+//        guard let image = self.image else {
+//            return
+//        }
+//
+//        //selectButton.isSelected = image.isSelected
+//
+//        if image.isSelected {
+//            UIView.animate(withDuration: 0.1, animations: {
+//                self.frameView.alpha = 1
+//            })
+//            isHighlighted = true
+//        } else {
+//            frameView.alpha = 0
+//            isHighlighted = false
+//        }
+//    }
 
 
     private func setup() {
-        [imageView, frameView, highlightOverlay, selectButton].forEach {
+        [imageView, frameView, highlightOverlay].forEach {
             self.contentView.addSubview($0)
         }
 
@@ -102,8 +113,19 @@ class ImageCell: UICollectionViewCell {
         frameView.autoPinEdgesToSuperviewEdges()
         highlightOverlay.autoPinEdgesToSuperviewEdges()
 
-        selectButton.autoPinEdge(toSuperviewEdge: .top, withInset: 2)
-        selectButton.autoPinEdge(toSuperviewEdge: .right, withInset: 2)
+        //selectButton.autoPinEdge(toSuperviewEdge: .top, withInset: 2)
+        //selectButton.autoPinEdge(toSuperviewEdge: .right, withInset: 2)
+
+        self.isUserInteractionEnabled = false
     }
 
+//    func toggleSeleced() {
+//        guard let image = self.image else {
+//            return
+//        }
+//
+//        image.isSelected = !image.isSelected
+//
+//        self.reconfigure()
+//    }
 }
