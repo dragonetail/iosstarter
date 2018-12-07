@@ -12,11 +12,10 @@ protocol ImageViewDataSource {
     func originalIndexPath(_ indexPath: IndexPath) -> IndexPath
 }
 
-
 class ImageViewController: UIViewController {
     var dataSource: ImageViewDataSource?
-    var exitProcesser: ((IndexPath)->Void)?
-    
+    var exitProcesser: ((IndexPath) -> Void)?
+
     lazy var imageCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -29,8 +28,8 @@ class ImageViewController: UIViewController {
         imageCollectionView.dataSource = self
         imageCollectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "Cell")
         imageCollectionView.isPagingEnabled = true
-        
-        if let initialIndexPath = dataSource?.initialIndexPath(){
+
+        if let initialIndexPath = dataSource?.initialIndexPath() {
             imageCollectionView.scrollToItem(at: initialIndexPath, at: .left, animated: false)
         }
 
@@ -48,45 +47,58 @@ class ImageViewController: UIViewController {
 
         return imageViewHeader
     }()
-    
+
     lazy var imageViewFooter: UIView = {
         let imageViewFooter = ImageViewFooter()
         imageViewFooter.viewDelegate = self
-        
+
         imageViewFooter.translatesAutoresizingMaskIntoConstraints = false
         imageViewFooter.alpha = 1
-        
+
         return imageViewFooter
     }()
+
+    lazy var imageInfoView: ImageInfoView = {
+        let imageInfoView = ImageInfoView()
+        //imageInfoView.viewDelegate = self
+
+        imageInfoView.translatesAutoresizingMaskIntoConstraints = false
+        imageInfoView.alpha = 0.9
+        imageInfoView.isHidden = true
+
+        return imageInfoView
+    }()
+
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.black
         //self.view._roundBorder()
 
-        [imageCollectionView, imageViewHeader, imageViewFooter].forEach {
+        [imageCollectionView, imageViewHeader, imageViewFooter, imageInfoView].forEach {
             self.view.addSubview($0)
         }
-        
+
         [UISwipeGestureRecognizer.Direction.right,
-         UISwipeGestureRecognizer.Direction.left,
-         UISwipeGestureRecognizer.Direction.up,
-         UISwipeGestureRecognizer.Direction.down].forEach({ direction in
+            UISwipeGestureRecognizer.Direction.left,
+            UISwipeGestureRecognizer.Direction.up,
+            UISwipeGestureRecognizer.Direction.down].forEach({ direction in
             let swipe = UISwipeGestureRecognizer(target: self, action: #selector(self.handSwipe))
             swipe.direction = direction
             self.view.addGestureRecognizer(swipe)
-         })
-        
+        })
+
         let slightTapGest = UITapGestureRecognizer(target: self, action: #selector(handleSlightTap))
         slightTapGest.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(slightTapGest)
-        
+
         let longpressGestrue = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
         longpressGestrue.minimumPressDuration = 1
         longpressGestrue.numberOfTouchesRequired = 1
         longpressGestrue.allowableMovement = 15
         self.view.addGestureRecognizer(longpressGestrue)
-        
+
         let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
         edgePan.edges = .left
         view.addGestureRecognizer(edgePan)
@@ -95,20 +107,22 @@ class ImageViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
 
-        imageViewHeader._roundBorder()
-        imageViewFooter._roundBorder()
-        
         imageViewHeader.autoSetDimension(.height, toSize: 64)
         imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-        
+
         imageViewFooter.autoSetDimension(.height, toSize: 64)
-        imageViewFooter.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        let padding = UIScreen.main.bounds.width / 10
+        imageViewFooter.autoPinEdge(toSuperviewEdge: .left, withInset: padding)
+        imageViewFooter.autoPinEdge(toSuperviewEdge: .right, withInset: padding)
+        imageViewFooter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0)
 
         guard let flowLayout = imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
         flowLayout.itemSize = imageCollectionView.frame.size
         flowLayout.invalidateLayout()
+        //imageCollectionView.collectionViewLayout.invalidateLayout()
 
-        imageCollectionView.collectionViewLayout.invalidateLayout()
+        imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        imageInfoView.autoSetDimension(.height, toSize: self.view.bounds.height / 3)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -179,12 +193,12 @@ extension ImageViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ImageViewCell
-        
-        guard let dataSource = dataSource else{
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ImageViewCell
+
+        guard let dataSource = dataSource else {
             return cell
         }
-       
+
         let image = dataSource.image(indexPath)
         //TODO 追加进度控制
         //cell.imageView.image = UIImage()
@@ -215,7 +229,7 @@ extension ImageViewController: UICollectionViewDelegate {
 
 extension ImageViewController: UIScrollViewDelegate {
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-        guard let dataSource = dataSource else{
+        guard let dataSource = dataSource else {
             return
         }
 
@@ -238,11 +252,11 @@ extension ImageViewController: ImageViewHeaderDelegate {
 
     func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
         self.dismiss(animated: true)
-        
-        guard let dataSource = dataSource else{
+
+        guard let dataSource = dataSource else {
             return
         }
-        
+
         if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
             self.exitProcesser?(dataSource.originalIndexPath(indexPath))
         }
@@ -257,23 +271,34 @@ extension ImageViewController: ImageViewHeaderDelegate {
 }
 
 extension ImageViewController: ImageViewFooterDelegate {
-    
-    func footerView(_: ImageViewFooter, didPressClearButton _: UIButton) {
+
+    func deleteDelegate(_: ImageViewFooter, _ button: UIButton) {
         self.dismiss(animated: true)
-        
-        guard let dataSource = dataSource else{
+
+        guard let dataSource = dataSource else {
             return
         }
-        
+
         if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
             self.exitProcesser?(dataSource.originalIndexPath(indexPath))
         }
     }
-    
-    func footerView(_: ImageViewFooter, didPressMenuButton button: UIButton) {
-        //        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
-        //        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
-        //        self.optionsController!.delegate = self
-        //        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
+
+    func favoriteDelegate(_: ImageViewFooter, _ button: UIButton) {
+    }
+
+    func menueDelegate(_: ImageViewFooter, _ button: UIButton) {
+    }
+
+    func infoDelegate(_: ImageViewFooter, _ button: UIButton) {
+        guard let indexPath = imageCollectionView.indexPathsForVisibleItems.first,
+            let dataSource = dataSource else {
+                return
+        }
+
+        imageInfoView.isHidden = false
+
+        let image = dataSource.image(indexPath)
+        self.imageInfoView.update(image)
     }
 }

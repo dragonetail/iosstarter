@@ -15,7 +15,7 @@ target 'PhotoSaver' do
   pod 'Imaginary', path: './LocalPods/Imaginary'
   pod 'Hue', path: './LocalPods/Hue'
   pod 'SVProgressHUD', path: './LocalPods/SVProgressHUD'
-  pod 'PureLayout', '~> 3.1.2'
+  pod 'PureLayout', '~> 3.1.4'
   pod 'SwiftEventBus', :tag => '3.0.1', :git => 'https://github.com/cesarferreira/SwiftEventBus.git'
   pod 'FSPagerView'
   pod 'ATGMediaBrowser', '~> 1.0'
@@ -31,8 +31,10 @@ target 'PhotoSaver' do
   pod 'Eureka'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'GesturePassword'
-  pod 'SwipeSelectingCollectionView2'
+  pod 'ImageIOSwift'
   
+  pod 'SwipeSelectingCollectionView2'
+  pod 'SwiftPagingTabView'
 end
 
 target 'UIViewsSample' do
@@ -42,6 +44,6 @@ target 'UIViewsSample' do
     use_frameworks!
     
     # Pods for UIViewSample
-    pod 'PureLayout', '~> 3.1.2'
+    pod 'PureLayout', '~> 3.1.4'
     
 end

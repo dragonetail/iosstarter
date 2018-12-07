@@ -44,6 +44,7 @@
 		D9B4183621B562FF00A38542 /* ImageViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B4183521B562FF00A38542 /* ImageViewFooter.swift */; };
 		D9BBD24D2196A8A200EC6823 /* NoPhotoAuthorizationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */; };
 		D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D935F22181FEE100C91C5E /* HeaderCell.swift */; };
+		D9FBA25B21B7951600D968C9 /* ImageInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FBA25A21B7951600D968C9 /* ImageInfoView.swift */; };
 		D9FC118C216CDC50008E466E /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118B216CDC50008E466E /* TabBarController.swift */; };
 		D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC118D216CDF15008E466E /* PhotoGalleryController.swift */; };
 		D9FC124021777391008E466E /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FC123F21777391008E466E /* PhotoGalleryView.swift */; };
@@ -113,6 +114,7 @@
 		D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPhotoAuthorizationController.swift; sourceTree = "<group>"; };
 		D9BBD24E2197130400EC6823 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		D9D935F22181FEE100C91C5E /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
+		D9FBA25A21B7951600D968C9 /* ImageInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInfoView.swift; sourceTree = "<group>"; };
 		D9FC118B216CDC50008E466E /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		D9FC118D216CDF15008E466E /* PhotoGalleryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryController.swift; sourceTree = "<group>"; };
 		D9FC123F21777391008E466E /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				D976985321889D5500F41403 /* ImageViewCell.swift */,
 				D97698552188A39D00F41403 /* ImageViewHeader.swift */,
 				D9B4183521B562FF00A38542 /* ImageViewFooter.swift */,
+				D9FBA25A21B7951600D968C9 /* ImageInfoView.swift */,
 			);
 			path = viewer;
 			sourceTree = "<group>";
@@ -475,6 +478,7 @@
 				"${BUILT_PRODUCTS_DIR}/PureLayout/PureLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftEventBus/SwiftEventBus.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftPagingTabView/SwiftPagingTabView.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
 				"${BUILT_PRODUCTS_DIR}/SwipeSelectingCollectionView2/SwipeSelectingCollectionView2.framework",
 				"${BUILT_PRODUCTS_DIR}/XCGLogger/XCGLogger.framework",
@@ -499,6 +503,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PureLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftEventBus.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftPagingTabView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeSelectingCollectionView2.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XCGLogger.framework",
@@ -540,6 +545,7 @@
 				D9FC127D217AB331008E466E /* EventBus.swift in Sources */,
 				D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */,
 				D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */,
+				D9FBA25B21B7951600D968C9 /* ImageInfoView.swift in Sources */,
 				D9B2D18F21B135D000A0635A /* ImageRowCell.swift in Sources */,
 				D9B2D17221AC1A3F00A0635A /* MemberSettingsViewController.swift in Sources */,
 				D9FC125D21778399008E466E /* UIScrollView+Extensions.swift in Sources */,

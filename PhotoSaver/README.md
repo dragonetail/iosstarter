@@ -1,5 +1,10 @@
 #  <#Title#>
 
+d带参考
+https://github.com/ooper-shlab/SamplePhotosApp-Swift/blob/master/SamplePhotosApp/AssetViewController.swift
+https://github.com/diejmon/SwiftyImageIO
+https://github.com/davbeck/ImageIOSwift
+
 
 ## TODO
 1. 图片内容数据库序列化，使用Realm（https://realm.io/docs/swift/latest）
