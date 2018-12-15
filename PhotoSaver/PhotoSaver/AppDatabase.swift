@@ -13,7 +13,7 @@ struct AppDatabase {
         // Use DatabaseMigrator to define the database schema
         // See https://github.com/groue/GRDB.swift/#migrations
         log.info("即将执行数据库迁移。")
-        
+
         try migrator.migrate(dbConn)
 
         return dbConn
@@ -21,9 +21,9 @@ struct AppDatabase {
 
     static func openDatabasePool(_ path: String) throws -> DatabasePool {
         // Ref: https://github.com/groue/GRDB.swift/#database-connections
-         log.info("正在启动数据库（Queue）。")
+        log.info("正在启动数据库（Queue）。")
         let dbConn = try DatabasePool(path: path)
-         log.info("正在清空数据库。")
+        log.info("正在清空数据库。")
         try dbConn.erase()
 
         // Use DatabaseMigrator to define the database schema
@@ -38,7 +38,7 @@ struct AppDatabase {
     static var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         #if DEBUG
-        migrator.eraseDatabaseOnSchemaChange = true
+            migrator.eraseDatabaseOnSchemaChange = true
         #endif
 
         migrator.registerMigration("v0.1.create_tables") { db in
@@ -61,6 +61,19 @@ struct AppDatabase {
                 t.column("id", .text).primaryKey()
                 t.column("assetId", .text).notNull().unique()
                 t.column("mediaType", .integer).notNull()
+                t.column("mediaSubtype", .integer).notNull()
+                t.column("creationDate", .datetime)
+                t.column("modificationDate", .datetime)
+                t.column("isFavorite", .boolean).notNull()
+                t.column("dataSize", .integer)
+                t.column("orientation", .integer)
+                t.column("filePath", .text)
+            }
+            try db.create(table: "imageMetadataModel") { t in
+                t.column("id", .text)
+                    .primaryKey()
+                    .references("imageModel", onDelete: .cascade)
+                t.column("metadata", .blob)
             }
             try db.create(table: "sectionModel") { t in
                 t.column("albumId", .text)

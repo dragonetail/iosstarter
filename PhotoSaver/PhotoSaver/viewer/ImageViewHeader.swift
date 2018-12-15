@@ -5,37 +5,32 @@ protocol ImageViewHeaderDelegate: class {
     func headerView(_ headerView: ImageViewHeader, didPressClearButton button: UIButton)
 }
 
-class ImageViewHeader: UIView {
+class ImageViewHeader: BaseViewWithAutolayout {
     weak var viewDelegate: ImageViewHeaderDelegate?
 
     lazy var exitButton: UIButton = {
         let image = UIImage(named: "exit")!
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom).autoLayout("exitButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewHeader.exitAction(button:)), for: .touchUpInside)
 
         return button
     }()
-    
+
     @objc func exitAction(button: UIButton) {
         self.viewDelegate?.headerView(self, didPressClearButton: button)
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setupAndComposeView() {
+        _ = self.autoLayout("ImageViewHeader")
 
         self.addSubview(self.exitButton)
     }
 
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        exitButton.autoPinEdge(toSuperviewEdge: .top   , withInset: 10)
+    // invoked only once
+    override func setupConstraints() {
+        exitButton.autoPinEdge(toSuperviewEdge: .top, withInset: 10)
         exitButton.autoPinEdge(toSuperviewEdge: .left, withInset: 0)
-        exitButton.autoSetDimensions(to: CGSize(width: 50, height: 50 ))
+        exitButton.autoSetDimensions(to: CGSize(width: 50, height: 50))
     }
 }

@@ -1,19 +1,20 @@
 import UIKit
 import PureLayout
 
-class NoPhotoAuthorizationController: UIViewController {
+class NoPhotoAuthorizationController: BaseViewControllerWithAutolayout {
     static let image: UIImage? = GalleryBundle.image("gallery_empty_view_image")
     static let textColor: UIColor = UIColor(red: 102 / 255, green: 118 / 255, blue: 138 / 255, alpha: 1)
     static let regular: UIFont = UIFont.systemFont(ofSize: 1)
 
     lazy var imageView: UIImageView = {
-        let view = UIImageView()
+        let view = UIImageView().autoLayout("imageView")
         view.image = EmptyView.image
 
         return view
     }()
+
     lazy var label: UILabel = {
-        let label = UILabel()
+        let label = UILabel().autoLayout("label")
         label.textColor = NoPhotoAuthorizationController.textColor
         label.font = NoPhotoAuthorizationController.regular.withSize(14)
         let labelString = "Gallery.EmptyView.Text"._localize(fallback: "应用APP没有获取访问相册的授权。\n\n点击设定修改应用授权")
@@ -43,15 +44,14 @@ class NoPhotoAuthorizationController: UIViewController {
     }()
 
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
+    override func setupAndComposeView() {
         self.view.backgroundColor = UIColor.white
 
         [label, imageView].forEach {
             self.view.addSubview($0)
         }
-
+    }
+    override func setupConstraints() {
         imageView.autoCenterInSuperview()
         label.autoPinEdge(.top, to: .bottom, of: imageView, withOffset: 15)
         label.autoAlignAxis(toSuperviewAxis: .vertical)

@@ -1,87 +1,140 @@
 import UIKit
 import ATGMediaBrowser
 
-class PhotoGalleryController: UIViewController {
-    // 控件
-    private var albumListExpanding: Bool = true
-    private lazy var albumListButton: AlbumListButton = {
-        let albumListButton = AlbumListButton()
-        //albumListButton.updateText("Blank Title")
+class PhotoGalleryController: BaseViewControllerWithAutolayout {
 
-        albumListButton.addTarget(self, action: #selector(albumListButtonTapped(_:)), for: .touchUpInside)
+    private lazy var topAlbumListSelectorView: AlbumListSelectorView = {
+        let topAlbumListSelectorView = AlbumListSelectorView().autoLayout("topAlbumListSelectorView")
 
-        return albumListButton
+        topAlbumListSelectorView.tappedHandler = {
+            self.toggaleAlbumControllerView()
+        }
+        
+        return topAlbumListSelectorView
     }()
-    private lazy var albumListController: AlbumListController = {
-        let albumListController = AlbumListController(delegate: self)
-        return albumListController
+
+
+    private lazy var albumListView: AlbumListView = {
+        let albumListView = AlbumListView().autoLayout("albumListView")
+        albumListView.delegate = self
+        return albumListView
     }()
 
     private lazy var photoGalleryView: PhotoGalleryView = {
-        let photoGalleryView = PhotoGalleryView()
-        photoGalleryView.setup(delegate: self, albumListButton: albumListButton)
+        let photoGalleryView = PhotoGalleryView().autoLayout("photoGalleryView")
+        photoGalleryView.delegate = self
 
         return photoGalleryView
     }()
 
+    //选择的相册
+    var selectedAlbum: Album? = nil
+
     // 初始化逻辑
+    override func setupAndComposeView() {
+        self.view.backgroundColor = UIColor.white
+        self.view.isMultipleTouchEnabled = true
+
+        [topAlbumListSelectorView, photoGalleryView, albumListView].forEach {
+            view.addSubview($0)
+        }
+    }
+
+    private var albumListExpanding: Bool = false
+    private var expandedTopConstraint: NSLayoutConstraint?
+    private var collapsedTopConstraint: NSLayoutConstraint?
+    override func setupConstraints() {
+        topAlbumListSelectorView.autoSetDimension(.height, toSize: 40)
+        topAlbumListSelectorView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .bottom)
+
+        photoGalleryView.autoPinEdge(.top, to: .bottom, of: topAlbumListSelectorView)
+        photoGalleryView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
+
+        albumListView.autoPinEdge(toSuperviewEdge: .left)
+        albumListView.autoPinEdge(toSuperviewEdge: .right)
+        albumListView.autoPinEdge(toSuperviewSafeArea: .bottom)
+
+        NSLayoutConstraint.autoCreateAndInstallConstraints {
+            albumListExpanding = false
+            collapsedTopConstraint = albumListView.autoPinEdge(toSuperviewSafeArea: .bottom)
+            //.autoPinEdge(.bottom, to: .bottom, of: topView)
+        }
+        NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+            expandedTopConstraint = albumListView.autoPinEdge(.top, to: .bottom, of: topAlbumListSelectorView)
+        }
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor.white
 
-        //AlbumManager.shared.albumLoadingDelegate = self
-
-        view.addSubview(photoGalleryView)
-        photoGalleryView.autoPinEdgesToSuperviewSafeArea()
-
-        //addChild(albumListController)
-        albumListController.beginAppearanceTransition(true, animated: false)
-        let result = photoGalleryView.insertAlbumListControllerView(albumListController.view)
-        albumListController.updateToggleConstraint(result)
-        albumListController.endAppearanceTransition()
-        albumListController.didMove(toParent: self)
-        
-        self.view.isMultipleTouchEnabled = true
-    }
-    
-    @objc func albumListButtonTapped(_ button: AlbumListButton) {
-        toggaleAlbumControllerView()
+        albumManager.albumsLoadingDelegate = self
+        //视图延迟加载时，主动询问数据是否加载完成，更新视图
+        albumManager.checkLoadedAndNotify()
     }
 
     func toggaleAlbumControllerView() {
         albumListExpanding = !albumListExpanding
-        albumListController.toggle(albumListExpanding)
-        albumListButton.toggle(albumListExpanding)
+
+        topAlbumListSelectorView.toggle(albumListExpanding)
+
+        if albumListExpanding {
+            collapsedTopConstraint?.autoRemove()
+            expandedTopConstraint?.autoInstall()
+        } else {
+            collapsedTopConstraint?.autoInstall()
+            expandedTopConstraint?.autoRemove()
+        }
+
+        UIView.animate(withDuration: 0.15, delay: 0, options: UIView.AnimationOptions(), animations: {
+            self.albumListView.layoutIfNeeded()
+        })
     }
 }
 
 
-extension PhotoGalleryController: AlbumListControllerDelegate {
-    func didSelectAlbum(_ controller: AlbumListController, didSelect album: Album) {
-        albumListButton.updateText(album.title)
+extension PhotoGalleryController: AlbumListViewDelegate {
+    func didSelectAlbum(didSelect album: Album) {
+        selectedAlbum = album
+
+        topAlbumListSelectorView.updateText(album.title)
         toggaleAlbumControllerView()
-        
-        let dataSource = AlbumImageDataSource(album)
-        self.photoGalleryView.update(dataSource)
-        
+
+        self.photoGalleryView.dataSource = AlbumImageDataSource(album)
     }
 }
 
 extension PhotoGalleryController: PhotoGalleryViewDelegate {
     func didSelectImage(_ photoGalleryView: PhotoGalleryView, dataSource: PhotoGalleryViewDataSource?, indexPath: IndexPath) {
-        guard let dataSource = dataSource as? AlbumImageDataSource else{
+        guard let dataSource = dataSource as? AlbumImageDataSource else {
             return
         }
-        
+
         let imageViewController = ImageViewController()
         imageViewController.dataSource = dataSource.forkOneCyclic(indexPath)
-       
+        imageViewController.imageViewerSupportDelegate = photoGalleryView
+
         imageViewController.exitProcesser = { indexPath in
             photoGalleryView.collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
         }
-        
+
         self.present(imageViewController, animated: false, completion: nil)
+    }
+}
+
+
+extension PhotoGalleryController: AlbumsLoadingDelegate {
+    func albumsLoaded(_ albumManager: AlbumManager) {
+        let albums = albumManager.albums
+
+        if selectedAlbum == nil, let first = albums.first {
+            selectedAlbum = first
+            topAlbumListSelectorView.updateText(selectedAlbum!.title)
+            photoGalleryView.dataSource = AlbumImageDataSource(selectedAlbum!)
+        }
+
+        albumListView.albums = albums
+
+        self.view.setNeedsLayout()
     }
 }
 

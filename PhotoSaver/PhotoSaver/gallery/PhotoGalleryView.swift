@@ -16,29 +16,25 @@ protocol PhotoGalleryViewDelegate {
     func didSelectImage(_ photoGalleryView: PhotoGalleryView, dataSource: PhotoGalleryViewDataSource?, indexPath: IndexPath)
 }
 
-class PhotoGalleryView: UIView {
+protocol ImageViewerSupportDelegate {
+    func getLoadedThumbnailImage(indexPath: IndexPath) -> UIImage
+    func scrollToItem(indexPath: IndexPath)
+}
+
+class PhotoGalleryView: BaseViewWithAutolayout {
     //控件
-    private lazy var loadingIndicatorView: UIActivityIndicatorView = {
-        let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
+    lazy var loadingIndicatorView: UIActivityIndicatorView = {
+        let loadingIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView(style: .whiteLarge).autoLayout("albumListButton")
         loadingIndicatorView.color = .gray
         loadingIndicatorView.isHidden = false
         loadingIndicatorView.hidesWhenStopped = true
-        //loadingIndicatorView._roundBorder()
-        //loadingIndicatorView._shadow()
 
         return loadingIndicatorView
     }()
 
-    private lazy var topView: UIView = {
-        let topView = UIView()
-        topView.backgroundColor = UIColor.white
-
-        return topView
-    }()
-
-    internal lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let collectionView = SwipeSelectingCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        let collectionView = SwipeSelectingCollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).autoresizingMask("collectionView")
         collectionView.backgroundColor = UIColor.white
         collectionView.allowsMultipleSelection = true
 
@@ -53,100 +49,65 @@ class PhotoGalleryView: UIView {
 
         return collectionView
     }()
-    private lazy var scrollSlider: ScrollSlider = {
-        let scrollSlider = ScrollSlider(collectionView)
+    lazy var scrollSlider: ScrollSlider = {
+        let scrollSlider = ScrollSlider(collectionView).autoLayout("scrollSlider")
         scrollSlider.isHidden = true
 
         return scrollSlider
     }()
 
-
-
-    private lazy var emptyView: UIView = {
+    lazy var emptyView: UIView = {
         let view = EmptyView()
         view.isHidden = true
 
         return view
     }()
 
-    private var dataSource: PhotoGalleryViewDataSource?
-    private var delegate: PhotoGalleryViewDelegate?
-    private var albumListButton: AlbumListButton?
+    var dataSource: PhotoGalleryViewDataSource? {
+        didSet {
+            loadingIndicatorView.startAnimating()
 
-    // 初始化
-    func setup(delegate: PhotoGalleryViewDelegate?, albumListButton: AlbumListButton?) {
-        self.delegate = delegate
+            let numberOfSections = self.dataSource?.numberOfSections() ?? 0
+            emptyView.isHidden = (numberOfSections > 0)
 
-        self.albumListButton = albumListButton
-        if let albumListButton = albumListButton {
-            topView.addSubview(albumListButton)
+            collectionView.reloadData()
+
+            loadingIndicatorView.stopAnimating()
         }
+    }
 
-        backgroundColor = .white
+    var delegate: PhotoGalleryViewDelegate?
 
-        [collectionView, scrollSlider, topView, emptyView, loadingIndicatorView].forEach {
+    override func setupAndComposeView() {
+        self.backgroundColor = .white
+
+        [collectionView, scrollSlider, emptyView, loadingIndicatorView].forEach {
             addSubview($0)
         }
         loadingIndicatorView.startAnimating()
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        topView.autoSetDimension(.height, toSize: 40)
-        topView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-
-        albumListButton?.autoSetDimension(.height, toSize: 40)
-        albumListButton?.autoCenterInSuperview()
-        albumListButton?.layoutSubviews()
-
+    // invoked only once
+    override func setupConstraints() {
         [collectionView, emptyView, loadingIndicatorView].forEach { subview in
-            subview.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
-            subview.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
+            subview.autoPinEdgesToSuperviewEdges()
         }
-        
+
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = 1
-        
+
         let cellSpacing: CGFloat = 1
         var columnCount: CGFloat = CGFloat(floorf(Float(UIScreen.main.bounds.width / 145)))
-        columnCount = columnCount < 3 ? 3 : columnCount
-        columnCount = columnCount > 6 ? 6 : columnCount
+        columnCount = columnCount < 4 ? 4 : columnCount
+        columnCount = columnCount > 8 ? 8 : columnCount
         let size = (UIScreen.main.bounds.width - layout.minimumInteritemSpacing * 2 - (columnCount - 1) * cellSpacing) / columnCount
         layout.itemSize = CGSize(width: size, height: size)
-        
+
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
         //layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 5)
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collectionView.collectionViewLayout = layout
-    }
-    
-    
-    internal func insertAlbumListControllerView(_ albumListControllerView: UIView) -> (expandedTopConstraint: NSLayoutConstraint, collapsedTopConstraint: NSLayoutConstraint) {
-
-        insertSubview(albumListControllerView, belowSubview: loadingIndicatorView)
-
-        albumListControllerView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
-        let expandedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: topView, withOffset: 0.0)
-        expandedTopConstraint.isActive = false
-        let collapsedTopConstraint = albumListControllerView.autoPinEdge(.top, to: .bottom, of: albumListControllerView)
-        collapsedTopConstraint.isActive = true
-
-        return (expandedTopConstraint: expandedTopConstraint, collapsedTopConstraint: collapsedTopConstraint)
-    }
-
-
-    internal func update(_ dataSource: PhotoGalleryViewDataSource) {
-        loadingIndicatorView.startAnimating()
-
-        self.dataSource = dataSource
-
-        let numberOfSections = self.dataSource?.numberOfSections() ?? 0
-        emptyView.isHidden = (numberOfSections > 0)
-
-        collectionView.reloadData()
-
-        loadingIndicatorView.stopAnimating()
     }
 }
 
@@ -168,9 +129,8 @@ extension PhotoGalleryView: UICollectionViewDataSource {
         }
 
         let image = dataSource.image(indexPath)
-
-        //TODO 统一Viewer部分Image的取法
-        cell.configure(image)
+        cell.layoutIfNeeded()
+        cell.setImage(image)
 
         return cell
     }
@@ -184,7 +144,7 @@ extension PhotoGalleryView: UICollectionViewDataSource {
                 HeaderCell.identifier, for: indexPath) as! HeaderCell
 
             let title = self.dataSource?.titleOfSection(indexPath.section) ?? "UNKNOWN"
-            header.configure(title, delegate: self)
+            header.setTitleAndDelegate(title, delegate: self)
             return header
         case UICollectionView.elementKindSectionFooter:
             print("FOOTER DETECTED");//NEVER CALLED
@@ -237,14 +197,13 @@ extension PhotoGalleryView: SectionSelectedDelegate {
         var foundedIndexPath: IndexPath?
         for indexPath in indexPaths {
             if headerCell == collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader, at: indexPath) {
-                print("found at : \(indexPath)")
                 foundedIndexPath = indexPath
                 break
             }
         }
 
         guard let indexPath = foundedIndexPath else {
-            print("ERROR: 没有发现HeaderCell的indexPath")
+            log.warning("没有发现HeaderCell的indexPath")
             return
         }
 
@@ -262,6 +221,19 @@ extension PhotoGalleryView: SectionSelectedDelegate {
                 }
             }
         })
+    }
+}
+
+extension PhotoGalleryView: ImageViewerSupportDelegate {
+    func getLoadedThumbnailImage(indexPath: IndexPath) -> UIImage {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? ImageCell else {
+            return UIImage()
+        }
+        return cell.imageView.image ?? UIImage()
+    }
+
+    func scrollToItem(indexPath: IndexPath) {
+        collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: true)
     }
 }
 

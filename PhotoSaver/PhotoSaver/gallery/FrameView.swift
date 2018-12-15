@@ -1,12 +1,12 @@
 import UIKit
 import PureLayout
 
-class FrameView: UIView {
+class FrameView: BaseViewWithAutolayout {
     static var fillColor: UIColor = UIColor(red: 50 / 255, green: 51 / 255, blue: 59 / 255, alpha: 1)
     static var borderColor: UIColor = UIColor(red: 0, green: 239 / 255, blue: 155 / 255, alpha: 1)
 
     lazy var label: UILabel = {
-        let label = UILabel()
+        let label = UILabel().autoLayout("label")
         label.font = Config.Font.Main.regular.withSize(40)
         label.textColor = UIColor.white
         label.text = "VIP"
@@ -23,7 +23,7 @@ class FrameView: UIView {
         return gradientLayer
     }()
     lazy var imageView: UIImageView = {
-        let imageView = UIImageView()
+        let imageView = UIImageView().autoLayout("imageView")
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
         let image: UIImage? = UIImage(named: "picture_selected")
@@ -34,25 +34,18 @@ class FrameView: UIView {
         return imageView
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        setup()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setup() {
-//        layer.addSublayer(gradientLayer)
-//        layer.borderColor = FrameView.borderColor.cgColor
-//        layer.borderWidth = 3
+    override func setupAndComposeView() {
+        _ = self.autoLayout("FrameView")
 
         addSubview(label)
+        addSubview(imageView)
+    }
+
+
+    // invoked only once
+    override func setupConstraints() {
         label.autoCenterInSuperview()
 
-        addSubview(imageView)
         imageView.autoPinEdge(toSuperviewEdge: .top, withInset: 2)
         imageView.autoPinEdge(toSuperviewEdge: .right, withInset: 2)
     }

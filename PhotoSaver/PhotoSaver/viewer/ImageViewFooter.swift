@@ -8,12 +8,12 @@ protocol ImageViewFooterDelegate: class {
     func infoDelegate(_ footerView: ImageViewFooter, _ button: UIButton)
 }
 
-class ImageViewFooter: UIView {
+class ImageViewFooter: BaseViewWithAutolayout {
     weak var viewDelegate: ImageViewFooterDelegate?
 
     lazy var deleteButton: UIButton = {
         let image = UIImage(named: "delete")!
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom).autoLayout("deleteButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewFooter.deleteAction(button:)), for: .touchUpInside)
 
@@ -22,7 +22,7 @@ class ImageViewFooter: UIView {
 
     lazy var favoriteButton: UIButton = {
         let image = UIImage(named: "favorite")!
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom).autoLayout("favoriteButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewFooter.favoriteAction(button:)), for: .touchUpInside)
 
@@ -31,7 +31,7 @@ class ImageViewFooter: UIView {
 
     lazy var menuButton: UIButton = {
         let image = UIImage(named: "menu")!
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom).autoLayout("menuButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewFooter.menuAction(button:)), for: .touchUpInside)
 
@@ -40,40 +40,23 @@ class ImageViewFooter: UIView {
 
     lazy var infoButton: UIButton = {
         let image = UIImage(named: "info")!
-        let button = UIButton(type: .custom)
+        let button = UIButton(type: .custom).autoLayout("infoButton")
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewFooter.infoAction(button:)), for: .touchUpInside)
 
         return button
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func setupAndComposeView() {
+        _ = self.autoLayout("ImageViewFooter")
 
         [favoriteButton, infoButton, deleteButton, menuButton].forEach { (view) in
             addSubview(view)
         }
     }
 
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-//        menuButton.auto
-//        menuButton.autoPinEdge(toSuperviewEdge: .top   , withInset: 10)
-//        menuButton.autoPinEdge(toSuperviewEdge: .right, withInset: 0)
-//        menuButton.autoSetDimensions(to: CGSize(width: 50, height: 50 ))
-
-
-//        favoriteButton.autoAlignAxis(toSuperviewAxis: .horizontal)
-//        favoriteButton.autoPinEdge(toSuperviewEdge: .left, withInset: 10)
-//
-//        infoButton.autoAlignAxis(toSuperviewAxis: .horizontal)
-//        infoButton.autoPinEdge(toSuperviewEdge: .right, withInset: 10)
-
+    // invoked only once
+    override func setupConstraints() {
         let views: NSArray = [favoriteButton, infoButton, deleteButton, menuButton]
         views.autoSetViewsDimension(.height, toSize: 50)
         views.autoDistributeViews(along: .horizontal, alignedTo: .horizontal, withFixedSpacing: 10.0, insetSpacing: true, matchedSizes: true)

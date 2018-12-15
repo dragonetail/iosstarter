@@ -240,9 +240,16 @@ class AlbumManager {
                         //noop
                     } else {
                         let imageId = UUID.init().uuidString
-                        var image = ImageModel(id: imageId, assetId: assetId, mediaType: .image)
+
+                        let metadata = ImageMetadata(asset)
+
+                        var image = ImageModel(id: imageId, assetId: assetId, mediaType: asset.mediaType, mediaSubtype: asset.mediaSubtypes, creationDate: asset.creationDate, modificationDate: asset.modificationDate, isFavorite: asset.isFavorite, dataSize: nil, orientation: nil, filePath: nil)
+
                         try image.insert(db)
                         images[assetId] = image
+                        
+                        var imageMetadata = ImageMetadataModel(id: image.id, metadata: metadata.encode())
+                        try imageMetadata.insert(db)
 
                         var section = SectionModel(albumId: album.id, title: groupedDate, imageId: imageId)
                         try section.insert(db)
@@ -258,6 +265,44 @@ class AlbumManager {
                 log.warning("保存数据到DB失败：\(error)")
             }
         })
+    }
+
+    func updateImagePropeties(_ image: Image) {
+        do {
+            try dbConn.write { db in
+                if var imageModel = try ImageModel.fetchOne(db, key: image.id) {
+                    imageModel.dataSize = image.dataSize
+                    imageModel.orientation = image.orientation
+                    imageModel.filePath = image.filePath
+                    try imageModel.update(db)
+                } else {
+                    log.error("DB中没有发现ImageModel对象：\(image.id)")
+                    return
+                }
+
+                if var imageMetadataModel = try ImageMetadataModel.fetchOne(db, key: image.id) {
+                    imageMetadataModel.metadata = image.metadata?.encode()
+                    try imageMetadataModel.update(db)
+                } else {
+                    var imageMetadataModel = ImageMetadataModel(id: image.id, metadata: image.metadata?.encode())
+                    try imageMetadataModel.insert(db)
+                }
+            }
+        } catch {
+            log.warning("保存数据到DB失败：\(error)")
+        }
+    }
+
+    func getImageMetadataModel(_ id: String) -> ImageMetadataModel? {
+        do {
+            return try dbConn.read { db in
+                let imageMetadataModel = try ImageMetadataModel.fetchOne(db, key: id)
+                return imageMetadataModel
+            }
+        } catch {
+            log.warning("查询ImageMetadataModel数据到失败：\(error)")
+        }
+        return nil
     }
 
 }

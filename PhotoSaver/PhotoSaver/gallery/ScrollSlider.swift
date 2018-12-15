@@ -49,17 +49,6 @@ open class ScrollSlider: UIView {
 
         return dateLabel
     }()
-//    private lazy var weekLabel: UILabel = {
-//        let weekLabel = UILabel()
-//        weekLabel.font = Config.Font.Main.regular.withSize(11)
-//        weekLabel.textColor = UIColor.flatSkyBlueColor()
-//        weekLabel.textAlignment = .left
-//        weekLabel.sizeToFit()
-//
-//        weekLabel.text = "Hello, world!"
-//
-//        return weekLabel
-//    }()
 
     private lazy var upImageView: UIImageView = {
         let upImageView = UIImageView(frame: CGRect.zero)

@@ -1,23 +1,15 @@
 import UIKit
 import PureLayout
 import Photos
-import SwiftPagingTabView
 
 protocol ImageInfoViewDelegate: class {
     func imageInfoView(_ imageInfoView: ImageInfoView, didPressClearButton button: UIButton)
     func imageInfoView(_ imageInfoView: ImageInfoView, didPressMenuButton button: UIButton)
 }
 
-class ImageInfoView: UIView {
+class ImageInfoView: BaseViewWithAutolayout {
     weak var viewDelegate: ImageInfoViewDelegate?
 
-//    lazy var label: UILabel = {
-//        let label = UILabel()
-//        label.font = Config.Font.Main.regular.withSize(14)
-//        label.textColor = UIColor.black
-//
-//        return label
-//    }()
     public lazy var pagingTabView: PagingTabView = {
         let pagingTabView: PagingTabView = PagingTabView()
         pagingTabView.config = PagingTabViewConfig()
@@ -26,17 +18,22 @@ class ImageInfoView: UIView {
 
         return pagingTabView
     }()
+    
+    lazy var propertyInfoView: PropertyInfoView = {
+        return PropertyInfoView()
+    }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
+    
+    override func setupAndComposeView() {
+        _ = self.autoLayout("ImageInfoView")
+        
         func _shadow() {
             layer.shadowColor = UIColor.black.cgColor
             layer.shadowOpacity = 0.5
             layer.shadowOffset = CGSize(width: 0, height: 2)
             layer.shadowRadius = 2
         }
-
+        
         func _roundBorder() {
             layer.borderWidth = 1
             layer.borderColor = UIColor.gray.cgColor
@@ -45,56 +42,24 @@ class ImageInfoView: UIView {
         }
         _shadow()
         _roundBorder()
-
+        
         self.backgroundColor = UIColor.white
-
+        
         [pagingTabView].forEach { (view) in
             addSubview(view)
         }
-
-        pagingTabView.reloadAndSetup()
     }
-
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
+    
+    // invoked only once
+    override func setupConstraints() {
         pagingTabView.autoPinEdgesToSuperviewEdges()
     }
-
+    
+    private var image: Image?
     func update(_ image: Image) {
-        let assetId = image.assetId
+        self.image = image
 
-        guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: nil).firstObject else {
-            //TODO
-            return
-        }
-
-//
-//        PHImageManager.default().requestImageData(for: asset, options: nil, resultHandler:
-//            { (data, dataUTI, orientation, info) in
-//                print(data)
-//                print(dataUTI)
-//                print(orientation.rawValue)
-//                print(info!)
-//
-//                let file = info?["PHImageFileURLKey"] as? URL
-//                //file?.deletingLastPathComponent()
-//                self.label.text = file?.absoluteString
-//                print(file?.absoluteString)
-//                print(file?.relativePath)
-//                print(file?.relativeString)
-//
-//                let ciImg = CIImage(contentsOf: file!)
-//                print("\(ciImg?.properties)")
-//
-//        })
-
-
-
+        pagingTabView.reloadAndSetup()
     }
 
 }
@@ -121,21 +86,33 @@ extension ImageInfoView: PagingTabViewDataSource {
         case 0:
             return (image: nil, title: "概要")
         case 1:
-            return (image: nil, title: "通用")
+            return (image: nil, title: "信息")
         case 2:
-            return (image: nil, title: "TIFF")
+            return (image: nil, title: "相册")
         case 3:
-            return (image: nil, title: "EXIF")
+            return (image: nil, title: "来源")
         default:
             return (image: nil, title: "UNKNOWN")
         }
     }
 
     func tabView(pagingTabView: PagingTabView, index: Int) -> UIView {
-        let view = UILabel()
-        view.backgroundColor = UIColor.white
-        view.text = "View " + String(index)
-        view.textAlignment = .center
-        return view
+        switch index {
+        case 0: //概要
+            propertyInfoView.setup(image)
+            return propertyInfoView
+//        case 1:
+//            return (image: nil, title: "信息")
+//        case 2:
+//            return (image: nil, title: "相册")
+//        case 3:
+//            return (image: nil, title: "来源")
+        default:
+            let view = UILabel()
+            view.backgroundColor = UIColor.white
+            view.text = "View " + String(index)
+            view.textAlignment = .center
+            return view
+        }
     }
 }

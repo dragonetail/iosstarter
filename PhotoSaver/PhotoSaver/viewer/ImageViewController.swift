@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout
+import DataCompression
 
 protocol ImageViewDataSource {
     func totalCount() -> Int
@@ -12,8 +13,9 @@ protocol ImageViewDataSource {
     func originalIndexPath(_ indexPath: IndexPath) -> IndexPath
 }
 
-class ImageViewController: UIViewController {
+class ImageViewController: BaseViewControllerWithAutolayout {
     var dataSource: ImageViewDataSource?
+    var imageViewerSupportDelegate: ImageViewerSupportDelegate?
     var exitProcesser: ((IndexPath) -> Void)?
 
     lazy var imageCollectionView: UICollectionView = {
@@ -23,7 +25,7 @@ class ImageViewController: UIViewController {
         layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
 
-        var imageCollectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+        var imageCollectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout).autoLayout("imageCollectionView")
         imageCollectionView.delegate = self
         imageCollectionView.dataSource = self
         imageCollectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "Cell")
@@ -39,7 +41,7 @@ class ImageViewController: UIViewController {
     }()
 
     lazy var imageViewHeader: UIView = {
-        let imageViewHeader = ImageViewHeader()
+        let imageViewHeader = ImageViewHeader().autoLayout("imageViewHeader")
         imageViewHeader.viewDelegate = self
 
         imageViewHeader.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +51,7 @@ class ImageViewController: UIViewController {
     }()
 
     lazy var imageViewFooter: UIView = {
-        let imageViewFooter = ImageViewFooter()
+        let imageViewFooter = ImageViewFooter().autoLayout("imageViewFooter")
         imageViewFooter.viewDelegate = self
 
         imageViewFooter.translatesAutoresizingMaskIntoConstraints = false
@@ -57,22 +59,21 @@ class ImageViewController: UIViewController {
 
         return imageViewFooter
     }()
-
     lazy var imageInfoView: ImageInfoView = {
-        let imageInfoView = ImageInfoView()
-        //imageInfoView.viewDelegate = self
+        let imageInfoView = ImageInfoView().autoLayout("imageInfoView")
 
-        imageInfoView.translatesAutoresizingMaskIntoConstraints = false
         imageInfoView.alpha = 0.9
-        imageInfoView.isHidden = true
 
         return imageInfoView
     }()
 
+    //隐藏状态栏
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func setupAndComposeView() {
+        self.title = "相册播放器"
         self.view.backgroundColor = UIColor.black
         //self.view._roundBorder()
 
@@ -104,9 +105,9 @@ class ImageViewController: UIViewController {
         view.addGestureRecognizer(edgePan)
     }
 
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-
+    var smallImageCollectionViewLayoutConstraints: NSArray?
+    var fullImageCollectionViewLayoutConstraints: NSArray?
+    override func setupConstraints() {
         imageViewHeader.autoSetDimension(.height, toSize: 64)
         imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
 
@@ -116,24 +117,48 @@ class ImageViewController: UIViewController {
         imageViewFooter.autoPinEdge(toSuperviewEdge: .right, withInset: padding)
         imageViewFooter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0)
 
-        guard let flowLayout = imageCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-        flowLayout.itemSize = imageCollectionView.frame.size
-        flowLayout.invalidateLayout()
-        //imageCollectionView.collectionViewLayout.invalidateLayout()
 
-        imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
-        imageInfoView.autoSetDimension(.height, toSize: self.view.bounds.height / 3)
+        smallImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+            imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+            imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.33)
+            
+            imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
+            imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        } as NSArray
+
+        fullImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+            imageCollectionView.autoPinEdgesToSuperviewEdges()
+        } as NSArray
+    }
+    override func modifyConstraints() {
+        if imageInfoView.isHidden == false {
+            smallImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
+            fullImageCollectionViewLayoutConstraints?.autoInstallConstraints()
+        } else {
+            smallImageCollectionViewLayoutConstraints?.autoInstallConstraints()
+            fullImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+    }
+
+    override func viewWillLayoutSubviews() {
+
+
+        super.viewWillLayoutSubviews()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
+
         let offset = imageCollectionView.contentOffset
         let width = imageCollectionView.bounds.size.width
 
         let index = round(offset.x / width)
         let newOffset = CGPoint(x: index * size.width, y: offset.y)
-
-        imageCollectionView.setContentOffset(newOffset, animated: false)
 
         coordinator.animate(alongsideTransition: { (context) in
             self.imageCollectionView.reloadData()
@@ -142,10 +167,6 @@ class ImageViewController: UIViewController {
         }, completion: nil)
     }
 
-    //隐藏状态栏
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
 
     @objc func handSwipe(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
@@ -166,9 +187,17 @@ class ImageViewController: UIViewController {
     }
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
-        imageViewHeader.isHidden = !imageViewHeader.isHidden
-        imageViewFooter.isHidden = !imageViewFooter.isHidden
+        if imageInfoView.isHidden == false {
+            imageInfoView.isHidden = true
+            imageViewHeader.isHidden = false
+            imageViewFooter.isHidden = false
+            //TODO
+        } else {
+            imageViewHeader.isHidden = !imageViewHeader.isHidden
+            imageViewFooter.isHidden = !imageViewFooter.isHidden
+        }
     }
+
     @objc func handleLongPressGesture(sender: UILongPressGestureRecognizer) {
         print("handleLongPressGesture: \(sender.state)")
         if sender.state == UIGestureRecognizer.State.began {
@@ -199,15 +228,84 @@ extension ImageViewController: UICollectionViewDataSource {
             return cell
         }
 
+        //let originalIndexPath = dataSource.originalIndexPath(indexPath)
+        //let thumbnailImage = imageViewerSupportDelegate?.getLoadedThumbnailImage(indexPath: originalIndexPath)
         let image = dataSource.image(indexPath)
-        //TODO 追加进度控制
-        //cell.imageView.image = UIImage()
-        image.resolve(completion: { (uiImage) in
-            cell.imageView.image = uiImage
-            cell.setNeedsDisplay()
-        })
+        DispatchQueue.global(qos: .userInteractive).async {
+            let _ = image.resolve(imageCallback: { [weak cell](imageSource) in
+                cell?.imageSourceView.imageSource = imageSource
+                cell?.imageSourceView.setNeedsDisplay()
+            }, metadataCallback: { [weak self] (image) in
+                //guard let metadata = image.metadata else {
+                //   log.warning("No metadata found.")
+                //   return
+                //}
+                //justPerformaceTest(metadata)
+                //print("collectionView metadata: \(metadata.prettyJSON())")
 
+                if let imageInfoView = self?.imageInfoView,
+                    imageInfoView.isHidden == false {
+                    imageInfoView.update(image)
+                }
+            }, errorCallback: { (error) in
+                log.warning("error: \(error)")
+            })
+        }
+
+        //imageViewerSupportDelegate?.scrollToItem(indexPath: originalIndexPath)
         return cell
+    }
+
+    func justPerformaceTest(_ metadata: ImageMetadata) {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        let jsonDecoder = JSONDecoder()
+        do {
+            var start = Date()
+            print("")
+            print("................................")
+            print("")
+
+            start = Date()
+            var jsonData = try jsonEncoder.encode(metadata)
+            print("jsonEncoder \(-start.timeIntervalSinceNow)s")
+
+            for algo: Data.CompressionAlgorithm in [.zlib, .lzfse, .lz4, .lzma] {
+                start = Date()
+                let compressedData: Data! = jsonData.compress(withAlgorithm: algo)
+
+                let ratio = Double(jsonData.count) / Double(compressedData.count)
+                print("\(algo) \(-start.timeIntervalSinceNow)s  =>   \(compressedData.count) bytes, ratio: \(ratio)")
+
+                start = Date()
+                assert(compressedData.decompress(withAlgorithm: algo)! == jsonData)
+                print("\(algo) decompress \(-start.timeIntervalSinceNow)s")
+            }
+
+            start = Date()
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            print("jsonEncoder Str \(-start.timeIntervalSinceNow)s: \n" + jsonString!)
+
+            start = Date()
+            let metadata2 = try jsonDecoder.decode(ImageMetadata.self, from: jsonData)
+            print("jsonDecoder \(-start.timeIntervalSinceNow)s: \n" + jsonString!)
+
+            print("")
+            print("................................")
+            print("")
+
+            let jsonData2 = try jsonEncoder.encode(metadata2)
+            let jsonString2 = String(data: jsonData2, encoding: .utf8)
+            print("JSON2 String : \n" + jsonString2!)
+
+            print("")
+            print("................................")
+            print("")
+        }
+        catch {
+            log.error("数据JSON化失败。")
+        }
+
     }
 }
 extension ImageViewController: UICollectionViewDelegateFlowLayout {
@@ -249,7 +347,6 @@ extension ImageViewController: UIScrollViewDelegate {
 }
 
 extension ImageViewController: ImageViewHeaderDelegate {
-
     func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
         self.dismiss(animated: true)
 
@@ -261,13 +358,6 @@ extension ImageViewController: ImageViewHeaderDelegate {
             self.exitProcesser?(dataSource.originalIndexPath(indexPath))
         }
     }
-
-    func headerView(_: ImageViewHeader, didPressMenuButton button: UIButton) {
-        //        let rect = CGRect(x: 0, y: 0, width: 50, height: 50)
-        //        self.optionsController = OptionsController(sourceView: button, sourceRect: rect)
-        //        self.optionsController!.delegate = self
-        //        self.viewerController?.present(self.optionsController!, animated: true, completion: nil)
-    }
 }
 
 extension ImageViewController: ImageViewFooterDelegate {
@@ -275,13 +365,9 @@ extension ImageViewController: ImageViewFooterDelegate {
     func deleteDelegate(_: ImageViewFooter, _ button: UIButton) {
         self.dismiss(animated: true)
 
-        guard let dataSource = dataSource else {
-            return
-        }
-
-        if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
-            self.exitProcesser?(dataSource.originalIndexPath(indexPath))
-        }
+//        guard let dataSource = dataSource else {
+//            return
+//        }
     }
 
     func favoriteDelegate(_: ImageViewFooter, _ button: UIButton) {
@@ -296,9 +382,13 @@ extension ImageViewController: ImageViewFooterDelegate {
                 return
         }
 
+        //显示信息视图
         imageInfoView.isHidden = false
+        imageViewHeader.isHidden = true
+        imageViewFooter.isHidden = true
 
         let image = dataSource.image(indexPath)
         self.imageInfoView.update(image)
+
     }
 }

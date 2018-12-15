@@ -5,6 +5,7 @@ import XCGLogger
 
 // The shared database queue
 var dbConn: DatabaseQueue!
+var albumManager: AlbumManager!
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -43,7 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ProfileManager.shared.load()
         
         DispatchQueue.main.async(execute: { () -> Void in
-            try! AlbumManager.shared.load()
+            albumManager = AlbumManager.shared
+            try! albumManager.load()
         })
 
         DispatchQueue.main.async(execute: { () -> Void in

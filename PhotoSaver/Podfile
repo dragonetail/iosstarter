@@ -31,10 +31,12 @@ target 'PhotoSaver' do
   pod 'Eureka'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'GesturePassword'
-  pod 'ImageIOSwift'
+  pod 'DataCompression'
   
+  pod 'ImageIOSwift_F2', :path => '/Users/sunyx/temp/ImageIOSwift/'
   pod 'SwipeSelectingCollectionView2'
   pod 'SwiftPagingTabView'
+  pod 'SwiftBaseBootstrap', '~> 0.1.5' 
 end
 
 target 'UIViewsSample' do
