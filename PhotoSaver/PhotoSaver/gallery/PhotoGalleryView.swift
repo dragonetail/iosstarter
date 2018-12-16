@@ -2,7 +2,7 @@ import UIKit
 import Photos
 import PureLayout
 import SwipeSelectingCollectionView2
-
+import SwiftBaseBootstrap
 
 protocol PhotoGalleryViewDataSource {
     func numberOfSections() -> Int

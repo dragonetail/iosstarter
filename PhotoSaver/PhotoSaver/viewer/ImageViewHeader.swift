@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout
+import SwiftBaseBootstrap
 
 protocol ImageViewHeaderDelegate: class {
     func headerView(_ headerView: ImageViewHeader, didPressClearButton button: UIButton)

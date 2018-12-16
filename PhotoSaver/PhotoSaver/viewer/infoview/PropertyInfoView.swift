@@ -1,6 +1,7 @@
 import UIKit
 import PureLayout
 import Eureka
+import SwiftBaseBootstrap
 
 class PropertyInfoView: BaseViewWithAutolayout {
     lazy var scrollView: UIScrollView = {
@@ -9,6 +10,7 @@ class PropertyInfoView: BaseViewWithAutolayout {
         //scrollView.alwaysBounceVertical = true
         
         scrollView.addSubview(infoStackView)
+        self.addSubview(scrollView)
         return scrollView
     }()
     var infoStackView: UIStackView = {
@@ -22,11 +24,38 @@ class PropertyInfoView: BaseViewWithAutolayout {
         return infoStackView
     }()
 
+    var image: Image? {
+        didSet{
+            setupAndComposeView()
+        }
+    }
+    
     override func setupAndComposeView() {
         _ = self.autoLayout("PropertyInfoView")
         self.backgroundColor = UIColor.black
         
-        self.addSubview(scrollView)
+        infoStackView.arrangedSubviews.forEach { (view) in
+            infoStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
+        guard let image = image else {
+            addAlterInfo()
+            return
+        }
+        
+        addInfo("ID", image.id)
+        addInfo("assetId", image.assetId)
+        addInfo("mediaType", String(describing: image.mediaType))
+        addInfo("mediaSubtype", String(describing: image.mediaSubtype))
+        addInfo("creationDate", String(describing: image.creationDate))
+        addInfo("modificationDate", String(describing: image.modificationDate))
+        addInfo("isFavorite", String(describing: image.isFavorite))
+        addInfo("dataSize", String(describing: image.dataSize))
+        addInfo("dataSizeStr", String(describing: image.dataSizeStr))
+        addInfo("orientation", String(describing: image.orientation))
+        addInfo("filePath", String(describing: image.filePath))
+        addInfo("filename", String(describing: image.filename))
     }
     
     // invoked only once
@@ -48,31 +77,6 @@ class PropertyInfoView: BaseViewWithAutolayout {
         super.layoutSubviews()
     }
 
-    func setup(_ image: Image?) {
-        infoStackView.arrangedSubviews.forEach { (view) in
-            infoStackView.removeArrangedSubview(view)
-        }
-
-        guard let image = image else {
-            addAlterInfo()
-            return
-        }
-        
-        addInfo("ID", image.id)
-        addInfo("assetId", image.assetId)
-        addInfo("mediaType", String(describing: image.mediaType))
-        addInfo("mediaSubtype", String(describing: image.mediaSubtype))
-        addInfo("creationDate", String(describing: image.creationDate))
-        addInfo("modificationDate", String(describing: image.modificationDate))
-        addInfo("isFavorite", String(describing: image.isFavorite))
-        addInfo("dataSize", String(describing: image.dataSize))
-        addInfo("dataSizeStr", String(describing: image.dataSizeStr))
-        addInfo("orientation", String(describing: image.orientation))
-        addInfo("filePath", String(describing: image.filePath))
-        addInfo("filename", String(describing: image.filename))
-    }
-
-    private var titleLabels: [UILabel] = []
     func addInfo(_ title: String, _ value: String) {
         let titleLabel = UILabel()
         titleLabel.text = "\(title):"

@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout
+import SwiftBaseBootstrap
 
 protocol ImageViewFooterDelegate: class {
     func deleteDelegate(_ footerView: ImageViewFooter, _ button: UIButton)

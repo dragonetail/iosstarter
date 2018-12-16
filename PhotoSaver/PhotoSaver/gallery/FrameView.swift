@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout
+import SwiftBaseBootstrap
 
 class FrameView: BaseViewWithAutolayout {
     static var fillColor: UIColor = UIColor(red: 50 / 255, green: 51 / 255, blue: 59 / 255, alpha: 1)

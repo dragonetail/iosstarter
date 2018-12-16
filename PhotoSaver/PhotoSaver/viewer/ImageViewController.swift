@@ -1,6 +1,7 @@
 import UIKit
 import PureLayout
 import DataCompression
+import SwiftBaseBootstrap
 
 protocol ImageViewDataSource {
     func totalCount() -> Int
@@ -62,8 +63,8 @@ class ImageViewController: BaseViewControllerWithAutolayout {
     lazy var imageInfoView: ImageInfoView = {
         let imageInfoView = ImageInfoView().autoLayout("imageInfoView")
 
-        imageInfoView.alpha = 0.9
-
+        //imageInfoView.alpha = 0.9
+        imageInfoView.isHidden = true
         return imageInfoView
     }()
 
@@ -105,8 +106,9 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         view.addGestureRecognizer(edgePan)
     }
 
-    var smallImageCollectionViewLayoutConstraints: NSArray?
-    var fullImageCollectionViewLayoutConstraints: NSArray?
+    fileprivate var isFullImageCollectionViewLayout: Bool = true
+    fileprivate var smallImageCollectionViewLayoutConstraints: NSArray?
+    fileprivate var fullImageCollectionViewLayoutConstraints: NSArray?
     override func setupConstraints() {
         imageViewHeader.autoSetDimension(.height, toSize: 64)
         imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
@@ -117,38 +119,26 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         imageViewFooter.autoPinEdge(toSuperviewEdge: .right, withInset: padding)
         imageViewFooter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0)
 
-
         smallImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
             imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-            imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.33)
-            
-            imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
-            imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+            imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.33)
         } as NSArray
 
         fullImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
             imageCollectionView.autoPinEdgesToSuperviewEdges()
         } as NSArray
+
+        imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
+        imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
     }
     override func modifyConstraints() {
-        if imageInfoView.isHidden == false {
+        if isFullImageCollectionViewLayout {
             smallImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
             fullImageCollectionViewLayoutConstraints?.autoInstallConstraints()
         } else {
             smallImageCollectionViewLayoutConstraints?.autoInstallConstraints()
             fullImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
         }
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-    }
-
-    override func viewWillLayoutSubviews() {
-
-
-        super.viewWillLayoutSubviews()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -188,16 +178,59 @@ class ImageViewController: BaseViewControllerWithAutolayout {
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
         if imageInfoView.isHidden == false {
-            imageInfoView.isHidden = true
-            imageViewHeader.isHidden = false
-            imageViewFooter.isHidden = false
-            //TODO
+            toggleImageInfoView()
         } else {
-            imageViewHeader.isHidden = !imageViewHeader.isHidden
-            imageViewFooter.isHidden = !imageViewFooter.isHidden
+            toggleimageViewHeaderAndFooter(!imageViewHeader.isHidden)
         }
     }
+    fileprivate func toggleimageViewHeaderAndFooter(_ visible: Bool) {
+        if visible {
+            self.imageViewHeader.isHidden = false
+            self.imageViewFooter.isHidden = false
+        }
+        UIView.animate(withDuration: 0.25, animations: {
+            self.imageViewHeader.alpha = visible ? 1 : 0
+            self.imageViewFooter.alpha = visible ? 1 : 0
+        }, completion: { [weak self] _ in
+            if !visible {
+                self?.imageViewHeader.isHidden = true
+                self?.imageViewFooter.isHidden = true
+            }
+        })
+    }
+    fileprivate func toggleImageInfoView() {
+        isFullImageCollectionViewLayout = !isFullImageCollectionViewLayout
 
+        self.imageViewHeader.isHidden = !isFullImageCollectionViewLayout
+        self.imageViewFooter.isHidden = !isFullImageCollectionViewLayout
+
+        if isFullImageCollectionViewLayout {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.imageInfoView.alpha = 0
+            }, completion: { [weak self] _ in
+                self?.imageInfoView.isHidden = true
+                UIView.animate(withDuration: 0.2, delay: 0.0, options: .transitionCurlUp,
+                               animations: { [weak self] in
+                                   self?.view.setNeedsUpdateConstraints()
+                                   self?.view.setNeedsLayout()
+                                   self?.view.layoutIfNeeded()
+                               })
+            })
+        } else {
+            UIView.animate(withDuration: 0.1, delay: 0.0, options: .transitionCurlUp, animations: {
+                self.view.setNeedsUpdateConstraints()
+                self.view.setNeedsLayout()
+                self.view.layoutIfNeeded()
+            }, completion: { [weak self] _ in
+                self?.imageInfoView.isHidden = false
+                UIView.animate(withDuration: 0.3,
+                               animations: { [weak self] in
+                                   self?.imageInfoView.alpha = 1
+                               })
+            })
+        }
+    }
+    
     @objc func handleLongPressGesture(sender: UILongPressGestureRecognizer) {
         print("handleLongPressGesture: \(sender.state)")
         if sender.state == UIGestureRecognizer.State.began {
@@ -245,7 +278,7 @@ extension ImageViewController: UICollectionViewDataSource {
 
                 if let imageInfoView = self?.imageInfoView,
                     imageInfoView.isHidden == false {
-                    imageInfoView.update(image)
+                    imageInfoView.image = image
                 }
             }, errorCallback: { (error) in
                 log.warning("error: \(error)")
@@ -382,13 +415,9 @@ extension ImageViewController: ImageViewFooterDelegate {
                 return
         }
 
-        //显示信息视图
-        imageInfoView.isHidden = false
-        imageViewHeader.isHidden = true
-        imageViewFooter.isHidden = true
-
         let image = dataSource.image(indexPath)
-        self.imageInfoView.update(image)
+        self.imageInfoView.image = image
 
+        toggleImageInfoView()
     }
 }

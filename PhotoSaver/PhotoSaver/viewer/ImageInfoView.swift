@@ -1,6 +1,8 @@
 import UIKit
 import PureLayout
 import Photos
+import SwiftBaseBootstrap
+import SwiftPagingTabView
 
 protocol ImageInfoViewDelegate: class {
     func imageInfoView(_ imageInfoView: ImageInfoView, didPressClearButton button: UIButton)
@@ -55,13 +57,11 @@ class ImageInfoView: BaseViewWithAutolayout {
         pagingTabView.autoPinEdgesToSuperviewEdges()
     }
     
-    private var image: Image?
-    func update(_ image: Image) {
-        self.image = image
-
-        pagingTabView.reloadAndSetup()
+    var image: Image? {
+        didSet {
+            pagingTabView.setupAndComposeView()
+        }
     }
-
 }
 
 
@@ -72,7 +72,7 @@ extension ImageInfoView: PagingTabViewDelegate {
 
     func reconfigure(pagingTabView: PagingTabView) {
         pagingTabView.tabButtons.forEach { (tabButton) in
-            tabButton.configure(config: TabButtonConfig())
+            tabButton.config = TabButtonConfig()
         }
     }
 }
@@ -99,7 +99,7 @@ extension ImageInfoView: PagingTabViewDataSource {
     func tabView(pagingTabView: PagingTabView, index: Int) -> UIView {
         switch index {
         case 0: //概要
-            propertyInfoView.setup(image)
+            propertyInfoView.image = image
             return propertyInfoView
 //        case 1:
 //            return (image: nil, title: "信息")

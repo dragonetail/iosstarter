@@ -1,5 +1,6 @@
 import UIKit
 import ATGMediaBrowser
+import SwiftBaseBootstrap
 
 class PhotoGalleryController: BaseViewControllerWithAutolayout {
 

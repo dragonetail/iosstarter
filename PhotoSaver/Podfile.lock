@@ -8,7 +8,7 @@ PODS:
   - FSPagerView (0.8.2)
   - Gallery (2.2.0)
   - GesturePassword (2.0.3)
-  - GRDB.swift (3.5.0)
+  - GRDB.swift (3.6.1)
   - Hue (3.0.1)
   - ImageIOSwift_F2 (0.6.2)
   - Imaginary (4.2.0):
@@ -20,9 +20,12 @@ PODS:
   - ObjcExceptionBridging/ObjcExceptionBridging (1.0.1)
   - PureLayout (3.1.4)
   - SVProgressHUD (2.2.5)
-  - SwiftEventBus (3.0.1)
-  - SwiftPagingTabView (0.0.3):
+  - SwiftBaseBootstrap (0.1.6):
     - PureLayout (~> 3.1.4)
+  - SwiftEventBus (3.0.1)
+  - SwiftPagingTabView (0.1.5):
+    - PureLayout (~> 3.1.4)
+    - SwiftBaseBootstrap
   - SwiftyJSON (4.2.0)
   - SwipeSelectingCollectionView2 (0.1.8)
   - WechatOpenSDK (1.8.3)
@@ -48,8 +51,9 @@ DEPENDENCIES:
   - Lightbox (from `./LocalPods/Lightbox`)
   - PureLayout (~> 3.1.4)
   - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
+  - SwiftBaseBootstrap
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `3.0.1`)
-  - SwiftPagingTabView (from `/Users/sunyx/workspace/ios/SwiftPagingTabView/`)
+  - SwiftPagingTabView
   - SwiftyJSON (~> 4.0)
   - SwipeSelectingCollectionView2
   - WechatOpenSDK
@@ -67,6 +71,8 @@ SPEC REPOS:
     - GRDB.swift
     - ObjcExceptionBridging
     - PureLayout
+    - SwiftBaseBootstrap
+    - SwiftPagingTabView
     - SwiftyJSON
     - SwipeSelectingCollectionView2
     - WechatOpenSDK
@@ -90,8 +96,6 @@ EXTERNAL SOURCES:
   SwiftEventBus:
     :git: https://github.com/cesarferreira/SwiftEventBus.git
     :tag: 3.0.1
-  SwiftPagingTabView:
-    :path: "/Users/sunyx/workspace/ios/SwiftPagingTabView/"
 
 CHECKOUT OPTIONS:
   SwiftEventBus:
@@ -108,7 +112,7 @@ SPEC CHECKSUMS:
   FSPagerView: 816a18842306973cc7cc6df8a5332272f7815c30
   Gallery: 3c0e9fb00f1b0dddd7e9ec04576d6e1c69468f82
   GesturePassword: 1afc4fdb0ac87ed4f1c82a218d4c06b55a1c4c30
-  GRDB.swift: 225cf9c1354753e92e20c2a1fa2912b924c9da6e
+  GRDB.swift: 2ea998984ce0d8b869917e1452b5d87f1ec5e0dd
   Hue: 8c03f7aca9b9ef3a15052296bea5d60a3be56350
   ImageIOSwift_F2: 95e83b074c3b2203fb8ee7b7224422fbb380d7bc
   Imaginary: deadb35fdfc6cfbe25d1baf3f1e421929f577142
@@ -116,13 +120,14 @@ SPEC CHECKSUMS:
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
+  SwiftBaseBootstrap: 8ad78b2b2b0461cc39180a4be3f006c36c69b125
   SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
-  SwiftPagingTabView: 544939e3d90e21e76aa5067078f821c6deb80080
+  SwiftPagingTabView: 99049511df15bf8196f08f8b59a0db567d4d8f8a
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   SwipeSelectingCollectionView2: 350a730b246b5201f347480490746bf338ccb265
   WechatOpenSDK: 3117412f8aafde4758cac1e8d20b93c67cafcfef
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
 
-PODFILE CHECKSUM: effd666cc02fb5898aa633d37f835dc4b47fc95a
+PODFILE CHECKSUM: 5e3d19de0d19f7b58ae795177c5eb14007acba9d
 
 COCOAPODS: 1.5.3

@@ -1,6 +1,7 @@
 import UIKit
 import Photos
 import PureLayout
+import SwiftBaseBootstrap
 
 protocol AlbumListViewDelegate: class {
     func didSelectAlbum(didSelect album: Album)

@@ -1,5 +1,6 @@
 import UIKit
 import PureLayout
+import SwiftBaseBootstrap
 
 class NoPhotoAuthorizationController: BaseViewControllerWithAutolayout {
     static let image: UIImage? = GalleryBundle.image("gallery_empty_view_image")
