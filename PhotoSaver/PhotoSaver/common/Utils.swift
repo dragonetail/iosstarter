@@ -4,6 +4,7 @@ import Photos
 
 struct Utils {
     
+    
     static func rotationTransform() -> CGAffineTransform {
         switch UIDevice.current.orientation {
         case .landscapeLeft:

@@ -31,6 +31,8 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         imageCollectionView.dataSource = self
         imageCollectionView.register(ImageViewCell.self, forCellWithReuseIdentifier: "Cell")
         imageCollectionView.isPagingEnabled = true
+        imageCollectionView.showsHorizontalScrollIndicator = false
+        imageCollectionView.showsVerticalScrollIndicator = false
 
         if let initialIndexPath = dataSource?.initialIndexPath() {
             imageCollectionView.scrollToItem(at: initialIndexPath, at: .left, animated: false)
@@ -107,8 +109,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
     }
 
     fileprivate var isFullImageCollectionViewLayout: Bool = true
-    fileprivate var smallImageCollectionViewLayoutConstraints: NSArray?
-    fileprivate var fullImageCollectionViewLayoutConstraints: NSArray?
+    fileprivate var dynamicConstraints: [String: NSArray] = [String: NSArray]()
     override func setupConstraints() {
         imageViewHeader.autoSetDimension(.height, toSize: 64)
         imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
@@ -119,61 +120,84 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         imageViewFooter.autoPinEdge(toSuperviewEdge: .right, withInset: padding)
         imageViewFooter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0)
 
-        smallImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
-            imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-            imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.33)
-        } as NSArray
+        do {
+            let orientation = "landscape"
+            dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .left)
+                imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.67)
+            } as NSArray
 
-        fullImageCollectionViewLayoutConstraints = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
-            imageCollectionView.autoPinEdgesToSuperviewEdges()
-        } as NSArray
+            dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageCollectionView.autoPinEdgesToSuperviewEdges()
+            } as NSArray
 
-        imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
-        imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
-    }
-    override func modifyConstraints() {
-        if isFullImageCollectionViewLayout {
-            smallImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
-            fullImageCollectionViewLayoutConstraints?.autoInstallConstraints()
-        } else {
-            smallImageCollectionViewLayoutConstraints?.autoInstallConstraints()
-            fullImageCollectionViewLayoutConstraints?.autoRemoveConstraints()
+            dynamicConstraints["\(orientation).imageInfo"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageInfoView.autoPinEdge(.right, to: .left, of: imageCollectionView)
+                imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .right)
+            } as NSArray
         }
+
+        do {
+            let orientation = "portrait"
+            dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
+                imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.33)
+            } as NSArray
+
+            dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageCollectionView.autoPinEdgesToSuperviewEdges()
+            } as NSArray
+
+            dynamicConstraints["\(orientation).imageInfo"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
+                imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
+                imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+            } as NSArray
+        }
+    }
+
+    override func modifyConstraints() {
+        var orientation = "portrait"
+        if OrientationUtils.isLandscape() {
+            orientation = "landscape"
+        }
+
+        dynamicConstraints.forEach { (_: String, constraints: NSArray) in
+            constraints.autoRemoveConstraints()
+        }
+
+        if isFullImageCollectionViewLayout {
+            dynamicConstraints["\(orientation).full"]?.autoInstallConstraints()
+        } else {
+            dynamicConstraints["\(orientation).small"]?.autoInstallConstraints()
+        }
+        dynamicConstraints["\(orientation).imageInfo"]?.autoInstallConstraints()
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-
-        let offset = imageCollectionView.contentOffset
-        let width = imageCollectionView.bounds.size.width
-
-        let index = round(offset.x / width)
-        let newOffset = CGPoint(x: index * size.width, y: offset.y)
-
+        super.viewWillTransition( to: size, with: coordinator)
+        
+        let originalWidth = self.imageCollectionView.frame.size.width
         coordinator.animate(alongsideTransition: { (context) in
-            self.imageCollectionView.reloadData()
-
-            self.imageCollectionView.setContentOffset(newOffset, animated: false)
+            self.transitionUpdate(originalWidth)
         }, completion: nil)
     }
 
+    fileprivate func transitionUpdate(_ _originalWidth: CGFloat? = nil) {
+        let originalWidth = _originalWidth ?? self.imageCollectionView.frame.size.width
+        let offset = imageCollectionView.contentOffset
+        let index = round(offset.x / originalWidth )
+        
+//        if let toFrameSize = toFrameSize {
+//            self.view.frame.size = toFrameSize
+//        }
 
-    @objc func handSwipe(gesture: UIGestureRecognizer) {
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            switch swipeGesture.direction {
-            case .right:
-                print("Swiped right")
-            case .down:
-                print("Swiped down")
-                self.dismiss(animated: true)
-            case .left:
-                print("Swiped left")
-            case .up:
-                print("Swiped up")
-            default:
-                break
-            }
-        }
+        self.view.setNeedsUpdateConstraints()
+        self.view.setNeedsLayout()
+        self.view.layoutIfNeeded()
+        
+        let newOffset = CGPoint(x: index * self.imageCollectionView.frame.width, y: offset.y)
+        self.imageCollectionView.reloadData()
+        self.imageCollectionView.setContentOffset(newOffset, animated: false)
     }
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
@@ -205,22 +229,20 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         self.imageViewFooter.isHidden = !isFullImageCollectionViewLayout
 
         if isFullImageCollectionViewLayout {
+            //Full the collection view and hide the info view
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageInfoView.alpha = 0
             }, completion: { [weak self] _ in
                 self?.imageInfoView.isHidden = true
                 UIView.animate(withDuration: 0.2, delay: 0.0, options: .transitionCurlUp,
                                animations: { [weak self] in
-                                   self?.view.setNeedsUpdateConstraints()
-                                   self?.view.setNeedsLayout()
-                                   self?.view.layoutIfNeeded()
+                                   self?.transitionUpdate()
                                })
             })
         } else {
+            //Small the collection view and show the info view
             UIView.animate(withDuration: 0.1, delay: 0.0, options: .transitionCurlUp, animations: {
-                self.view.setNeedsUpdateConstraints()
-                self.view.setNeedsLayout()
-                self.view.layoutIfNeeded()
+                self.transitionUpdate()
             }, completion: { [weak self] _ in
                 self?.imageInfoView.isHidden = false
                 UIView.animate(withDuration: 0.3,
@@ -230,7 +252,25 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             })
         }
     }
-    
+
+    @objc func handSwipe(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case .right:
+                print("Swiped right")
+            case .down:
+                print("Swiped down")
+                self.dismiss(animated: true)
+            case .left:
+                print("Swiped left")
+            case .up:
+                print("Swiped up")
+            default:
+                break
+            }
+        }
+    }
+
     @objc func handleLongPressGesture(sender: UILongPressGestureRecognizer) {
         print("handleLongPressGesture: \(sender.state)")
         if sender.state == UIGestureRecognizer.State.began {

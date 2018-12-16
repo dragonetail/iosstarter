@@ -42,6 +42,7 @@
 		D9B2D19521B1680200A0635A /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B2D19421B1680200A0635A /* AppLock.swift */; };
 		D9B4183421B5034700A38542 /* AlbumImageDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B4183321B5034700A38542 /* AlbumImageDataSource.swift */; };
 		D9B4183621B562FF00A38542 /* ImageViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B4183521B562FF00A38542 /* ImageViewFooter.swift */; };
+		D9B780F121C6199B00BC156E /* OrientationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F021C6199B00BC156E /* OrientationUtils.swift */; };
 		D9BBD24D2196A8A200EC6823 /* NoPhotoAuthorizationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */; };
 		D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D935F22181FEE100C91C5E /* HeaderCell.swift */; };
 		D9FBA25B21B7951600D968C9 /* ImageInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FBA25A21B7951600D968C9 /* ImageInfoView.swift */; };
@@ -114,6 +115,7 @@
 		D9B2D19421B1680200A0635A /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
 		D9B4183321B5034700A38542 /* AlbumImageDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageDataSource.swift; sourceTree = "<group>"; };
 		D9B4183521B562FF00A38542 /* ImageViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewFooter.swift; sourceTree = "<group>"; };
+		D9B780F021C6199B00BC156E /* OrientationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationUtils.swift; sourceTree = "<group>"; };
 		D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPhotoAuthorizationController.swift; sourceTree = "<group>"; };
 		D9BBD24E2197130400EC6823 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		D9D935F22181FEE100C91C5E /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				D96E968221919D4F0066F745 /* CyaneaOctopus.swift */,
 				D9B2D19021B13B7400A0635A /* FileUtils.swift */,
 				D9B2D19421B1680200A0635A /* AppLock.swift */,
+				D9B780F021C6199B00BC156E /* OrientationUtils.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -597,6 +600,7 @@
 				D9B2D16C21A62D1000A0635A /* ProfileHeaderView.swift in Sources */,
 				D976985421889D5500F41403 /* ImageViewCell.swift in Sources */,
 				D9B2D16821A629B800A0635A /* ProfileViewController.swift in Sources */,
+				D9B780F121C6199B00BC156E /* OrientationUtils.swift in Sources */,
 				D96E968321919D4F0066F745 /* CyaneaOctopus.swift in Sources */,
 				D9FC126D2178CF16008E466E /* Album.swift in Sources */,
 			);
