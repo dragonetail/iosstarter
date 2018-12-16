@@ -234,7 +234,7 @@ class AlbumManager {
         itemsFetchResult.enumerateObjects({ (asset, index, stop) in
             do {
                 if asset.mediaType == .image {
-                    let groupedDate = asset.creationDate?.groupedDateString() ?? ""
+                    let groupedDate = self.groupedDateString(asset.creationDate)
                     let assetId = asset.localIdentifier
                     if let _ = images[assetId] {
                         //noop
@@ -303,6 +303,23 @@ class AlbumManager {
             log.warning("查询ImageMetadataModel数据到失败：\(error)")
         }
         return nil
+    }
+    
+    fileprivate func groupedDateString(_ date: Date?) -> String {
+        guard let date = date else {
+            return ""
+        }
+        
+        let now = Date()
+        let calendar = Calendar.current
+        let curYear = calendar.component(.year, from: now)
+        let year = calendar.component(.year, from: date)
+        
+        if year == curYear {
+            return date.shortDate
+        } else {
+            return date.fullDate
+        }
     }
 
 }

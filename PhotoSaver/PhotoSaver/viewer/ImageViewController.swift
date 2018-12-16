@@ -124,7 +124,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             let orientation = "landscape"
             dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
                 imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .left)
-                imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.67)
+                imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.6)
             } as NSArray
 
             dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
@@ -141,7 +141,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             let orientation = "portrait"
             dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
                 imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-                imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.33)
+                imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.5)
             } as NSArray
 
             dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
@@ -309,12 +309,12 @@ extension ImageViewController: UICollectionViewDataSource {
                 cell?.imageSourceView.imageSource = imageSource
                 cell?.imageSourceView.setNeedsDisplay()
             }, metadataCallback: { [weak self] (image) in
-                //guard let metadata = image.metadata else {
-                //   log.warning("No metadata found.")
-                //   return
-                //}
+                guard let metadata = image.metadata else {
+                   log.warning("No metadata found.")
+                   return
+                }
                 //justPerformaceTest(metadata)
-                //print("collectionView metadata: \(metadata.prettyJSON())")
+                print("collectionView metadata: \(metadata.prettyJSON())")
 
                 if let imageInfoView = self?.imageInfoView,
                     imageInfoView.isHidden == false {

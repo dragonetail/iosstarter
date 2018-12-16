@@ -43,6 +43,10 @@
 		D9B4183421B5034700A38542 /* AlbumImageDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B4183321B5034700A38542 /* AlbumImageDataSource.swift */; };
 		D9B4183621B562FF00A38542 /* ImageViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B4183521B562FF00A38542 /* ImageViewFooter.swift */; };
 		D9B780F121C6199B00BC156E /* OrientationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F021C6199B00BC156E /* OrientationUtils.swift */; };
+		D9B780F321C6655000BC156E /* LocalizedStringHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F221C6655000BC156E /* LocalizedStringHelper.swift */; };
+		D9B780F521C669EB00BC156E /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F421C669EB00BC156E /* Date+Extension.swift */; };
+		D9B780F721C66E9900BC156E /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F621C66E9900BC156E /* Int+Extension.swift */; };
+		D9B780F921C6A2C600BC156E /* UIPaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9B780F821C6A2C600BC156E /* UIPaddedLabel.swift */; };
 		D9BBD24D2196A8A200EC6823 /* NoPhotoAuthorizationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */; };
 		D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9D935F22181FEE100C91C5E /* HeaderCell.swift */; };
 		D9FBA25B21B7951600D968C9 /* ImageInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9FBA25A21B7951600D968C9 /* ImageInfoView.swift */; };
@@ -116,6 +120,10 @@
 		D9B4183321B5034700A38542 /* AlbumImageDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumImageDataSource.swift; sourceTree = "<group>"; };
 		D9B4183521B562FF00A38542 /* ImageViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewFooter.swift; sourceTree = "<group>"; };
 		D9B780F021C6199B00BC156E /* OrientationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationUtils.swift; sourceTree = "<group>"; };
+		D9B780F221C6655000BC156E /* LocalizedStringHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStringHelper.swift; sourceTree = "<group>"; };
+		D9B780F421C669EB00BC156E /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
+		D9B780F621C66E9900BC156E /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		D9B780F821C6A2C600BC156E /* UIPaddedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPaddedLabel.swift; sourceTree = "<group>"; };
 		D9BBD24C2196A8A200EC6823 /* NoPhotoAuthorizationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoPhotoAuthorizationController.swift; sourceTree = "<group>"; };
 		D9BBD24E2197130400EC6823 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		D9D935F22181FEE100C91C5E /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
@@ -311,6 +319,9 @@
 				D9FC125421778399008E466E /* String+Extensions.swift */,
 				D9FC125521778399008E466E /* AVAsset+Extensions.swift */,
 				D9FC125621778399008E466E /* UIScrollView+Extensions.swift */,
+				D9B780F421C669EB00BC156E /* Date+Extension.swift */,
+				D9B780F621C66E9900BC156E /* Int+Extension.swift */,
+				D9B780F821C6A2C600BC156E /* UIPaddedLabel.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -352,6 +363,7 @@
 				D9B2D19021B13B7400A0635A /* FileUtils.swift */,
 				D9B2D19421B1680200A0635A /* AppLock.swift */,
 				D9B780F021C6199B00BC156E /* OrientationUtils.swift */,
+				D9B780F221C6655000BC156E /* LocalizedStringHelper.swift */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -551,9 +563,11 @@
 				D9B2D18121AD70D400A0635A /* ImagePickerController.swift in Sources */,
 				D9B2D17F21AD70AF00A0635A /* ImageRow.swift in Sources */,
 				D9FC12692178CE92008E466E /* AlbumListView.swift in Sources */,
+				D9B780F721C66E9900BC156E /* Int+Extension.swift in Sources */,
 				D9BBD24D2196A8A200EC6823 /* NoPhotoAuthorizationController.swift in Sources */,
 				D9B2D17C21ACF53A00A0635A /* ProfileSettingsFormViewController.swift in Sources */,
 				D9FC125C21778399008E466E /* AVAsset+Extensions.swift in Sources */,
+				D9B780F921C6A2C600BC156E /* UIPaddedLabel.swift in Sources */,
 				D9FC12712178CF7D008E466E /* Utils.swift in Sources */,
 				D9B2D18921B0D84200A0635A /* SettingsModel.swift in Sources */,
 				D9B2D17A21AC1EFE00A0635A /* ProfileFooterView.swift in Sources */,
@@ -569,6 +583,8 @@
 				D9FC127D217AB331008E466E /* EventBus.swift in Sources */,
 				D9FC118E216CDF15008E466E /* PhotoGalleryController.swift in Sources */,
 				D9D935F32181FEE100C91C5E /* HeaderCell.swift in Sources */,
+				D9B780F321C6655000BC156E /* LocalizedStringHelper.swift in Sources */,
+				D9B780F521C669EB00BC156E /* Date+Extension.swift in Sources */,
 				D9FBA25B21B7951600D968C9 /* ImageInfoView.swift in Sources */,
 				D9FBA2A521BE60FF00D968C9 /* ImageMetadataModel.swift in Sources */,
 				D9B2D18F21B135D000A0635A /* ImageRowCell.swift in Sources */,

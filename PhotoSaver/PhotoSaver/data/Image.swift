@@ -43,9 +43,9 @@ class Image: Equatable {
     }
 
     // MARK: Readonly properties
-    var dataSizeStr: String? {
+    var dataSizeStr: String {
         guard let dataSize = self.dataSize else {
-            return nil
+            return ""
         }
         return ByteCountFormatter.string(fromByteCount: Int64(dataSize), countStyle: .file)
     }
