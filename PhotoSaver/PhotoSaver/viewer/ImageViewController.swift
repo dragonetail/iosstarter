@@ -43,22 +43,16 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         return imageCollectionView
     }()
 
-    lazy var imageViewHeader: UIView = {
+    lazy var imageViewHeader: ImageViewHeader = {
         let imageViewHeader = ImageViewHeader().autoLayout("imageViewHeader")
         imageViewHeader.viewDelegate = self
-
-        imageViewHeader.translatesAutoresizingMaskIntoConstraints = false
-        imageViewHeader.alpha = 1
 
         return imageViewHeader
     }()
 
-    lazy var imageViewFooter: UIView = {
+    lazy var imageViewFooter: ImageViewFooter = {
         let imageViewFooter = ImageViewFooter().autoLayout("imageViewFooter")
         imageViewFooter.viewDelegate = self
-
-        imageViewFooter.translatesAutoresizingMaskIntoConstraints = false
-        imageViewFooter.alpha = 1
 
         return imageViewFooter
     }()
@@ -75,6 +69,9 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         return true
     }
 
+    override open var accessibilityIdentifier: String {
+        return "ImageViewController"
+    }
     override func setupAndComposeView() {
         self.title = "相册播放器"
         self.view.backgroundColor = UIColor.black
@@ -90,41 +87,32 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             UISwipeGestureRecognizer.Direction.down].forEach({ direction in
             let swipe = UISwipeGestureRecognizer(target: self, action: #selector(self.handSwipe))
             swipe.direction = direction
-            self.view.addGestureRecognizer(swipe)
+            self.imageCollectionView.addGestureRecognizer(swipe)
         })
 
         let slightTapGest = UITapGestureRecognizer(target: self, action: #selector(handleSlightTap))
         slightTapGest.numberOfTapsRequired = 1
-        self.view.addGestureRecognizer(slightTapGest)
+        self.imageCollectionView.addGestureRecognizer(slightTapGest)
 
         let longpressGestrue = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
         longpressGestrue.minimumPressDuration = 1
         longpressGestrue.numberOfTouchesRequired = 1
         longpressGestrue.allowableMovement = 15
-        self.view.addGestureRecognizer(longpressGestrue)
+        self.imageCollectionView.addGestureRecognizer(longpressGestrue)
 
-        let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
-        edgePan.edges = .left
-        view.addGestureRecognizer(edgePan)
+        //let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(screenEdgeSwiped))
+        //edgePan.edges = .left
+        //self.imageCollectionView.addGestureRecognizer(edgePan)
     }
 
-    fileprivate var isFullImageCollectionViewLayout: Bool = true
+    fileprivate var isImageFullScreenViewAndInfoIsHidden: Bool = true
     fileprivate var dynamicConstraints: [String: NSArray] = [String: NSArray]()
     override func setupConstraints() {
-        imageViewHeader.autoSetDimension(.height, toSize: 64)
-        imageViewHeader.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-
-        imageViewFooter.autoSetDimension(.height, toSize: 64)
-        let padding = UIScreen.main.bounds.width / 10
-        imageViewFooter.autoPinEdge(toSuperviewEdge: .left, withInset: padding)
-        imageViewFooter.autoPinEdge(toSuperviewEdge: .right, withInset: padding)
-        imageViewFooter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0)
-
         do {
             let orientation = "landscape"
             dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
                 imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .left)
-                imageCollectionView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.6)
+                imageCollectionView.autoPinEdge(.left, to: .right, of: imageInfoView)
             } as NSArray
 
             dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
@@ -132,7 +120,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             } as NSArray
 
             dynamicConstraints["\(orientation).imageInfo"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
-                imageInfoView.autoPinEdge(.right, to: .left, of: imageCollectionView)
+                imageInfoView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 4.2)
                 imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .right)
             } as NSArray
         }
@@ -141,7 +129,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             let orientation = "portrait"
             dynamicConstraints["\(orientation).small"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
                 imageCollectionView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
-                imageCollectionView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.5)
+                imageCollectionView.autoPinEdge(.bottom, to: .top, of: imageInfoView)
             } as NSArray
 
             dynamicConstraints["\(orientation).full"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
@@ -149,10 +137,20 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             } as NSArray
 
             dynamicConstraints["\(orientation).imageInfo"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
-                imageInfoView.autoPinEdge(.top, to: .bottom, of: imageCollectionView)
+                imageInfoView.autoMatch(.height, to: .height, of: self.view, withMultiplier: 0.5)
                 imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
             } as NSArray
         }
+
+        imageViewHeader.autoSetDimension(.height, toSize: 64)
+        imageViewHeader.autoPinEdge(.top, to: .top, of: imageCollectionView)
+        imageViewHeader.autoPinEdge(.left, to: .left, of: imageCollectionView)
+        imageViewHeader.autoPinEdge(.right, to: .right, of: imageCollectionView)
+
+        imageViewFooter.autoSetDimension(.height, toSize: 64)
+        imageViewFooter.autoPinEdge(.bottom, to: .bottom, of: imageCollectionView)
+        imageViewFooter.autoPinEdge(.left, to: .left, of: imageCollectionView)
+        imageViewFooter.autoPinEdge(.right, to: .right, of: imageCollectionView)
     }
 
     override func modifyConstraints() {
@@ -165,7 +163,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             constraints.autoRemoveConstraints()
         }
 
-        if isFullImageCollectionViewLayout {
+        if isImageFullScreenViewAndInfoIsHidden {
             dynamicConstraints["\(orientation).full"]?.autoInstallConstraints()
         } else {
             dynamicConstraints["\(orientation).small"]?.autoInstallConstraints()
@@ -174,8 +172,8 @@ class ImageViewController: BaseViewControllerWithAutolayout {
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition( to: size, with: coordinator)
-        
+        super.viewWillTransition(to: size, with: coordinator)
+
         let originalWidth = self.imageCollectionView.frame.size.width
         coordinator.animate(alongsideTransition: { (context) in
             self.transitionUpdate(originalWidth)
@@ -185,26 +183,23 @@ class ImageViewController: BaseViewControllerWithAutolayout {
     fileprivate func transitionUpdate(_ _originalWidth: CGFloat? = nil) {
         let originalWidth = _originalWidth ?? self.imageCollectionView.frame.size.width
         let offset = imageCollectionView.contentOffset
-        let index = round(offset.x / originalWidth )
-        
-//        if let toFrameSize = toFrameSize {
-//            self.view.frame.size = toFrameSize
-//        }
+        let index = round(offset.x / originalWidth)
+
+        let newOffset = CGPoint(x: index * self.imageCollectionView.frame.width, y: offset.y)
+        self.imageCollectionView.reloadData()
+        self.imageCollectionView.setContentOffset(newOffset, animated: false)
 
         self.view.setNeedsUpdateConstraints()
         self.view.setNeedsLayout()
         self.view.layoutIfNeeded()
-        
-        let newOffset = CGPoint(x: index * self.imageCollectionView.frame.width, y: offset.y)
-        self.imageCollectionView.reloadData()
-        self.imageCollectionView.setContentOffset(newOffset, animated: false)
+        imageCollectionView.visibleCells.first?.sizeToFit()
     }
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
         if imageInfoView.isHidden == false {
             toggleImageInfoView()
         } else {
-            toggleimageViewHeaderAndFooter(!imageViewHeader.isHidden)
+            toggleimageViewHeaderAndFooter(imageViewHeader.isHidden)
         }
     }
     fileprivate func toggleimageViewHeaderAndFooter(_ visible: Bool) {
@@ -223,12 +218,12 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         })
     }
     fileprivate func toggleImageInfoView() {
-        isFullImageCollectionViewLayout = !isFullImageCollectionViewLayout
+        isImageFullScreenViewAndInfoIsHidden = !isImageFullScreenViewAndInfoIsHidden
 
-        self.imageViewHeader.isHidden = !isFullImageCollectionViewLayout
-        self.imageViewFooter.isHidden = !isFullImageCollectionViewLayout
+        self.imageViewHeader.isHidden = !isImageFullScreenViewAndInfoIsHidden
+        self.imageViewFooter.isHidden = !isImageFullScreenViewAndInfoIsHidden
 
-        if isFullImageCollectionViewLayout {
+        if isImageFullScreenViewAndInfoIsHidden {
             //Full the collection view and hide the info view
             UIView.animate(withDuration: 0.1, animations: {
                 self.imageInfoView.alpha = 0
@@ -257,14 +252,13 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             switch swipeGesture.direction {
             case .right:
-                print("Swiped right")
+                break
             case .down:
-                print("Swiped down")
-                self.dismiss(animated: true)
+                exitView()
             case .left:
-                print("Swiped left")
+                break
             case .up:
-                print("Swiped up")
+                showImageInfoView()
             default:
                 break
             }
@@ -274,15 +268,17 @@ class ImageViewController: BaseViewControllerWithAutolayout {
     @objc func handleLongPressGesture(sender: UILongPressGestureRecognizer) {
         print("handleLongPressGesture: \(sender.state)")
         if sender.state == UIGestureRecognizer.State.began {
-            print("----------")
+            showMenu()
         }
     }
 
-    @objc func screenEdgeSwiped(_ recognizer: UIScreenEdgePanGestureRecognizer) {
-        if recognizer.state == .recognized {
-            print("Screen edge swiped!")
-        }
-    }
+    //@objc func screenEdgeSwiped(_ recognizer: UIScreenEdgePanGestureRecognizer) {
+    //    if recognizer.state == .recognized {
+    //        print("Screen edge swiped!")
+    //    }
+    //}
+
+    fileprivate var imageInfoViewUpdateManager = ImageInfoViewUpdateManager()
 }
 
 extension ImageViewController: UICollectionViewDataSource {
@@ -304,22 +300,14 @@ extension ImageViewController: UICollectionViewDataSource {
         //let originalIndexPath = dataSource.originalIndexPath(indexPath)
         //let thumbnailImage = imageViewerSupportDelegate?.getLoadedThumbnailImage(indexPath: originalIndexPath)
         let image = dataSource.image(indexPath)
+        //print("cellForItemAt: \(indexPath.section): \(indexPath.row)  \(image.filename)  \(image.assetId)")
         DispatchQueue.global(qos: .userInteractive).async {
             let _ = image.resolve(imageCallback: { [weak cell](imageSource) in
                 cell?.imageSourceView.imageSource = imageSource
-                cell?.imageSourceView.setNeedsDisplay()
-            }, metadataCallback: { [weak self] (image) in
-                guard let metadata = image.metadata else {
-                   log.warning("No metadata found.")
-                   return
-                }
+                //cell?.imageSourceView.setNeedsDisplay()
+            }, metadataCallback: { (image) in
                 //justPerformaceTest(metadata)
-                print("collectionView metadata: \(metadata.prettyJSON())")
-
-                if let imageInfoView = self?.imageInfoView,
-                    imageInfoView.isHidden == false {
-                    imageInfoView.image = image
-                }
+                //print("collectionView metadata: \(image.metadata?.prettyJSON())")
             }, errorCallback: { (error) in
                 log.warning("error: \(error)")
             })
@@ -395,7 +383,12 @@ extension ImageViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension ImageViewController: UICollectionViewDelegate {
+extension ImageViewController: UICollectionViewDelegate { //UIScrollViewDelegate
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    }
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        //print("didEndDisplaying: \(indexPath.section): \(indexPath.row) ")
+    }
 }
 
 extension ImageViewController: UIScrollViewDelegate {
@@ -417,10 +410,66 @@ extension ImageViewController: UIScrollViewDelegate {
             imageCollectionView.scrollToItem(at: dataSource.lastIndexPath(), at: .left, animated: false)
         }
     }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+//        if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
+//            print("scrollViewWillEndDragging: \(indexPath.section): \(indexPath.row) ")
+//        }
+        imageInfoViewUpdateManager.update(self)
+    }
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        if let indexPath = imageCollectionView.indexPathsForVisibleItems.first {
+//            print("scrollViewDidEndDragging: \(indexPath.section): \(indexPath.row) ")
+//        }
+        imageInfoViewUpdateManager.update(self)
+    }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        imageInfoViewUpdateManager.update(self)
+    }
+
+    func updateImageInfoView() {
+        guard self.isImageFullScreenViewAndInfoIsHidden == false,
+            let dataSource = dataSource,
+            let indexPath = imageCollectionView.indexPathsForVisibleItems.first else {
+                return
+        }
+
+        let image = dataSource.image(indexPath)
+        DispatchQueue.main.async {
+            //print("willDisplay: \(indexPath.section): \(indexPath.row)  \(image.filename)  \(image.assetId)")
+            self.imageInfoView.image = image
+        }
+    }
+
+    class ImageInfoViewUpdateManager {
+        private var udpatedTime: Date = Date() {
+            didSet {
+                print("timeInterval: \(Int((-oldValue.timeIntervalSinceNow) * 1000))")
+            }
+        }
+        func update(_ parent: ImageViewController?) {
+            guard parent?.isImageFullScreenViewAndInfoIsHidden == false else {
+                    return
+            }
+            
+            let timeInterval = -udpatedTime.timeIntervalSinceNow
+            if timeInterval > 0.5 { // update time and create one new timer
+                udpatedTime = Date()
+
+                Timer.scheduledTimer(withTimeInterval: 0.6, repeats: false) { [weak parent] (_) in
+                    parent?.updateImageInfoView()
+                }
+            }
+        }
+    }
 }
 
 extension ImageViewController: ImageViewHeaderDelegate {
     func headerView(_: ImageViewHeader, didPressClearButton _: UIButton) {
+        exitView()
+    }
+
+    fileprivate func exitView() {
         self.dismiss(animated: true)
 
         guard let dataSource = dataSource else {
@@ -436,8 +485,8 @@ extension ImageViewController: ImageViewHeaderDelegate {
 extension ImageViewController: ImageViewFooterDelegate {
 
     func deleteDelegate(_: ImageViewFooter, _ button: UIButton) {
-        self.dismiss(animated: true)
-
+        //self.dismiss(animated: true)
+//
 //        guard let dataSource = dataSource else {
 //            return
 //        }
@@ -447,9 +496,31 @@ extension ImageViewController: ImageViewFooterDelegate {
     }
 
     func menueDelegate(_: ImageViewFooter, _ button: UIButton) {
+        showMenu()
+    }
+    fileprivate func showMenu() {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        alert.addAction(UIAlertAction(title: "从相册移除", style: .default) { _ in
+            print("Action 1")
+        })
+
+        alert.addAction(UIAlertAction(title: "删除位置信息", style: .default) { _ in
+            print("Action 2")
+        })
+
+        alert.popoverPresentationController?.sourceView = self.imageViewFooter.menuButton
+        self.present(alert, animated: true)
     }
 
     func infoDelegate(_: ImageViewFooter, _ button: UIButton) {
+        showImageInfoView()
+    }
+    fileprivate func showImageInfoView() {
+        if !isImageFullScreenViewAndInfoIsHidden {
+            return //显示状态不再处理
+        }
+
         guard let indexPath = imageCollectionView.indexPathsForVisibleItems.first,
             let dataSource = dataSource else {
                 return
@@ -461,3 +532,6 @@ extension ImageViewController: ImageViewFooterDelegate {
         toggleImageInfoView()
     }
 }
+
+
+

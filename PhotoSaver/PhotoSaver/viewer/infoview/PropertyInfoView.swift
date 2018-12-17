@@ -38,6 +38,7 @@ class PropertyInfoView: BaseViewWithAutolayout {
         infoStackView.arrangedSubviews.forEach { (view) in
             infoStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
+            view.removeConstraints(view.constraints)
         }
 
         defer {
@@ -58,9 +59,10 @@ class PropertyInfoView: BaseViewWithAutolayout {
         }
 
         //TODO 文件格式
-
-        addInfo("类型", "", LocalizedStringHelper.localized(image.mediaType, image.mediaSubtype))
-        addInfo("尺寸", image.metadata?.pixelWidth, "\(image.metadata?.pixelWidth ?? 0) x \(image.metadata?.pixelHeight ?? 0)")
+        var fileExtensionStr = ""
+        if let fileExtension = image.fileExtension { fileExtensionStr = " [\(fileExtension.uppercased())]" }
+        addInfo("类型", "", LocalizedStringHelper.localized(image.mediaType, image.mediaSubtype) + fileExtensionStr)
+        addInfo("尺寸", image.metadata?.pixelWidth, "\(image.metadata?.pixelWidth ?? 0)x\(image.metadata?.pixelHeight ?? 0)")
         addInfo("大小", image.dataSize, (image.dataSize?.format() ?? "") + " (" + image.dataSizeStr + ")")
         addInfo("拍摄日期", image.creationDate, image.creationDate?.fullDatetime)
         addInfo("修改日期", image.modificationDate, image.modificationDate?.fullDatetime)

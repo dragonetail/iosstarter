@@ -31,38 +31,57 @@ class AlbumListSelectorView: BaseViewWithAutolayout {
         containerTapGest.numberOfTapsRequired = 1
         container.addGestureRecognizer(containerTapGest)
 
-        [label, arrow].forEach({
-            container.addSubview($0)
-        })
         return container
     }()
 
     override func setupAndComposeView() {
         self.backgroundColor = UIColor.white
 
+        [label, arrow].forEach({ view in
+            view.removeFromSuperview()
+            view.removeConstraints(view.constraints)
+        })
+        container.removeFromSuperview()
+        container.removeConstraints(container.constraints)
+        
+        
         [container].forEach({
             addSubview($0)
         })
+        
+        [label, arrow].forEach({view in
+            container.addSubview(view)
+        })
+
+        self.setNeedsUpdateConstraints()
+//        self.setNeedsLayout()
+//        self.layoutIfNeeded()
     }
 
-    override func setupConstraints() {
+    override func modifyConstraints() {
         label.sizeToFit()
         container.autoCenterInSuperview()
         container.autoSetDimension(.width, toSize: label.frame.size.width + 8 + 10 * 3)
         container.autoSetDimension(.height, toSize: label.frame.size.height + 10)
-
+        
         label.autoPinEdge(toSuperviewEdge: .left, withInset: 10)
         label.autoAlignAxis(toSuperviewAxis: .horizontal)
-
+        label.autoSetDimensions(to: label.frame.size)
+        
         arrow.autoPinEdge(.left, to: .right, of: label, withOffset: 10)
         arrow.autoSetDimensions(to: CGSize(width: 8, height: 8))
         arrow.autoAlignAxis(toSuperviewAxis: .horizontal)
     }
 
     func updateText(_ text: String) {
-        label.text = text.uppercased()
+        label.text = text
         arrow.alpha = text.isEmpty ? 0 : 1
-        //invalidateIntrinsicContentSize()
+
+        setupAndComposeView()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
     }
 
     var tappedHandler: (() -> Void)?

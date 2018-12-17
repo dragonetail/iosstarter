@@ -24,7 +24,8 @@ class ImageViewHeader: BaseViewWithAutolayout {
 
     override func setupAndComposeView() {
         _ = self.autoLayout("ImageViewHeader")
-
+        self.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        
         self.addSubview(self.exitButton)
     }
 

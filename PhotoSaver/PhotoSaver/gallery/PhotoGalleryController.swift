@@ -32,6 +32,9 @@ class PhotoGalleryController: BaseViewControllerWithAutolayout {
     var selectedAlbum: Album? = nil
 
     // 初始化逻辑
+    override open var accessibilityIdentifier: String {
+        return "PhotoGalleryController"
+    }
     override func setupAndComposeView() {
         self.view.backgroundColor = UIColor.white
         self.view.isMultipleTouchEnabled = true
@@ -58,7 +61,6 @@ class PhotoGalleryController: BaseViewControllerWithAutolayout {
         NSLayoutConstraint.autoCreateAndInstallConstraints {
             albumListExpanding = false
             collapsedTopConstraint = albumListView.autoPinEdge(toSuperviewSafeArea: .bottom)
-            //.autoPinEdge(.bottom, to: .bottom, of: topView)
         }
         NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
             expandedTopConstraint = albumListView.autoPinEdge(.top, to: .bottom, of: topAlbumListSelectorView)

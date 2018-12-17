@@ -13,29 +13,34 @@ class ImageInfoView: BaseViewWithAutolayout {
     weak var viewDelegate: ImageInfoViewDelegate?
 
     public lazy var pagingTabView: PagingTabView = {
-        let pagingTabView: PagingTabView = PagingTabView()
+        let pagingTabView: PagingTabView = PagingTabView().autoLayout("pagingTabView")
         pagingTabView.config = PagingTabViewConfig()
         pagingTabView.delegate = self
         pagingTabView.datasource = self
 
         return pagingTabView
     }()
-    
+
     lazy var propertyInfoView: PropertyInfoView = {
         return PropertyInfoView()
     }()
+    lazy var summaryInfoView: SummaryInfoView = {
+        return SummaryInfoView()
+    }()
 
     
+    
+
     override func setupAndComposeView() {
         _ = self.autoLayout("ImageInfoView")
-        
+
         func _shadow() {
             layer.shadowColor = UIColor.black.cgColor
             layer.shadowOpacity = 0.5
             layer.shadowOffset = CGSize(width: 0, height: 2)
             layer.shadowRadius = 2
         }
-        
+
         func _roundBorder() {
             layer.borderWidth = 1
             layer.borderColor = UIColor.gray.cgColor
@@ -44,19 +49,19 @@ class ImageInfoView: BaseViewWithAutolayout {
         }
         _shadow()
         _roundBorder()
-        
+
         self.backgroundColor = UIColor.white
-        
+
         [pagingTabView].forEach { (view) in
             addSubview(view)
         }
     }
-    
+
     // invoked only once
     override func setupConstraints() {
         pagingTabView.autoPinEdgesToSuperviewEdges()
     }
-    
+
     var image: Image? {
         didSet {
             pagingTabView.setupAndComposeView()
@@ -99,10 +104,11 @@ extension ImageInfoView: PagingTabViewDataSource {
     func tabView(pagingTabView: PagingTabView, index: Int) -> UIView {
         switch index {
         case 0: //概要
+            summaryInfoView.image = image
+            return summaryInfoView
+        case 1: //信息
             propertyInfoView.image = image
             return propertyInfoView
-//        case 1:
-//            return (image: nil, title: "信息")
 //        case 2:
 //            return (image: nil, title: "相册")
 //        case 3:

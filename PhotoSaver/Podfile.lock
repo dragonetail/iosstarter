@@ -23,7 +23,7 @@ PODS:
   - SwiftBaseBootstrap (0.1.6):
     - PureLayout (~> 3.1.4)
   - SwiftEventBus (3.0.1)
-  - SwiftPagingTabView (0.1.5):
+  - SwiftPagingTabView (0.1.6):
     - PureLayout (~> 3.1.4)
     - SwiftBaseBootstrap
   - SwiftyJSON (4.2.0)
@@ -51,9 +51,9 @@ DEPENDENCIES:
   - Lightbox (from `./LocalPods/Lightbox`)
   - PureLayout (~> 3.1.4)
   - SVProgressHUD (from `./LocalPods/SVProgressHUD`)
-  - SwiftBaseBootstrap
+  - SwiftBaseBootstrap (from `/Users/sunyx/workspace/ios/SwiftBaseBootstrap/`)
   - SwiftEventBus (from `https://github.com/cesarferreira/SwiftEventBus.git`, tag `3.0.1`)
-  - SwiftPagingTabView
+  - SwiftPagingTabView (from `/Users/sunyx/workspace/ios/SwiftPagingTabView/`)
   - SwiftyJSON (~> 4.0)
   - SwipeSelectingCollectionView2
   - WechatOpenSDK
@@ -71,8 +71,6 @@ SPEC REPOS:
     - GRDB.swift
     - ObjcExceptionBridging
     - PureLayout
-    - SwiftBaseBootstrap
-    - SwiftPagingTabView
     - SwiftyJSON
     - SwipeSelectingCollectionView2
     - WechatOpenSDK
@@ -93,9 +91,13 @@ EXTERNAL SOURCES:
     :path: "./LocalPods/Lightbox"
   SVProgressHUD:
     :path: "./LocalPods/SVProgressHUD"
+  SwiftBaseBootstrap:
+    :path: "/Users/sunyx/workspace/ios/SwiftBaseBootstrap/"
   SwiftEventBus:
     :git: https://github.com/cesarferreira/SwiftEventBus.git
     :tag: 3.0.1
+  SwiftPagingTabView:
+    :path: "/Users/sunyx/workspace/ios/SwiftPagingTabView/"
 
 CHECKOUT OPTIONS:
   SwiftEventBus:
@@ -120,14 +122,14 @@ SPEC CHECKSUMS:
   ObjcExceptionBridging: c30e00eb3700467e695faeea30e26e18bd445001
   PureLayout: f08c01b8dec00bb14a1fefa3de4c7d9c265df85e
   SVProgressHUD: ad8ed6162dc5f477da7d4f395d4941ea9fdf36cb
-  SwiftBaseBootstrap: 8ad78b2b2b0461cc39180a4be3f006c36c69b125
+  SwiftBaseBootstrap: 2ec18481ee88096588c6d571ec7be1c0f1029579
   SwiftEventBus: 87ccaeceff91b748775e37751ae3a81ec815b3d5
-  SwiftPagingTabView: 99049511df15bf8196f08f8b59a0db567d4d8f8a
+  SwiftPagingTabView: ad891064b4561410ab46809a8a367bccf03bb80c
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   SwipeSelectingCollectionView2: 350a730b246b5201f347480490746bf338ccb265
   WechatOpenSDK: 3117412f8aafde4758cac1e8d20b93c67cafcfef
   XCGLogger: 7f7f43f15dfe3a305fa1342b7dc29af656289abd
 
-PODFILE CHECKSUM: 5e3d19de0d19f7b58ae795177c5eb14007acba9d
+PODFILE CHECKSUM: 7ccb29949691e406f90138804ff99938ea0a302c
 
 COCOAPODS: 1.5.3

@@ -45,11 +45,15 @@ class ImageViewFooter: BaseViewWithAutolayout {
         button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(ImageViewFooter.infoAction(button:)), for: .touchUpInside)
 
+        button.alpha = 1
         return button
     }()
 
     override func setupAndComposeView() {
         _ = self.autoLayout("ImageViewFooter")
+        self.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
+        let padding = UIScreen.main.bounds.width / 10
+        self.layoutMargins = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
 
         [favoriteButton, infoButton, deleteButton, menuButton].forEach { (view) in
             addSubview(view)

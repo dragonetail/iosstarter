@@ -56,6 +56,13 @@ class Image: Equatable {
         let fileUrl = NSURL(fileURLWithPath: filePath)
         return fileUrl.lastPathComponent!
     }
+    var fileExtension: String? {
+        guard let filePath = self.filePath else {
+            return nil
+        }
+        let fileUrl = NSURL(fileURLWithPath: filePath)
+        return fileUrl.pathExtension
+    }
 
     func parseInfo(_ info: [AnyHashable: Any]) {
         let isCompleted = info["PHImageResultIsDegradedKey"] as! Int

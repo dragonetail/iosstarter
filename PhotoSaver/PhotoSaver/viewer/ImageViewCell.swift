@@ -46,6 +46,19 @@ class ImageViewCell: UICollectionViewCell {
 
         super.layoutSubviews()
     }
+    
+    override func willTransition(from oldLayout: UICollectionViewLayout, to newLayout: UICollectionViewLayout) {
+        super.willTransition(from: oldLayout, to: newLayout)
+        
+        print("willTransition")
+    }
+    
+    override func didTransition(from oldLayout: UICollectionViewLayout, to newLayout: UICollectionViewLayout) {
+        super.willTransition(from: oldLayout, to: newLayout)
+        
+        print("didTransition")
+    }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         

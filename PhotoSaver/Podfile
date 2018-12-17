@@ -35,8 +35,8 @@ target 'PhotoSaver' do
   
   pod 'ImageIOSwift_F2', :path => '/Users/sunyx/temp/ImageIOSwift/'
   pod 'SwipeSelectingCollectionView2'
-  pod 'SwiftPagingTabView'
-  pod 'SwiftBaseBootstrap'
+  pod 'SwiftPagingTabView', :path => '/Users/sunyx/workspace/ios/SwiftPagingTabView/'
+  pod 'SwiftBaseBootstrap', :path => '/Users/sunyx/workspace/ios/SwiftBaseBootstrap/'
 end
 
 target 'UIViewsSample' do
