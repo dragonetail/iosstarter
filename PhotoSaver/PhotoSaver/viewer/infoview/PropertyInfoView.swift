@@ -8,10 +8,17 @@ class PropertyInfoView: BaseViewWithAutolayout {
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView().autoLayout("scrollView")
 
-        //scrollView.alwaysBounceVertical = true
+        let insets = UIEdgeInsets(top: 15, left: 0.0, bottom: 25, right: 0.0)
+        scrollView.contentInset = insets
+
+//        infoStackView.removeFromSuperview()
+//        infoStackView.removeConstraints(infoStackView.constraints)
+//        scrollView.removeFromSuperview()
+//        scrollView.removeConstraints(scrollView.constraints)
 
         scrollView.addSubview(infoStackView)
         self.addSubview(scrollView)
+
         return scrollView
     }()
     var infoStackView: UIStackView = {
@@ -63,9 +70,9 @@ class PropertyInfoView: BaseViewWithAutolayout {
         if let fileExtension = image.fileExtension { fileExtensionStr = " [\(fileExtension.uppercased())]" }
         addInfo("类型", "", LocalizedStringHelper.localized(image.mediaType, image.mediaSubtype) + fileExtensionStr)
         addInfo("尺寸", image.metadata?.pixelWidth, "\(image.metadata?.pixelWidth ?? 0)x\(image.metadata?.pixelHeight ?? 0)")
-        addInfo("大小", image.dataSize, (image.dataSize?.format() ?? "") + " (" + image.dataSizeStr + ")")
-        addInfo("拍摄日期", image.creationDate, image.creationDate?.fullDatetime)
-        addInfo("修改日期", image.modificationDate, image.modificationDate?.fullDatetime)
+        addInfo("大小", image.dataSize, (image.dataSize?.extFormat() ?? "") + " (" + image.dataSizeStr + ")")
+        addInfo("拍摄日期", image.creationDate, image.creationDate?.extFullDatetime)
+        addInfo("修改日期", image.modificationDate, image.modificationDate?.extFullDatetime)
         addInfo("收藏", image.isFavorite ? "" : nil, image.isFavorite ? "已收藏" : "")
         addInfo("旋转", image.orientation, LocalizedStringHelper.localized(image.orientation))
 
@@ -88,7 +95,7 @@ class PropertyInfoView: BaseViewWithAutolayout {
             addInfo("垂直精度", "", String(format: "%.2f", location.verticalAccuracy))
             addInfo("角度", "", String(format: "%.1f 度", location.course))
             addInfo("速度", "", String(format: "%.1f 米/秒", location.speed))
-            addInfo("时间", "", location.timestamp.fullDatetime)
+            addInfo("时间", "", location.timestamp.extFullDatetime)
         }
 
         guard let imageProperties = metadata.imageProperties else {
@@ -203,7 +210,6 @@ class PropertyInfoView: BaseViewWithAutolayout {
     // invoked only once
     override func setupConstraints() {
         scrollView.autoPinEdgesToSuperviewEdges()
-        infoStackView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 13, left: 0, bottom: 25, right: 0))
         infoStackView.autoMatch(.width, to: .width, of: scrollView)
     }
 
@@ -229,9 +235,6 @@ class PropertyInfoView: BaseViewWithAutolayout {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        //self.autoPrintConstraints()
-        //self.infoStackView.autoPrintConstraints()
     }
 
     func addInfo(_ title: String, _ checkValue: Any?, _ value: String?) {

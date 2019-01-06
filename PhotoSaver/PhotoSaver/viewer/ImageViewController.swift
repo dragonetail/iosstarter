@@ -120,7 +120,7 @@ class ImageViewController: BaseViewControllerWithAutolayout {
             } as NSArray
 
             dynamicConstraints["\(orientation).imageInfo"] = NSLayoutConstraint.autoCreateConstraintsWithoutInstalling {
-                imageInfoView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 4.2)
+                imageInfoView.autoMatch(.width, to: .width, of: self.view, withMultiplier: 0.42)
                 imageInfoView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .right)
             } as NSArray
         }
@@ -189,10 +189,10 @@ class ImageViewController: BaseViewControllerWithAutolayout {
         self.imageCollectionView.reloadData()
         self.imageCollectionView.setContentOffset(newOffset, animated: false)
 
+//        imageCollectionView.visibleCells.first?.sizeToFit()
         self.view.setNeedsUpdateConstraints()
-        self.view.setNeedsLayout()
-        self.view.layoutIfNeeded()
-        imageCollectionView.visibleCells.first?.sizeToFit()
+//        self.view.setNeedsLayout()
+//        self.view.layoutIfNeeded()
     }
 
     @objc func handleSlightTap(recognizer: UITapGestureRecognizer) {
@@ -444,7 +444,7 @@ extension ImageViewController: UIScrollViewDelegate {
     class ImageInfoViewUpdateManager {
         private var udpatedTime: Date = Date() {
             didSet {
-                print("timeInterval: \(Int((-oldValue.timeIntervalSinceNow) * 1000))")
+                //print("timeInterval: \(Int((-oldValue.timeIntervalSinceNow) * 1000))")
             }
         }
         func update(_ parent: ImageViewController?) {

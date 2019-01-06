@@ -28,27 +28,15 @@ class ImageInfoView: BaseViewWithAutolayout {
         return SummaryInfoView()
     }()
 
-    
-    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+    }
 
     override func setupAndComposeView() {
         _ = self.autoLayout("ImageInfoView")
 
-        func _shadow() {
-            layer.shadowColor = UIColor.black.cgColor
-            layer.shadowOpacity = 0.5
-            layer.shadowOffset = CGSize(width: 0, height: 2)
-            layer.shadowRadius = 2
-        }
-
-        func _roundBorder() {
-            layer.borderWidth = 1
-            layer.borderColor = UIColor.gray.cgColor
-            layer.cornerRadius = 5
-            clipsToBounds = true
-        }
-        _shadow()
-        _roundBorder()
+        self.extRoundBorder(UIColor.gray, cornerRadius: 5)
+        self.extShadow(shadowOffset: CGSize(width: 0, height: 2), shadowRadius: 2)
 
         self.backgroundColor = UIColor.white
 
@@ -64,15 +52,30 @@ class ImageInfoView: BaseViewWithAutolayout {
 
     var image: Image? {
         didSet {
-            pagingTabView.setupAndComposeView()
+            if oldValue == nil { //因为目前设计信息窗口的数据源为静态的，所以只要第一次初始化创办，这样各个Tab对应的View可以是静态的
+                pagingTabView.setupAndComposeView()
+            }else{
+                pagingTabView.updateTabView()
+            }
         }
     }
 }
 
 
 extension ImageInfoView: PagingTabViewDelegate {
-    func pagingTabView(pagingTabView: PagingTabView, toIndex: Int) {
-        print("Switch to paging tab view: \(toIndex)")
+    func willShowTabView(pagingTabView: PagingTabView, toIndex: Int, subTabView: UIView) {
+        switch toIndex {
+        case 0: //概要
+            (subTabView as? SummaryInfoView)?.image = image
+        case 1: //信息
+            (subTabView as? PropertyInfoView)?.image = image
+            //        case 2:
+            //            return (image: nil, title: "相册")
+            //        case 3:
+            //            return (image: nil, title: "来源")
+        default:
+            return
+        }
     }
 
     func reconfigure(pagingTabView: PagingTabView) {

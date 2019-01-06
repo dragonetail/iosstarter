@@ -39,13 +39,13 @@ extension AlbumModel {
         return smartAlbumUserLibrary
     }
 
-    static func hasImages(_ db: Database, smartAlbumUserLibrary: AlbumModel?) throws -> Bool {
-        if let smartAlbumUserLibrary = smartAlbumUserLibrary {
-            let imageCount: Int = try smartAlbumUserLibrary.sections.fetchCount(db)
-            return (imageCount > 0)
-        }
-        return false
-    }
+//    static func hasImages(_ db: Database, smartAlbumUserLibrary: AlbumModel?) throws -> Bool {
+//        if let smartAlbumUserLibrary = smartAlbumUserLibrary {
+//            let imageCount: Int = try smartAlbumUserLibrary.sections.fetchCount(db)
+//            return (imageCount > 0)
+//        }
+//        return false
+//    }
     
     static func getBy(_ db: Database, collectionId: String) throws -> AlbumModel? {
         let albumModel = try AlbumModel

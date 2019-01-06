@@ -18,7 +18,7 @@ class NoPhotoAuthorizationController: BaseViewControllerWithAutolayout {
         let label = UILabel().autoLayout("label")
         label.textColor = NoPhotoAuthorizationController.textColor
         label.font = NoPhotoAuthorizationController.regular.withSize(14)
-        let labelString = "Gallery.EmptyView.Text"._localize(fallback: "应用APP没有获取访问相册的授权。\n\n点击设定修改应用授权")
+        let labelString = "Gallery.EmptyView.Text".extLocalize(fallback: "应用APP没有获取访问相册的授权。\n\n点击设定修改应用授权")
 
         let index = labelString.firstIndex(of: "\n")
         let offset = index!.encodedOffset

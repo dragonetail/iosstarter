@@ -57,10 +57,11 @@ class AlbumManager {
         do {
             let startTime = CACurrentMediaTime()
             try dbConn.write { db in
-                let smartAlbumUserLibrary: AlbumModel? = try AlbumModel.getSmartAlbumUserLibrary(db)
-                let hasImages = try AlbumModel.hasImages(db, smartAlbumUserLibrary: smartAlbumUserLibrary)
-
-                try loadSmartAlbumUserLibraryToDB(db, smartAlbumUserLibrary, hasImages)
+                let sectionCount = try SectionModel.fetchCount(db)
+                if(sectionCount == 0){
+                    let smartAlbumUserLibrary: AlbumModel? = try AlbumModel.getSmartAlbumUserLibrary(db)
+                    try loadSmartAlbumUserLibraryToDB(db, smartAlbumUserLibrary)
+                }
             }
             log.debug("准备用户主相册数据耗时：\(lround((CACurrentMediaTime() - startTime) * 1000))ms")
         } catch {
@@ -186,11 +187,7 @@ class AlbumManager {
     }
 
 
-    fileprivate func loadSmartAlbumUserLibraryToDB(_ db: Database, _ smartAlbumUserLibrary: AlbumModel?, _ hasImages: Bool) throws {
-        if hasImages {
-            return
-        }
-
+    fileprivate func loadSmartAlbumUserLibraryToDB(_ db: Database, _ smartAlbumUserLibrary: AlbumModel?) throws {
         var smartAlbumUserLibrary: AlbumModel? = smartAlbumUserLibrary
         if smartAlbumUserLibrary == nil {
             let result: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
@@ -316,9 +313,9 @@ class AlbumManager {
         let year = calendar.component(.year, from: date)
         
         if year == curYear {
-            return date.shortDate
+            return date.extShortDate
         } else {
-            return date.fullDate
+            return date.extFullDate
         }
     }
 

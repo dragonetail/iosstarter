@@ -25,7 +25,7 @@ class AlbumListSelectorView: BaseViewWithAutolayout {
 
     lazy var container: UIView = {
         let container = BaseViewWithAutolayout().autoLayout("container")
-        container.autoRoundBorder(AlbumListSelectorView.tintColor)
+        container.extRoundBorder(AlbumListSelectorView.tintColor)
 
         let containerTapGest = UITapGestureRecognizer(target: self, action: #selector(handleTapContainer(recognizer:)))
         containerTapGest.numberOfTapsRequired = 1

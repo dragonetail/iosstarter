@@ -85,8 +85,7 @@ class SummaryInfoView: BaseViewWithAutolayout {
 
             makerDeviceLabel.text = (image.metadata?.imageProperties?.codableValue["{TIFF}"]?.dict?["Model"]?.string) ?? "-"
 
-            dateLabel.text = image.creationDate?.fullDatetime ?? "-"
-            addressLabel.text = "-"
+            dateLabel.text = image.creationDate?.extFullDatetime ?? "-"
 
             setupLocationMap(image.metadata?.location)
         }

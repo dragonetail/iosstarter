@@ -17,7 +17,7 @@ class EmptyView: BaseViewWithAutolayout {
         let label = UILabel().autoLayout("label")
         label.textColor = EmptyView.textColor
         label.font = EmptyView.regular.withSize(14)
-        label.text = "Gallery.EmptyView.Text"._localize(fallback: "Nothing to show")
+        label.text = "Gallery.EmptyView.Text".extLocalize(fallback: "Nothing to show")
 
         return label
     }()
